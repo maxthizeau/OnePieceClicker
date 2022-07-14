@@ -2,7 +2,8 @@ import { truncate } from "fs"
 import { FC, useMemo, useState } from "react"
 import styled from "styled-components"
 import { getThumbImageSrc, getUnitAttackPower } from "../../../../lib/clickerFunctions"
-import { IFleetUnit, useGameState } from "../../../../lib/hooks/GameContext"
+import { ActionEnum, IFleetUnit, useGameState } from "../../../../lib/hooks/GameContext"
+import { TTypeTraining } from "../../../../lib/types"
 import Hover from "../../../Global/Hover"
 import CrewHover from "../../../Global/Hover/CrewHover"
 
@@ -85,7 +86,16 @@ const FilterButton = styled.button`
   }
 `
 
-const SelectUnit: FC = () => {
+type TSelectedSlot = {
+  type: TTypeTraining
+  index: number
+}
+
+interface ISelectUnitProps {
+  selected: TSelectedSlot | null
+}
+
+const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
   const gameState = useGameState()
   const [filterShowCrewOnly, setFilterShowCrewOnly] = useState(false)
   const [filterAtkMin, setFilterAtkMin] = useState(0)
@@ -95,7 +105,7 @@ const SelectUnit: FC = () => {
   const filteredList = useMemo(() => {
     return gameState.state.fleet.filter((x) => {
       const crewCheck = (filterShowCrewOnly && gameState.state.crew.find((y) => y.fleetId == x.id)) || !filterShowCrewOnly
-      const atkMinCheck = filterAtkMin == 0 || getUnitAttackPower(x) >= filterAtkMin
+      const atkMinCheck = filterAtkMin == 0 || getUnitAttackPower(x.unit, x.level) >= filterAtkMin
       const lvlMinCheck = x.level >= filterLvlMin
       return crewCheck && atkMinCheck && lvlMinCheck
     })
@@ -104,8 +114,8 @@ const SelectUnit: FC = () => {
     return filteredList.sort((a, b) => {
       const finalA: IFleetUnit = filterSortDesc ? a : b
       const finalB: IFleetUnit = filterSortDesc ? b : a
-      if (filterSortBy == "baseAtk") return getUnitAttackPower({ ...finalA, level: 1 }) - getUnitAttackPower({ ...finalB, level: 1 })
-      else if (filterSortBy == "currentAtk") return getUnitAttackPower(finalA) - getUnitAttackPower(finalB)
+      if (filterSortBy == "baseAtk") return getUnitAttackPower(finalA.unit, 1) - getUnitAttackPower(finalB.unit, 1)
+      else if (filterSortBy == "currentAtk") return getUnitAttackPower(finalA.unit, finalA.level) - getUnitAttackPower(finalB.unit, finalB.level)
       else if (filterSortBy == "level") return finalA.level - finalB.level
       else {
         return 0
@@ -113,10 +123,19 @@ const SelectUnit: FC = () => {
     })
   }, [filteredList, filterSortBy, filterSortDesc])
 
+  function clickAddUnit(fleetUnitId: number) {
+    console.log("click")
+    if (selected) {
+      gameState.dispatch({ type: ActionEnum.Training_AddUnit, payload: { training: { fleetUnitId, index: selected?.index, type: selected?.type } } })
+    }
+  }
+
   return (
     <SelectUnitStyled>
       <h3>Select Unit : </h3>
-      <ErrorMessage>Select a slot first</ErrorMessage>
+      <ErrorMessage>
+        {selected === null ? <span style={{ color: "#f3d097" }}>⬆ Select a slot first ⬆</span> : <span style={{ color: "#a1eeae" }}>⬇ Select a unit ⬇</span>}
+      </ErrorMessage>
       <Filters>
         <FilterButton
           onClick={() => {
@@ -191,7 +210,7 @@ const SelectUnit: FC = () => {
               //   positionStatic={true}
               offset={{ x: 0, y: 10 }}
             >
-              <ImageWrapper>
+              <ImageWrapper onClick={() => clickAddUnit(unit.id)}>
                 <img src={getThumbImageSrc(unit.unit.id)} />
               </ImageWrapper>
             </Hover>

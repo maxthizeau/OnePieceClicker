@@ -2,11 +2,13 @@ import { FC, useState } from "react"
 import styled from "styled-components"
 import { BerryIcon, Column, Row } from "../../styled/Globals"
 import { ModalSubtitle, SmallModalSubtitle } from "../ModalStyles"
-import { getThumbImageSrc } from "../../../lib/clickerFunctions"
+import { getMaximumTrainingXP, getThumbImageSrc } from "../../../lib/clickerFunctions"
 import SelectUnit from "./Training/SelectUnitModal"
-import { useGameState } from "../../../lib/hooks/GameContext"
-import { XPBoostUnlockPrices } from "../../../lib/data/menuUnlocks"
+import { ActionEnum, IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
+import { RayleighUnlockPrices, XPBoostUnlockPrices } from "../../../lib/data/menuUnlocks"
 import { nFormatter } from "../../../lib/utils"
+import { ELogType, useLogs } from "../../../lib/hooks/useLogs"
+import { TTypeTraining } from "../../../lib/types"
 
 const ExtraModalStyles = styled.div`
   min-height: 800px;
@@ -83,7 +85,7 @@ const RemoveButton = styled.a`
   }
 `
 
-const TrainingSpot = styled.div<{ free?: boolean; locked?: boolean }>`
+const TrainingSpot = styled.div<{ free?: boolean; locked?: boolean; selected?: boolean }>`
   display: flex;
   width: 120px;
   height: 150px;
@@ -92,7 +94,7 @@ const TrainingSpot = styled.div<{ free?: boolean; locked?: boolean }>`
   background: ${(props) => (props.locked ? "#505050" : "#eee2ba")};
   color: ${(props) => (props.locked ? "#cacaca" : props.free ? "#363636" : "#363636")};
   border-radius: 3px;
-  border: 3px solid #b9896e;
+  border: 3px solid ${(props) => (props.selected ? "#f1cc3a" : "#b9896e")};
   outline: 2px solid black;
   position: relative;
 
@@ -133,9 +135,19 @@ const Divider = styled.div`
   background-color: #0000003a;
 `
 
-const XPBoostSlot = ({ free, locked, price }: { free?: boolean; locked?: boolean; price?: number }) => {
+interface ISlotProps {
+  free?: boolean
+  locked?: boolean
+  price?: number
+  selected?: boolean
+  onClick: () => void
+  unit?: IFleetUnit
+  removeFunc?: () => void
+}
+
+const XPBoostSlot = ({ free, locked, price, selected, onClick, unit, removeFunc }: ISlotProps) => {
   return (
-    <TrainingSpot free={free} locked={locked}>
+    <TrainingSpot selected={selected} free={free} locked={locked} onClick={onClick}>
       <InsideTrainingSpot>
         {free && <div>Free Slot</div>}
         {locked && price !== undefined && (
@@ -143,40 +155,37 @@ const XPBoostSlot = ({ free, locked, price }: { free?: boolean; locked?: boolean
             Unlock price: <br /> <BerryIcon /> {nFormatter(price, 3)}
           </div>
         )}
-        {!locked && !free && (
+        {!locked && !free && !unit && <>Error : Unit not found</>}
+        {!locked && !free && unit && (
           <>
-            <img src={getThumbImageSrc("0001")} />
-            <LevelText>Lvl. 18</LevelText>
-            <RemoveButton />
-            {/* <XPBarStyled>
-              <HitBarStyled percentXP={80} />
-              <XPBarText>80%</XPBarText>
-            </XPBarStyled> */}
+            <img src={getThumbImageSrc(unit.unit.id)} />
+            <LevelText>Lvl. {unit.level}</LevelText>
+            <RemoveButton onClick={removeFunc} />
           </>
         )}
       </InsideTrainingSpot>
     </TrainingSpot>
   )
 }
-const RayleighSlot = ({ free, locked }: { free?: boolean; locked?: boolean }) => {
+const RayleighSlot = ({ free, locked, price, selected, onClick, unit }: ISlotProps) => {
+  const percentXP = unit ? (1 - unit.trainingXP / getMaximumTrainingXP(unit.unit)) * 100 : 0
   return (
-    <TrainingSpot free={free} locked={locked}>
+    <TrainingSpot selected={selected} free={free} locked={locked} onClick={onClick}>
       <InsideTrainingSpot>
         {free && <div>Free Slot</div>}
-        {locked && (
+        {locked && price !== undefined && (
           <div>
-            Unlock price:
-            <br />
-            <br /> <BerryIcon /> 500 K
+            Unlock price: <br /> <BerryIcon /> {nFormatter(price, 3)}
           </div>
         )}
-        {!locked && !free && (
+        {!locked && !free && !unit && <>Error : Unit not found</>}
+        {!locked && !free && unit && (
           <>
-            <img src={getThumbImageSrc("0001")} />
+            <img src={getThumbImageSrc(unit.unit.id)} />
 
             <XPBarStyled>
-              <HitBarStyled percentXP={20} />
-              <XPBarText>80%</XPBarText>
+              <HitBarStyled percentXP={percentXP} />
+              <XPBarText>{percentXP}%</XPBarText>
             </XPBarStyled>
           </>
         )}
@@ -185,9 +194,46 @@ const RayleighSlot = ({ free, locked }: { free?: boolean; locked?: boolean }) =>
   )
 }
 
+type TSelectedSlot = {
+  type: TTypeTraining
+  index: number
+}
+
 const TrainingModalContent: FC = () => {
   const { state, dispatch } = useGameState()
+  const { addLog } = useLogs()
   const { XPBoost, Rayleigh } = state.training
+  const [selectedSlot, setSelectedSlot] = useState<TSelectedSlot | null>(null)
+
+  function clickUnlock(type: TTypeTraining, price: number) {
+    if (state.berries >= price) {
+      dispatch({ type: ActionEnum.Training_Unlock, payload: { training: { type } } })
+      addLog({
+        id: `unlockTraining-${price}-${type}`,
+        logTypes: [ELogType.Clicker],
+        notification: true,
+        title: "Slot unlocked",
+        type: "success", // 'default', 'success', 'info', 'warning'
+      })
+    } else {
+      addLog({
+        id: `unlockTraining-${price}-${type}`,
+        logTypes: [ELogType.Clicker],
+        notification: true,
+        title: "Not enough berries",
+        message: `You don't have enough berries to unlock this slot`,
+        type: "warning", // 'default', 'success', 'info', 'warning'
+      })
+    }
+  }
+
+  function clickSelect(type: TTypeTraining, index: number) {
+    setSelectedSlot({ type, index })
+  }
+
+  function removeFromSlot(type: TTypeTraining, index: number) {
+    dispatch({ type: ActionEnum.Training_RemoveUnit, payload: { training: { type: type, index: index } } })
+  }
 
   return (
     <ExtraModalStyles>
@@ -198,12 +244,31 @@ const TrainingModalContent: FC = () => {
 
           <TrainingSpotList>
             {[...Array(XPBoostUnlockPrices.length)].map((_, index) => {
+              const selected = selectedSlot !== null && selectedSlot.type == "xp" && selectedSlot.index == index
               if (index > XPBoost.maxSlots - 1) {
-                return <XPBoostSlot locked price={XPBoostUnlockPrices[index]} />
-              } else if (!XPBoost.fleetUnitIds[index]) {
-                return <XPBoostSlot free />
+                const price = XPBoostUnlockPrices[index]
+                return <XPBoostSlot locked price={price} onClick={() => clickUnlock("xp", price)} />
+              } else if (XPBoost.fleetUnitIds[index] === null || XPBoost.fleetUnitIds[index] === undefined) {
+                return (
+                  <XPBoostSlot
+                    selected={selected}
+                    free
+                    onClick={() => {
+                      clickSelect("xp", index)
+                    }}
+                  />
+                )
               } else {
-                return <XPBoostSlot />
+                return (
+                  <XPBoostSlot
+                    selected={selected}
+                    onClick={() => {
+                      clickSelect("xp", index)
+                    }}
+                    unit={state.fleet.find((x) => x.id == XPBoost.fleetUnitIds[index])}
+                    removeFunc={() => removeFromSlot("xp", index)}
+                  />
+                )
               }
             })}
           </TrainingSpotList>
@@ -214,16 +279,40 @@ const TrainingModalContent: FC = () => {
           <h4>Rayleigh Training</h4>
 
           <TrainingSpotList>
-            <RayleighSlot />
-            <RayleighSlot free />
-            <RayleighSlot locked />
+            {[...Array(RayleighUnlockPrices.length)].map((_, index) => {
+              const selected = selectedSlot !== null && selectedSlot.type == "rayleigh" && selectedSlot.index == index
+              if (index > Rayleigh.maxSlots - 1) {
+                const price = RayleighUnlockPrices[index]
+                return <RayleighSlot locked price={price} onClick={() => clickUnlock("rayleigh", price)} />
+              } else if (Rayleigh.fleetUnitIds[index] === null || Rayleigh.fleetUnitIds[index] === undefined) {
+                return (
+                  <RayleighSlot
+                    selected={selected}
+                    free
+                    onClick={() => {
+                      clickSelect("rayleigh", index)
+                    }}
+                  />
+                )
+              } else {
+                return (
+                  <RayleighSlot
+                    selected={selected}
+                    onClick={() => {
+                      clickSelect("rayleigh", index)
+                    }}
+                    unit={state.fleet.find((x) => x.id == Rayleigh.fleetUnitIds[index])}
+                  />
+                )
+              }
+            })}
           </TrainingSpotList>
           <SmallModalSubtitle>
             Once a fleet member is level 100, Rayleigh can teach him Haki. He will be back at lvl 1 but will earn 10% base attack.{" "}
           </SmallModalSubtitle>
         </Column>
       </Row>
-      <SelectUnit />
+      <SelectUnit selected={selectedSlot} />
     </ExtraModalStyles>
   )
 }

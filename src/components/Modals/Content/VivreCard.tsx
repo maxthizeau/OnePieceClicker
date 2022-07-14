@@ -61,12 +61,12 @@ const VivreModalContent: FC = () => {
       key: "HPLvl1",
       // sortMode: "number",
       sort: (a, b) => {
-        const aHP = getMaximumHP({ id: 0, unit: a, level: 100, xp: 0, hp: 0 })
-        const bHP = getMaximumHP({ id: 0, unit: b, level: 100, xp: 0, hp: 0 })
+        const aHP = getMaximumHP(a, 100)
+        const bHP = getMaximumHP(b, 100)
         return aHP - bHP
       },
       render: (record, _) => {
-        return getMaximumHP({ id: 0, unit: record, level: 100, xp: 0, hp: 0 })
+        return getMaximumHP(record, 100)
       },
     },
     {
@@ -75,12 +75,12 @@ const VivreModalContent: FC = () => {
       key: "ATK",
 
       sort: (a, b) => {
-        const aATK = getUnitAttackPower({ id: 0, unit: a, level: 1, xp: 0, hp: 0 })
-        const bATK = getUnitAttackPower({ id: 0, unit: b, level: 1, xp: 0, hp: 0 })
+        const aATK = getUnitAttackPower(a, 1)
+        const bATK = getUnitAttackPower(b, 1)
         return aATK - bATK
       },
       render: (record, _) => {
-        return getUnitAttackPower({ id: 0, unit: record, level: 1, xp: 0, hp: 0 })
+        return getUnitAttackPower(record, 1)
       },
     },
     {

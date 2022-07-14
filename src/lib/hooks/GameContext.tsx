@@ -53,6 +53,7 @@ export enum ActionEnum {
 export interface ITrainingPayload {
   type: "xp" | "rayleigh"
   fleetUnitId?: number
+  index?: number
 }
 
 export interface IItemPayload {
@@ -66,6 +67,8 @@ export interface IFleetUnit {
   level: number
   xp: number
   hp: number
+  trainingCount: number
+  trainingXP: number
 }
 
 export interface ICrewUnit {
@@ -80,11 +83,11 @@ export interface ICardUnit extends TUnit {
 export interface ITraining {
   XPBoost: {
     maxSlots: number
-    fleetUnitIds: number[]
+    fleetUnitIds: (number | null)[]
   }
   Rayleigh: {
     maxSlots: number
-    fleetUnitIds: number[]
+    fleetUnitIds: (number | null)[]
   }
 }
 
@@ -271,9 +274,11 @@ function gameReducer(state: State, action: Action): State {
         const finalFleetMember: IFleetUnit = {
           id: state.fleet.length,
           unit: newFleetMember,
-          hp: getMaximumHP({ id: state.fleet.length, unit: newFleetMember, hp: 0, xp: 0, level: 1 }),
+          hp: getMaximumHP(newFleetMember, 1),
           xp: 0,
           level: 1,
+          trainingCount: 0,
+          trainingXP: 0,
         }
         const newCrew = state.crew.length < maximumCrewMember ? [...state.crew, newCrewMember] : state.crew
 
@@ -348,10 +353,10 @@ function gameReducer(state: State, action: Action): State {
       const newFleet = JSON.parse(JSON.stringify(state.fleet))
 
       // If XP Full, next lvl
-      if (state.fleet[fleetMemberIndex].xp + gainXP >= getMaximumXP(state.fleet[fleetMemberIndex])) {
+      if (state.fleet[fleetMemberIndex].xp + gainXP >= getMaximumXP(state.fleet[fleetMemberIndex].level)) {
         newFleet[fleetMemberIndex].level = state.fleet[fleetMemberIndex].level + 1 <= 100 ? state.fleet[fleetMemberIndex].level + 1 : 100
         // Heal to full hp
-        newFleet[fleetMemberIndex].hp = getMaximumHP(newFleet[fleetMemberIndex])
+        newFleet[fleetMemberIndex].hp = getMaximumHP(newFleet[fleetMemberIndex].unit, newFleet[fleetMemberIndex].level)
         // Could save the delta, but prefer to reset xp to 0
         newFleet[fleetMemberIndex].xp = 0
       } else {
@@ -373,7 +378,7 @@ function gameReducer(state: State, action: Action): State {
 
       const newFleet = JSON.parse(JSON.stringify(state.fleet))
 
-      const maxHP = getMaximumHP(state.fleet[fleetMemberIndex])
+      const maxHP = getMaximumHP(state.fleet[fleetMemberIndex].unit, state.fleet[fleetMemberIndex].level)
 
       // If XP Full, next lvl
       if (state.fleet[fleetMemberIndex].hp + changeHP >= maxHP) {
@@ -739,7 +744,11 @@ function gameReducer(state: State, action: Action): State {
         // If not already at maximum slots number
         if (state.training.XPBoost.maxSlots < XPBoostUnlockPrices.length) {
           // If player has enought berries to pay the upgrade
-          if (XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1] && state.berries >= XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1]) {
+
+          if (
+            XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1] !== undefined &&
+            state.berries >= XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1]
+          ) {
             return {
               ...state,
               berries: state.berries - XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1],
@@ -754,7 +763,10 @@ function gameReducer(state: State, action: Action): State {
         // If not already at maximum slots number
         if (state.training.Rayleigh.maxSlots < RayleighUnlockPrices.length) {
           // If player has enought berries to pay the upgrade
-          if (RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1] && state.berries >= RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1]) {
+          if (
+            RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1] !== undefined &&
+            state.berries >= RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1]
+          ) {
             return {
               ...state,
               berries: state.berries - RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1],
@@ -769,36 +781,88 @@ function gameReducer(state: State, action: Action): State {
     case ActionEnum.Training_AddUnit: {
       if (action.payload?.training === undefined) throw new Error(`Specify arg for : ${action.type}`)
 
-      const { type, fleetUnitId } = action.payload.training
+      const { type, fleetUnitId, index } = action.payload.training
 
       // If undefined fleetUnitId, do nothing
-      if (!fleetUnitId) {
+      if (fleetUnitId === undefined || index === undefined) {
         return state
       }
 
       // If xp boost
       if (type == "xp") {
+        const unitAlreadyInTrainingSlot = state.training.XPBoost.fleetUnitIds.find((x) => x == fleetUnitId)
+        // If index specified is greater than the maximum spot number || If unit is already in another training slot
+        if (index >= XPBoostUnlockPrices.length || unitAlreadyInTrainingSlot) {
+          return state
+        }
+
         const { maxSlots, fleetUnitIds } = state.training.XPBoost
+        console.log(maxSlots, fleetUnitIds.length, maxSlots, XPBoostUnlockPrices.length)
         // if there is a free slot
-        if (fleetUnitIds.length < maxSlots && maxSlots <= XPBoostUnlockPrices.length) {
+        if (fleetUnitIds.length <= maxSlots && maxSlots <= XPBoostUnlockPrices.length) {
+          const newFleetIds = hardCopy(fleetUnitIds)
+          newFleetIds[index] = fleetUnitId
           return {
             ...state,
-            training: { ...state.training, XPBoost: { ...state.training.XPBoost, fleetUnitIds: [...state.training.XPBoost.fleetUnitIds, fleetUnitId] } },
+            training: { ...state.training, XPBoost: { ...state.training.XPBoost, fleetUnitIds: newFleetIds } },
           }
         }
       }
 
       // If Rayleigh
       if (type == "rayleigh") {
+        const unitAlreadyInTrainingSlot = state.training.Rayleigh.fleetUnitIds.find((x) => x == fleetUnitId)
+        // If index specified is greater than the maximum spot number || If unit is already in another training slot
+        if (index >= RayleighUnlockPrices.length || unitAlreadyInTrainingSlot) {
+          return state
+        }
+
+        const fleetUnitFound = state.fleet.find((x) => x.id == fleetUnitId)
+        if (!fleetUnitFound || fleetUnitFound.level < 100) {
+          return state
+        }
+
         const { maxSlots, fleetUnitIds } = state.training.Rayleigh
         // if there is a free slot
-        if (fleetUnitIds.length < maxSlots && maxSlots <= RayleighUnlockPrices.length) {
+        if (fleetUnitIds.length <= maxSlots && maxSlots <= RayleighUnlockPrices.length) {
+          const newFleetIds = hardCopy(fleetUnitIds)
+          newFleetIds[index] = fleetUnitId
           return {
             ...state,
-            training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, fleetUnitIds: [...state.training.Rayleigh.fleetUnitIds, fleetUnitId] } },
+            training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, fleetUnitIds: newFleetIds } },
           }
         }
       }
+
+      // Just in case, return the actual state without update
+      return state
+    }
+    case ActionEnum.Training_RemoveUnit: {
+      if (action.payload?.training === undefined) throw new Error(`Specify arg for : ${action.type}`)
+
+      const { type, index } = action.payload.training
+
+      // If undefined index, do nothing
+      if (index === undefined) {
+        return state
+      }
+
+      // If xp boost
+      if (type == "xp") {
+        const { maxSlots, fleetUnitIds } = state.training.XPBoost
+        // if index is not valid, do nothing
+        if (index > fleetUnitIds.length || index > maxSlots - 1) {
+          return state
+        }
+        const fleetIdCopy = hardCopy(fleetUnitIds)
+        if (fleetIdCopy[index] !== null && fleetIdCopy[index] !== undefined) {
+          fleetIdCopy[index] = null
+          return { ...state, training: { ...state.training, XPBoost: { ...state.training.XPBoost, fleetUnitIds: fleetIdCopy } } }
+        }
+      }
+
+      // If Rayleigh
+      // Not possible to remove unit from rayleigh
 
       // Just in case, return the actual state without update
       return state
@@ -839,7 +903,9 @@ function gameReducer(state: State, action: Action): State {
                   unit: newCard,
                   level: 1,
                   xp: 0,
-                  hp: getMaximumHP({ id: state.fleet.length, unit: newCard, hp: 0, xp: 0, level: 1 }),
+                  hp: getMaximumHP(newCard, 1),
+                  trainingCount: 0,
+                  trainingXP: 0,
                 })
                 // Add to crew if possible
                 if (state.crew.length + cardAddedCount < maximumCrewMember) {

@@ -102,3 +102,5 @@ export type TGoal = {
 export interface ICurrentGoal extends TGoal {
   progressValue: number
 }
+
+export type TTypeTraining = "xp" | "rayleigh"

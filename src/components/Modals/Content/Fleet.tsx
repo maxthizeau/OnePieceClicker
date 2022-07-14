@@ -65,9 +65,9 @@ const FleetModalContent: FC = () => {
       label: "Max. HP",
       dataKey: "hp",
       key: "hp",
-      sort: (a, b) => getMaximumHP(a) - getMaximumHP(b),
+      sort: (a, b) => getMaximumHP(a.unit, a.level) - getMaximumHP(b.unit, b.level),
       render: (record, _) => {
-        return getMaximumHP(record)
+        return getMaximumHP(record.unit, record.level)
       },
     },
     {
@@ -75,13 +75,13 @@ const FleetModalContent: FC = () => {
       dataKey: "atk",
       key: "atk",
       render: (record, _) => {
-        const atk = showLvl1 ? getUnitAttackPower({ ...record, level: 1 }) : getUnitAttackPower(record)
+        const atk = showLvl1 ? getUnitAttackPower(record.unit, 1) : getUnitAttackPower(record.unit, record.level)
         return atk
       },
 
       sort: (a, b) => {
-        const atkA = showLvl1 ? getUnitAttackPower({ ...a, level: 1 }) : getUnitAttackPower(a)
-        const atkB = showLvl1 ? getUnitAttackPower({ ...b, level: 1 }) : getUnitAttackPower(b)
+        const atkA = showLvl1 ? getUnitAttackPower(a.unit, 1) : getUnitAttackPower(a.unit, a.level)
+        const atkB = showLvl1 ? getUnitAttackPower(b.unit, 1) : getUnitAttackPower(b.unit, b.level)
         return atkA - atkB
       },
     },

@@ -59,18 +59,18 @@ const CrewHover: FC<ICrewHoverProps> = ({ fleetUnit, crewUnit, small, hideXP, hi
         <UnitName>Level {fleetUnit.level}</UnitName>
 
         <SpaceBetween disable={small}>
-          <span>ATK : {nFormatter(getUnitAttackPower(fleetUnit), 2)} </span>{" "}
-          <span>Base ATK : {nFormatter(getUnitAttackPower({ ...fleetUnit, level: 1 }), 2)}</span>
+          <span>ATK : {nFormatter(getUnitAttackPower(fleetUnit.unit, fleetUnit.level), 2)} </span>{" "}
+          <span>Base ATK : {nFormatter(getUnitAttackPower(fleetUnit.unit, 1), 2)}</span>
         </SpaceBetween>
         <hr />
         <SpaceBetween disable={small}>
-          <span>HP : {nFormatter(fleetUnit.hp, 2)} </span> <span>Max HP : {nFormatter(getMaximumHP(fleetUnit), 2)} </span>
+          <span>HP : {nFormatter(fleetUnit.hp, 2)} </span> <span>Max HP : {nFormatter(getMaximumHP(fleetUnit.unit, fleetUnit.level), 2)} </span>
         </SpaceBetween>
         {!hideXP && (
           <>
             <hr />
             <SpaceBetween disable={small}>
-              <span>XP : {nFormatter(fleetUnit.xp, 2)} </span> <span>Max XP : {nFormatter(getMaximumXP(fleetUnit), 2)} </span>
+              <span>XP : {nFormatter(fleetUnit.xp, 2)} </span> <span>Max XP : {nFormatter(getMaximumXP(fleetUnit.level), 2)} </span>
             </SpaceBetween>
           </>
         )}

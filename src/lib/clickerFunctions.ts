@@ -106,8 +106,8 @@ export function getBerryRewardFromUnit(unit: TUnit) {
   return Math.round((ATKLvlMax + HPLvlMax) * (maxLvl / 100) * (zone + 1) * 100 * starsMultiplier)
 }
 
-export function getUnitAttackPower(fleetUnit: IFleetUnit) {
-  const { ATKLvlMax, stars, maxLvl, ATKLvl1 } = fleetUnit.unit
+export function getUnitAttackPower(unit: TUnit, level: number) {
+  const { ATKLvlMax, stars, maxLvl, ATKLvl1 } = unit
 
   // const atkPower = Math.round(ATKLvlMax + ((ATKLvlMax * stars) / (100 - maxLvl + 1)) * fleetUnit.level)
   // const steps = Math.round((ATKLvlMax) / (100 - maxLvl + 1))
@@ -115,20 +115,20 @@ export function getUnitAttackPower(fleetUnit: IFleetUnit) {
   const steps = Math.round((ATKLvlMax * (maxLvl / 100)) / 10) + 1
   // console.log(ATKLvlMax, ATKLvl1, maxLvl)
   // (313/30)/100
-  const atkPower = Math.round(steps * fleetUnit.level) + fleetUnit.level
+  const atkPower = Math.round(steps * level) + level
   return atkPower
 }
 
-export function getMaximumXP(fleetUnit: IFleetUnit): number {
+export function getMaximumXP(level: number): number {
   const baseXP = 300
-  const divide = fleetUnit.level / 120
-  return fleetUnit.level * baseXP * divide
+  const divide = level / 120
+  return level * baseXP * divide
 }
-export function getMaximumHP(fleetUnit: IFleetUnit): number {
-  const { HPLvlMax, maxLvl } = fleetUnit.unit
+export function getMaximumHP(unit: TUnit, level: number): number {
+  const { HPLvlMax, maxLvl } = unit
   // const steps = Math.round(HPLvlMax / (100 - maxLvl + 1)) + 1
   const steps = Math.round((HPLvlMax * (maxLvl / 100)) / 10) + 1
-  return fleetUnit.level * steps + 100 - fleetUnit.level
+  return level * steps + 100 - level
 }
 
 export function getXPGainFromUnit(currentUnit: TCurrentUnit): number {
@@ -156,6 +156,13 @@ export function toLocaleString2Digit(arg: number): string {
     minimumIntegerDigits: 2,
     useGrouping: false,
   })
+}
+
+export function getMaximumTrainingXP(unit: TUnit): number {
+  const { RCVLvlMax } = unit
+  const maximumTrainingXP = (Math.abs(RCVLvlMax) + 500) * 100
+
+  return maximumTrainingXP
 }
 
 export function timestampToString(timestamp: number): string {
