@@ -187,7 +187,7 @@ const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey,
 
   return (
     <CurrencyStyled
-      className={stateItem?.end !== undefined && stateItem.end >= currentDateTime ? "animate" : ""}
+      className={canUseIt && stateItem?.end !== undefined && stateItem.end >= currentDateTime ? "animate" : ""}
       onClick={() => {
         canUseIt && itemKey && spendItemFunc !== undefined && spendItemFunc()
       }}
@@ -222,7 +222,7 @@ const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey,
       {/* <GainTextStyled showGain={showGain} negative={value < 0}>
         {value < 0 ? `- ${intWithSpaces(value * -1)}` : `+ ${intWithSpaces(value)}`}
       </GainTextStyled> */}
-      {stateItem?.end !== undefined && stateItem.end >= currentDateTime && <Timer>{timestampToString(timer)}</Timer>}
+      {canUseIt && stateItem?.end !== undefined && stateItem.end >= currentDateTime && <Timer>{timestampToString(timer)}</Timer>}
     </CurrencyStyled>
   )
 }

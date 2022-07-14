@@ -7,7 +7,7 @@ import useInterval from "./useInterval"
 const useSave = () => {
   const gameState = useGameState()
 
-  useInterval(() => save(), 10000)
+  // useInterval(() => save(), 10000)
 
   const save = () => {
     console.log("AUTO-SAVE")
@@ -16,13 +16,26 @@ const useSave = () => {
     const encrypted = CryptoJS.AES.encrypt(saveJson, "Secret Passphrase")
 
     sessionStorage.setItem("opsave", encrypted.toString())
+    return encrypted.toString()
   }
 
   const reset = () => {
     sessionStorage.removeItem("opsave")
   }
 
-  return [save, reset] as const
+  const downloadSave = () => {
+    const savetxt = save()
+    const element = document.createElement("a")
+    const file = new Blob([savetxt], {
+      type: "text/plain",
+    })
+    element.href = URL.createObjectURL(file)
+    element.download = "myFile.txt"
+    document.body.appendChild(element)
+    element.click()
+  }
+
+  return [save, reset, downloadSave] as const
 }
 
 export default useSave

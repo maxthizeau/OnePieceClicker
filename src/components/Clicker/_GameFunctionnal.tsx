@@ -25,7 +25,11 @@ import useCards from "../../lib/hooks/useCards"
 import usePower from "../../lib/hooks/usePower"
 import useFleet from "../../lib/hooks/useFleet"
 import useItems from "../../lib/hooks/useItems"
-import useLogs, { ELogType } from "../../lib/hooks/useLogs"
+import { useLogs, ELogType } from "../../lib/hooks/useLogs"
+import UnitNotification from "../Global/notifications/UnitNotification"
+import { zones } from "../../lib/data/zones"
+import { ships } from "../../lib/data/ships"
+import FirstClearMessage from "./Popups/FirstClearMessage"
 const data: TUnit[] = require("../../lib/data/units.json")
 
 interface IGameProps {
@@ -48,14 +52,15 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const [dungeon, setDungeon] = useState<IDungeonState | null>(null)
   const [currentUnit, setCurrentUnit] = useState<TCurrentUnit>()
   const [enableHit, setEnableHit] = useState(true)
-  const [instance, changeInstance] = useInstance()
+  const { instance, changeInstance } = useInstance()
   const [crewPower, clickPower] = usePower()
   // const [crewPower, clickPower] = [10000000000, 100000000]
   const [_, lootCard] = useCards()
   const { getCaptainBoost, rngCrewMemberGainXP, crewLooseHP } = useFleet().crewFunctions
-  const { items, useItem } = useItems()
+  const { enterDungeon } = useItems()
   const { addLog } = useLogs()
   const gameState = useGameState()
+
   function setHP(newHP: number) {
     if (!currentUnit) return
     setCurrentUnit({ ...currentUnit, hp: newHP })
@@ -166,32 +171,58 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     }
   }
   function resetDungeon(farmMode?: boolean) {
-    console.log("PROPPPROS", gameState.state.maxZoneId, props.zoneId)
     if (!dungeon) return null
 
-    const newDungeonState: IDungeonState = {
-      ...dungeon,
-      state: "inprogress",
-      dungeonUnits: getDungeonUnits(units, props.zoneId),
-      currentUnitIndex: 0,
-      farmMode: farmMode !== undefined ? farmMode : dungeon.farmMode,
-      alreadyClearedOnce: gameState.state.maxZoneId > props.zoneId,
+    const canEnter = enterDungeon(props.zoneId)
+    if (canEnter) {
+      const newDungeonState: IDungeonState = {
+        ...dungeon,
+        state: "inprogress",
+        dungeonUnits: getDungeonUnits(units, props.zoneId),
+        currentUnitIndex: 0,
+        farmMode: farmMode !== undefined ? farmMode : dungeon.farmMode,
+        alreadyClearedOnce: gameState.state.maxZoneId > props.zoneId,
+      }
+      startDungeonTimer()
+      setCurrentUnit({ unit: newDungeonState.dungeonUnits[0], hp: newDungeonState.dungeonUnits[0].clickerMaxHP })
+      setDungeon(newDungeonState)
     }
-
-    startDungeonTimer()
-
-    setCurrentUnit({ unit: newDungeonState.dungeonUnits[0], hp: newDungeonState.dungeonUnits[0].clickerMaxHP })
-    setDungeon(newDungeonState)
   }
 
   function dungeonVictory() {
     if (dungeon && !dungeon.alreadyClearedOnce) {
-      // addLog({
-      //   logTypes: [ELogType.VivreCard, ELogType.Clicker],
-      //   notification: true,
-      //   type: "success",
-      //   content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
-      // })
+      const zone = zones[props.zoneId]
+      for (let i = 0; i < zone.freeMembers.length; i++) {
+        const freeMemberId = zone.freeMembers[i]
+        const freeMemberFull = units.find((x) => x.id == freeMemberId)
+        if (!freeMemberFull) {
+          continue
+        }
+
+        addLog({
+          id: `newVivreCard-${freeMemberId}`,
+          logTypes: [ELogType.VivreCard, ELogType.Clicker],
+          notification: true,
+          type: "success",
+          content: <UnitNotification label={"[Fleet] New member !"} unit={freeMemberFull} />,
+        })
+      }
+      for (let i = 0; i < zone.freeBoat.length; i++) {
+        const freeBoatId = zone.freeBoat[i]
+        const freeBoatFull = ships.find((x) => x.id == freeBoatId)
+        if (!freeBoatFull) {
+          continue
+        }
+
+        addLog({
+          id: `newShip-${freeBoatId}`,
+          logTypes: [ELogType.VivreCard, ELogType.Clicker],
+          notification: true,
+          type: "success",
+          title: "[New ship]",
+          message: `You have a new ship : ${freeBoatFull.name}`,
+        })
+      }
     }
 
     gameState.dispatch({ type: ActionEnum.DungeonDone, payload: { zoneId: props.zoneId } })
@@ -206,9 +237,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   }
 
   function changeFarmMode(farmMode: boolean, reset = false) {
-    console.log("Change farm mode to ", farmMode)
+    // console.log("Change farm mode to ", farmMode)
     if (!dungeon) return
-    console.log("not returned ")
     if (reset) {
       resetDungeon(farmMode)
     } else {
@@ -216,7 +246,6 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     }
   }
   function endDungeonTimer() {
-    console.log("END TIMER")
     if (dungeon && dungeon.state !== "lost") {
       setDungeon({ ...dungeon, state: "lost" })
     }
@@ -282,6 +311,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
             resetDungeon={() => resetDungeon()}
           />
         )}
+        {dungeon && dungeon.state == "victory" && !dungeon.alreadyClearedOnce && <FirstClearMessage dungeon={dungeon} zoneId={props.zoneId} />}
         <Center>
           {dungeon && dungeon.state == "inprogress" && <DungeonTimer timer={intervalDungeon} />}
           <CharacterImage src={getFullImageSrc(unit.id)} onClick={onHit} />

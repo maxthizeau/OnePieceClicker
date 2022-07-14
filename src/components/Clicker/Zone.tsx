@@ -3,11 +3,10 @@ import styled, { css } from "styled-components"
 import { TZone } from "../../lib/data/zones"
 import { StyledGame } from "./ClickerStyles"
 import { EInstance } from "../../lib/enums"
-import { instanceVar } from "../../lib/cache"
 import useInstance from "../../lib/hooks/useInstance"
 import useItems from "../../lib/hooks/useItems"
-import { Store } from "react-notifications-component"
-import useLogs, { ELogType } from "../../lib/hooks/useLogs"
+import { useLogs } from "../../lib/hooks/useLogs"
+import { nFormatter } from "../../lib/utils"
 
 const Background = styled.div<{ src: string }>`
   background-image: ${(props) => `url(${props.src})`};
@@ -99,25 +98,9 @@ interface IZoneProps {
 }
 
 const Zone: FC<IZoneProps> = ({ zone }) => {
-  const [instance, changeInstance] = useInstance()
-  const { items, useItem: spendItem } = useItems()
+  const { instance, changeInstance } = useInstance()
+  const { items, spendItem, enterDungeon } = useItems()
   const { addLog } = useLogs()
-
-  const enterDungeon = (qty: number) => {
-    const logPose = items.find((x) => x.itemKey == "logPose")
-    if (!logPose || logPose.quantity < qty) {
-      addLog({
-        logTypes: [ELogType.Clicker],
-        notification: true,
-        title: "Unable to enter the dungeon",
-        message: "You need more Log Poses to enter, you can buy some in the shop.",
-        type: "warning",
-      })
-    } else {
-      spendItem("logPose", 1)
-      changeInstance(EInstance.Dungeon)
-    }
-  }
 
   return (
     <StyledGame src={`images/zones/${zone.id}.jpg`}>
@@ -126,9 +109,17 @@ const Zone: FC<IZoneProps> = ({ zone }) => {
         <img src="images/icons/visitIcon.png" />
         <ButtonTextStyled>Visit Island</ButtonTextStyled>
       </ZoneButton>
-      <ZoneButton bottom={true} right={true} onClick={() => enterDungeon(1)}>
+      <ZoneButton
+        bottom={true}
+        right={true}
+        onClick={() =>
+          enterDungeon(zone.id, () => {
+            changeInstance(EInstance.Dungeon)
+          })
+        }
+      >
         <CostIcon>
-          <CostText>1</CostText> <img src="images/icons/logPoseIcon.png" />
+          <CostText>{nFormatter(zone.dungeonCost, 0)}</CostText> <img src="images/icons/logPoseIcon.png" />
         </CostIcon>
         <img src="images/icons/rescueIcon.png" />
         <ButtonTextStyled>Save Nakamas</ButtonTextStyled>

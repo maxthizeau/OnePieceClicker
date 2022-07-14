@@ -31,20 +31,39 @@ const HealthBarStyled = styled.div`
   /* margin-top: -30px; */
 `
 
-const HitBarStyled = styled.div<{ percentHP: number }>`
+const HitBarStyled = styled.div.attrs<{ percentHP: number }>((props) => ({
+  style: {
+    width: `${props.percentHP}%`,
+    borderTopLeftRadius: `${props.percentHP == 100 ? "99px" : "0px"}`,
+    borderBottomLeftRadius: `${props.percentHP == 100 ? "99px" : "0px"}`,
+  },
+}))<{ percentHP: number }>`
+  width: 100%;
   border-top-right-radius: 99px;
   border-bottom-right-radius: 99px;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: ${(props) => props.percentHP}%;
-  border-top-left-radius: ${(props) => (props.percentHP == 100 ? "99px" : "0px")};
-  border-bottom-left-radius: ${(props) => (props.percentHP == 100 ? "99px" : "0px")};
   background-color: #a3a3a3;
   z-index: 2;
   transition: width 0.2s;
 `
+
+// const HitBarStyled = styled.div<{ percentHP: number }>`
+//   border-top-right-radius: 99px;
+//   border-bottom-right-radius: 99px;
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   width: ${(props) => props.percentHP}%;
+//   border-top-left-radius: ${(props) => (props.percentHP == 100 ? "99px" : "0px")};
+//   border-bottom-left-radius: ${(props) => (props.percentHP == 100 ? "99px" : "0px")};
+//   background-color: #a3a3a3;
+//   z-index: 2;
+//   transition: width 0.2s;
+// `
 
 interface IHealthBarProps {
   maxHP: number

@@ -1,17 +1,9 @@
 import { FC, useState } from "react"
-import { zoneIdVar } from "../../../lib/cache"
-import { zones } from "../../../lib/data/zones"
-import { EInstance } from "../../../lib/enums"
-import useInstance from "../../../lib/hooks/useInstance"
-import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
-import styled from "styled-components"
-import { TUnit } from "../../../lib/types"
-import { getThumbImageSrc, getUnitAttackPower, intWithSpaces, getMaximumHP } from "../../../lib/clickerFunctions"
+import { ActionButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
+import { getThumbImageSrc, getUnitAttackPower, getMaximumHP } from "../../../lib/clickerFunctions"
 import Table, { TColumn } from "../../Global/Table"
-import useCards from "../../../lib/hooks/useCards"
-import { ICardUnit, IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
+import { IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
 import useFleet from "../../../lib/hooks/useFleet"
-import UnitNotification from "../../Global/notifications/UnitNotification"
 
 const FleetModalContent: FC = () => {
   const gameState = useGameState()

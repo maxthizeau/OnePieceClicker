@@ -1,12 +1,14 @@
 import { FC, useEffect, useState } from "react"
 import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
-import { getMaximumHP, getThumbImageSrc, getUnitAttackPower, intWithSpaces } from "../../../lib/clickerFunctions"
+import { getMaximumHP, getPriceUnit, getThumbImageSrc, getUnitAttackPower, intWithSpaces } from "../../../lib/clickerFunctions"
 import Table, { TColumn } from "../../Global/Table"
 import useCards from "../../../lib/hooks/useCards"
 import { ICardUnit, useGameState } from "../../../lib/hooks/GameContext"
 import { Store } from "react-notifications-component"
 import UnitNotification from "../../Global/notifications/UnitNotification"
-import useLogs, { ELogType } from "../../../lib/hooks/useLogs"
+// import useLogs, { ELogType } from "../../../lib/hooks/useLogs"
+import { nFormatter } from "../../../lib/utils"
+import { BerryIcon } from "../../styled/Globals"
 
 const VivreModalContent: FC = () => {
   const [cards, _, recruitCard] = useCards()
@@ -14,7 +16,7 @@ const VivreModalContent: FC = () => {
   const [data, setData] = useState<ICardUnit[]>([])
   const [filterFleet, setFilterFleet] = useState(false)
   const [search, setSearch] = useState("")
-  const { addLog } = useLogs()
+  // const { addLog } = useLogs()
 
   const findIndexFleetFunc = (cardUnit: ICardUnit) => gameState.state.fleet.findIndex((fleetUnit) => fleetUnit.unit.id == cardUnit.id)
 
@@ -86,13 +88,16 @@ const VivreModalContent: FC = () => {
       dataKey: "price",
       key: "price",
       render: (record, _) => {
-        const { HPLvlMax, ATKLvl1, cost, stars, maxLvl } = record
-        const price = (ATKLvl1 + HPLvlMax) * maxLvl * cost * stars * 10
-        return intWithSpaces(price) + " $"
+        const price = getPriceUnit(record)
+        return (
+          <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+            <BerryIcon /> {nFormatter(price, 1)}
+          </div>
+        )
       },
       sort: (a, b) => {
-        const priceA = (a.ATKLvl1 + a.HPLvlMax) * a.maxLvl * a.cost * a.stars * 10
-        const priceB = (b.ATKLvl1 + b.HPLvlMax) * b.maxLvl * b.cost * b.stars * 10
+        const priceA = getPriceUnit(a)
+        const priceB = getPriceUnit(b)
         return priceA - priceB
       },
     },
@@ -114,13 +119,13 @@ const VivreModalContent: FC = () => {
                     title: res.title,
                     message: res.message,
                   }
-
-              addLog({
-                ...notifProps,
-                logTypes: [ELogType.VivreCard],
-                notification: true,
-                type: res.success == true ? "success" : "warning", // 'default', 'success', 'info', 'warning'
-              })
+              // LogToAdd
+              // addLog({
+              //   ...notifProps,
+              //   logTypes: [ELogType.VivreCard],
+              //   notification: true,
+              //   type: res.success == true ? "success" : "warning", // 'default', 'success', 'info', 'warning'
+              // })
             }}
           >
             Recruit

@@ -1,15 +1,12 @@
-import { FC, useCallback, useState, useEffect, Fragment } from "react"
+import { FC } from "react"
 import styled from "styled-components"
 import { zoneIdVar } from "../../../lib/cache"
 import { zones } from "../../../lib/data/zones"
 import { EInstance } from "../../../lib/enums"
 import useInstance from "../../../lib/hooks/useInstance"
-import { IModalProps } from "../IModalProps"
-import { CloseModalIcon, ModalButtonStyled, ModalContainer, ModalStyled } from "../ModalStyles"
-import { getThumbImageSrc } from "../../../lib/clickerFunctions"
+import { ModalButtonStyled } from "../ModalStyles"
 import useCards from "../../../lib/hooks/useCards"
 import useUnitData from "../../../lib/hooks/useUnitData"
-import PirateList from "./PirateDex/PirateList"
 import { useReactiveVar } from "@apollo/client"
 import { useGameState } from "../../../lib/hooks/GameContext"
 
@@ -22,7 +19,7 @@ const ZonesListWrapper = styled.div`
 
 const MapModalContent: FC = () => {
   const gameState = useGameState().state
-  const [instance, changeInstance] = useInstance()
+  const { instance, changeInstance } = useInstance()
   const [cards] = useCards()
   const [data, dataByRarity] = useUnitData()
   const zoneId = useReactiveVar(zoneIdVar)

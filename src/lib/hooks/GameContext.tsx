@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react"
+import { createContext, useContext, useMemo, useReducer } from "react"
 import { getMaximumHP, getMaximumXP, getShipEffects, idNumberToString } from "../clickerFunctions"
 import { defaultItemsList, TItem } from "../data/items"
 import { EInstance } from "../enums"
@@ -11,6 +11,10 @@ import { ships } from "../data/ships"
 import { defaultUpgrades, TUpgrade } from "../data/upgrades"
 import { goalsList } from "../data/goals"
 import { zones } from "../data/zones"
+import save from "../data/save"
+import { ELogType, useLogs } from "./useLogs"
+import UnitNotification from "../../components/Global/notifications/UnitNotification"
+
 const allUnits: TUnit[] = require("../../lib/data/units.json")
 
 const maximumCrewMember = 6
@@ -128,20 +132,31 @@ const defaultState: State = {
 }
 
 function getDefaultState(): State {
-  if (typeof window !== "undefined") {
-    if (sessionStorage) {
-      if (sessionStorage.getItem("opsave")) {
-        try {
-          const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
-          const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
-          const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
-          const saveJson = JSON.parse(saveJsonDecrypted)
-          return saveJson
-        } catch {
-          return defaultState
-        }
-      }
-    }
+  // if (typeof window !== "undefined") {
+  //   if (sessionStorage) {
+  //     if (sessionStorage.getItem("opsave")) {
+  //       try {
+  //         const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
+  //         const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
+  //         const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
+  //         const saveJson = JSON.parse(saveJsonDecrypted)
+  //         return saveJson
+  //       } catch {
+  //         return defaultState
+  //       }
+  //     }
+  //   }
+  // }
+
+  try {
+    // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
+    const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
+    const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
+    const saveJson: State = JSON.parse(saveJsonDecrypted)
+    saveJson.maxZoneId = 25
+    return saveJson
+  } catch {
+    return defaultState
   }
 
   return defaultState
@@ -195,6 +210,7 @@ function gameReducer(state: State, action: Action): State {
         currentGoal = hardCopy(state.currentGoal)
         currentGoal.progressValue = state.currentGoal.progressValue + 1
       }
+
       return { ...state, cards: [...state.cards, { ...newCard, lootOrder: state.cards.length }], currentGoal }
     }
     case ActionEnum.RecruitCard: {
@@ -749,10 +765,11 @@ function gameReducer(state: State, action: Action): State {
 }
 
 function GameProvider({ children }: GameProviderProps) {
-  const [state, dispatch] = useReducer(gameReducer, defaultState)
+  const [state, dispatch] = useReducer(gameReducer, baseState)
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
   const value = { state, dispatch }
+
   return <GameStateContext.Provider value={value}>{children}</GameStateContext.Provider>
 }
 

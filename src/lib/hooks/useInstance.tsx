@@ -1,8 +1,11 @@
 import { useReactiveVar } from "@apollo/client"
 import { FC, useEffect, useState } from "react"
 import { instanceVar } from "../cache"
+import { TZone } from "../data/zones"
 import { EInstance } from "../enums"
 import { ActionEnum, useGameState } from "./GameContext"
+import useItems from "./useItems"
+import { ELogType, useLogs } from "./useLogs"
 
 const useInstance = () => {
   const gameState = useGameState()
@@ -29,7 +32,7 @@ const useInstance = () => {
     // setInstance(newInstance)
   }
 
-  return [instance, changeInstance] as const
+  return { instance, changeInstance } as const
 }
 
 export default useInstance

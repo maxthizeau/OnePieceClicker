@@ -1,15 +1,9 @@
-import { FC, useCallback, useState, useEffect } from "react"
+import { FC, useState } from "react"
 import styled from "styled-components"
-import { zoneIdVar } from "../../../lib/cache"
-import { zones } from "../../../lib/data/zones"
-import { EInstance } from "../../../lib/enums"
-import useInstance from "../../../lib/hooks/useInstance"
-import { IModalProps } from "../IModalProps"
-import { CloseModalIcon, ModalButtonStyled, ModalContainer, ModalStyled, ModalSubtitle } from "../ModalStyles"
+import { ModalSubtitle } from "../ModalStyles"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
-import useUpgrades from "../../../lib/hooks/useUpgrades"
-import useItems, { TItemKey } from "../../../lib/hooks/useItems"
-import { defaultItemsList, TItem } from "../../../lib/data/items"
+import useItems from "../../../lib/hooks/useItems"
+import { defaultItemsList } from "../../../lib/data/items"
 
 const ShopWrapper = styled.div`
   display: flex;

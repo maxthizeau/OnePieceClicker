@@ -39,7 +39,7 @@ type TItemToShowAsCurrency = {
 
 const CurrenciesList: FC = () => {
   const gameState = useGameState()
-  const { items, useItem: spendItem } = useItems()
+  const { items, spendItem } = useItems()
   const [qtySelected, setQtySelected] = useState(0)
   const itemsToShow: TItemToShowAsCurrency[] = [
     {

@@ -1,33 +1,26 @@
-import Sider from "antd/lib/layout/Sider"
 import type { NextPage } from "next"
 import Head from "next/head"
-import styles from "../styles/Home.module.css"
 
 import Clicker from "../components/Clicker/_GameFunctionnal"
-import { Box, Column, Container, Header, Row, Logo } from "../components/styled/Globals"
+import { Column, Container, Header, Row, Logo } from "../components/styled/Globals"
 import CurrenciesList from "../components/Currencies/CurrenciesList"
-import Map from "../components/Map/MapFunctionnal"
 import StatsList from "../components/Stats/StatsList"
 import Goals from "../components/Goals/Goals"
 import Crew from "../components/Crew/Crew"
 import Boat from "../components/Boat/Boat"
 
 import ClientOnly from "../components/ClientOnly"
-import { instanceVar, zoneIdVar } from "../lib/cache"
+import { zoneIdVar } from "../lib/cache"
 import { useApolloClient, useReactiveVar } from "@apollo/client"
 import Zone from "../components/Clicker/Zone"
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
 import { zones } from "../lib/data/zones"
 import { EInstance } from "../lib/enums"
 import useInstance from "../lib/hooks/useInstance"
 import { ActionEnum, useGameState } from "../lib/hooks/GameContext"
 import useCards from "../lib/hooks/useCards"
-// import { EInstance, TInstance } from "../lib/types"
-import { ReactNotifications } from "react-notifications-component"
-import ItemList from "../components/Currencies/ItemList"
 import useSave from "../lib/hooks/useSave"
 import styled from "styled-components"
-import { possibleGems } from "../lib/data/treasureGame"
 
 const AdminButton = styled.a`
   display: block;
@@ -45,11 +38,11 @@ const AdminButton = styled.a`
 const Home: NextPage = () => {
   const client = useApolloClient()
   const zoneId = useReactiveVar(zoneIdVar)
-  const [instance, changeInstance] = useInstance()
+  const { instance, changeInstance } = useInstance()
   const [cards, lootCard] = useCards()
   const [paused, setPaused] = useState(false)
   const gameState = useGameState()
-  const [save, reset] = useSave()
+  const [save, reset, downloadSave] = useSave()
 
   // const [, updateState] = useState({})
   // const forceUpdate = useCallback(() => updateState({}), [])
@@ -113,6 +106,7 @@ const Home: NextPage = () => {
               >
                 {paused ? "Resume" : "Pause"}
               </AdminButton>
+              <AdminButton onClick={() => downloadSave()}>Download Save</AdminButton>
               {/* <>
               <AdminButton
                 onClick={() => {

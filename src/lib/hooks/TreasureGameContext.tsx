@@ -8,7 +8,7 @@ import { EShipEffect } from "../types"
 import { hardCopy } from "../utils"
 import { ActionEnum, useGameState } from "./GameContext"
 import useInterval from "./useInterval"
-import useLogs, { ELogType } from "./useLogs"
+// import useLogs, { ELogType } from "./useLogs"
 import useShip from "./useShip"
 
 type TNotification = {
@@ -132,7 +132,7 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
 const useTreasureGame = () => {
   const context = useContext(TreasureGameContext)
   const gameState = useGameState()
-  const { addLog } = useLogs()
+  // const { addLog } = useLogs()
 
   function stateUseEnergy(amount: number) {
     gameState.dispatch({ type: ActionEnum.TreasureGame_UseEnergy, payload: { treasureGameEnergyUsed: amount } })
@@ -266,12 +266,13 @@ const useTreasureGame = () => {
     if (notifId != previousNotification) {
       console.log(notifId, previousNotification)
 
-      addLog({
-        logTypes: [ELogType.Mine],
-        type: "success",
-        notification: true,
-        content: <TreasureGameNotification label={label} type={type} message={message} gem={gem} />,
-      })
+      // LogToAdd
+      // addLog({
+      //   logTypes: [ELogType.Mine],
+      //   type: "success",
+      //   notification: true,
+      //   content: <TreasureGameNotification label={label} type={type} message={message} gem={gem} />,
+      // })
       setPreviousNotification(notifId)
     }
   }

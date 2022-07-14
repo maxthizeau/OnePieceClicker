@@ -76,7 +76,7 @@ const useFleet = () => {
   const crewLooseHP = (amount: number) => {
     // const healingValue = 0
     const upgradeBoost = Math.pow(gameState.state.upgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
-    const healingValue = isItemActive("healFood") ? Math.floor(200 * upgradeBoost) : 0
+    const healingValue = isItemActive("healFood") ? Math.floor(500 * upgradeBoost) : 0
 
     const changeHP = healingValue - amount
     for (let i = 0; i < crew.length; i++) {

@@ -5,7 +5,7 @@ import CardLootNotification from "../../components/Global/notifications/UnitNoti
 import { getPriceUnit, getMaximumHP } from "../clickerFunctions"
 import useFleet from "./useFleet"
 import useShip from "./useShip"
-import useLogs, { ELogType } from "./useLogs"
+// import useLogs, { ELogType } from "./useLogs"
 
 type TResponse = {
   success: boolean
@@ -36,7 +36,7 @@ const useCards = () => {
   const gameState = useGameState()
   const { getCaptainBoost } = useFleet().crewFunctions
   const { getShipBoost } = useShip()
-  const { addLog } = useLogs()
+  // const { addLog } = useLogs()
 
   const cards = gameState.state.cards
 
@@ -67,12 +67,12 @@ const useCards = () => {
         },
       })
 
-      addLog({
-        logTypes: [ELogType.VivreCard, ELogType.Clicker],
-        notification: true,
-        type: "success",
-        content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
-      })
+      // addLog({
+      //   logTypes: [ELogType.VivreCard, ELogType.Clicker],
+      //   notification: true,
+      //   type: "success",
+      //   content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
+      // })
       return true
     }
 
