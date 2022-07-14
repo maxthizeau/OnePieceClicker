@@ -21,7 +21,7 @@ const usePower = () => {
     for (let i = 0; i < crew.length; i++) {
       const fleetUnit = fleet.find((x) => crew[i].fleetId == x.id)
       if (!fleetUnit) break
-      const unitATK = getUnitAttackPower(fleetUnit)
+      const unitATK = getUnitAttackPower(fleetUnit.unit, fleetUnit.level, fleetUnit.trainingCount)
       if (fleetUnit.hp > 0) {
         crewPower = crewPower + unitATK
       }
@@ -45,7 +45,7 @@ const usePower = () => {
     for (let i = 0; i < crew.length; i++) {
       const fleetUnit = fleet.find((x) => crew[i].fleetId == x.id)
       if (!fleetUnit) break
-      const unitATK = getUnitAttackPower(fleetUnit)
+      const unitATK = getUnitAttackPower(fleetUnit.unit, fleetUnit.level, fleetUnit.trainingCount)
 
       clickPower = clickPower + unitATK
     }

@@ -75,13 +75,13 @@ const FleetModalContent: FC = () => {
       dataKey: "atk",
       key: "atk",
       render: (record, _) => {
-        const atk = showLvl1 ? getUnitAttackPower(record.unit, 1) : getUnitAttackPower(record.unit, record.level)
+        const atk = showLvl1 ? getUnitAttackPower(record.unit, 1) : getUnitAttackPower(record.unit, record.level, record.trainingCount)
         return atk
       },
 
       sort: (a, b) => {
-        const atkA = showLvl1 ? getUnitAttackPower(a.unit, 1) : getUnitAttackPower(a.unit, a.level)
-        const atkB = showLvl1 ? getUnitAttackPower(b.unit, 1) : getUnitAttackPower(b.unit, b.level)
+        const atkA = showLvl1 ? getUnitAttackPower(a.unit, 1) : getUnitAttackPower(a.unit, a.level, a.trainingCount)
+        const atkB = showLvl1 ? getUnitAttackPower(b.unit, 1) : getUnitAttackPower(b.unit, b.level, b.trainingCount)
         return atkA - atkB
       },
     },

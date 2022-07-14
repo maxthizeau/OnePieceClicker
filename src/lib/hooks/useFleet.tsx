@@ -16,7 +16,7 @@ type TResponse = {
 const useFleet = () => {
   const gameState = useGameState()
 
-  const { cards, fleet, crew } = gameState.state
+  const { cards, fleet, crew, training } = gameState.state
   const { getShipBoost } = useShip()
   const { isItemActive } = useItems()
 
@@ -64,14 +64,26 @@ const useFleet = () => {
     const shipBoost = getShipBoost(EShipEffect.XP_GAIN)
     const captainBoost = getCaptainBoost(ECaptainEffect.XP)
     const itemBoost = isItemActive("cola") ? 1.2 : 1
+    const finalAmount = amount * shipBoost * captainBoost * itemBoost
+    for (let i = 0; i < training.XPBoost.fleetUnitIds.length; i++) {
+      if (training.XPBoost.fleetUnitIds[i] === null || training.XPBoost.fleetUnitIds[i] === undefined) {
+        continue
+      }
+      const fleetId = training.XPBoost.fleetUnitIds[i]
+      if (fleetId !== null) {
+        gameState.dispatch({ type: ActionEnum.GainXP, payload: { gainXP: Math.round(finalAmount / 2), crew: { fleetId: fleetId } } })
+      }
+    }
 
     // const filteredCrew = crew.filter((x) => fleet.find((fleetMember) => fleetMember.id == x.fleetId && fleetMember.hp > 0))
     const rngCrew = Math.floor(Math.random() * crew.length)
     if (!memberHas0HP(crew[rngCrew])) {
-      const finalAmount = amount * shipBoost * captainBoost * itemBoost
       gameState.dispatch({ type: ActionEnum.GainXP, payload: { gainXP: finalAmount, crew: crew[rngCrew] } })
       console.log(`Crew member : ${crew[rngCrew].fleetId} --> + ${finalAmount} XP`)
     }
+
+    // Rayleigh Training :
+    gameState.dispatch({ type: ActionEnum.GainTrainingXP, payload: { gainXP: amount / 10 } })
   }
 
   const crewLooseHP = (amount: number) => {

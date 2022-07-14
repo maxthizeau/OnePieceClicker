@@ -59,8 +59,13 @@ const CrewHover: FC<ICrewHoverProps> = ({ fleetUnit, crewUnit, small, hideXP, hi
         <UnitName>Level {fleetUnit.level}</UnitName>
 
         <SpaceBetween disable={small}>
-          <span>ATK : {nFormatter(getUnitAttackPower(fleetUnit.unit, fleetUnit.level), 2)} </span>{" "}
+          <span>ATK : {nFormatter(getUnitAttackPower(fleetUnit.unit, fleetUnit.level, fleetUnit.trainingCount), 2)} </span>{" "}
           <span>Base ATK : {nFormatter(getUnitAttackPower(fleetUnit.unit, 1), 2)}</span>
+        </SpaceBetween>
+        <hr />
+        <SpaceBetween disable={small}>
+          <span>Training: {fleetUnit.trainingCount} </span>{" "}
+          <span>Base ATK + Training : {nFormatter(getUnitAttackPower(fleetUnit.unit, 1, fleetUnit.trainingCount), 2)}</span>
         </SpaceBetween>
         <hr />
         <SpaceBetween disable={small}>

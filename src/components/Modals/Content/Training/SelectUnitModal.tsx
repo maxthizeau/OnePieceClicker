@@ -1,5 +1,5 @@
 import { truncate } from "fs"
-import { FC, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 import { getThumbImageSrc, getUnitAttackPower } from "../../../../lib/clickerFunctions"
 import { ActionEnum, IFleetUnit, useGameState } from "../../../../lib/hooks/GameContext"
@@ -96,6 +96,7 @@ interface ISelectUnitProps {
 }
 
 const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
+  console.log(selected)
   const gameState = useGameState()
   const [filterShowCrewOnly, setFilterShowCrewOnly] = useState(false)
   const [filterAtkMin, setFilterAtkMin] = useState(0)
@@ -105,7 +106,7 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
   const filteredList = useMemo(() => {
     return gameState.state.fleet.filter((x) => {
       const crewCheck = (filterShowCrewOnly && gameState.state.crew.find((y) => y.fleetId == x.id)) || !filterShowCrewOnly
-      const atkMinCheck = filterAtkMin == 0 || getUnitAttackPower(x.unit, x.level) >= filterAtkMin
+      const atkMinCheck = filterAtkMin == 0 || getUnitAttackPower(x.unit, x.level, x.trainingCount) >= filterAtkMin
       const lvlMinCheck = x.level >= filterLvlMin
       return crewCheck && atkMinCheck && lvlMinCheck
     })
@@ -115,13 +116,24 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
       const finalA: IFleetUnit = filterSortDesc ? a : b
       const finalB: IFleetUnit = filterSortDesc ? b : a
       if (filterSortBy == "baseAtk") return getUnitAttackPower(finalA.unit, 1) - getUnitAttackPower(finalB.unit, 1)
-      else if (filterSortBy == "currentAtk") return getUnitAttackPower(finalA.unit, finalA.level) - getUnitAttackPower(finalB.unit, finalB.level)
+      else if (filterSortBy == "currentAtk")
+        return getUnitAttackPower(finalA.unit, finalA.level, finalA.trainingCount) - getUnitAttackPower(finalB.unit, finalB.level, finalB.trainingCount)
       else if (filterSortBy == "level") return finalA.level - finalB.level
       else {
         return 0
       }
     })
   }, [filteredList, filterSortBy, filterSortDesc])
+
+  useEffect(() => {
+    console.log("Use effect")
+    if (selected && selected.type == "rayleigh") {
+      setFilterLvlMin(100)
+    }
+    if (selected && selected.type == "xp") {
+      setFilterLvlMin(0)
+    }
+  }, [selected])
 
   function clickAddUnit(fleetUnitId: number) {
     console.log("click")

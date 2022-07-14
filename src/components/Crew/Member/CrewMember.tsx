@@ -156,7 +156,7 @@ const CrewMember: FC<ICrewMemberProps> = ({ crewUnit }) => {
         <InformationsStyled>
           <SpaceBetween>
             <span>Lvl. {unit.level} </span>
-            <span> ATK : {getUnitAttackPower(unit.unit, unit.level)}</span>
+            <span> ATK : {getUnitAttackPower(unit.unit, unit.level, unit.trainingCount)}</span>
           </SpaceBetween>
         </InformationsStyled>
         <CrewHealthBar currentHP={unit.hp} maxHP={getMaximumHP(unit.unit, unit.level)} />

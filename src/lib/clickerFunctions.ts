@@ -106,17 +106,20 @@ export function getBerryRewardFromUnit(unit: TUnit) {
   return Math.round((ATKLvlMax + HPLvlMax) * (maxLvl / 100) * (zone + 1) * 100 * starsMultiplier)
 }
 
-export function getUnitAttackPower(unit: TUnit, level: number) {
+export function getUnitAttackPower(unit: TUnit, level: number, trainingCount: number = 0) {
   const { ATKLvlMax, stars, maxLvl, ATKLvl1 } = unit
 
   // const atkPower = Math.round(ATKLvlMax + ((ATKLvlMax * stars) / (100 - maxLvl + 1)) * fleetUnit.level)
   // const steps = Math.round((ATKLvlMax) / (100 - maxLvl + 1))
 
   const steps = Math.round((ATKLvlMax * (maxLvl / 100)) / 10) + 1
+
   // console.log(ATKLvlMax, ATKLvl1, maxLvl)
   // (313/30)/100
   const atkPower = Math.round(steps * level) + level
-  return atkPower
+  const tenPercent = atkPower / 10
+  const finalAtk = Math.round(atkPower + tenPercent * trainingCount)
+  return finalAtk
 }
 
 export function getMaximumXP(level: number): number {

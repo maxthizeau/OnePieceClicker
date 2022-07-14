@@ -21,6 +21,7 @@ import { ActionEnum, useGameState } from "../lib/hooks/GameContext"
 import useCards from "../lib/hooks/useCards"
 import useSave from "../lib/hooks/useSave"
 import styled from "styled-components"
+import { possibleGems } from "../lib/data/treasureGame"
 
 const AdminButton = styled.a`
   display: block;
@@ -129,6 +130,7 @@ const Home: NextPage = () => {
               >
                 Berries
               </AdminButton>
+            */}
               <AdminButton
                 onClick={() => {
                   for (let i = 0; i < 1000; i++) {
@@ -143,8 +145,9 @@ const Home: NextPage = () => {
               >
                 Gems
               </AdminButton>
-              </> */}
-              {/* <a
+              {/* 
+              </> 
+              <a
               
               onClick={() => {
                 console.log("Clear Cache")

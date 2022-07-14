@@ -135,6 +135,18 @@ const Divider = styled.div`
   background-color: #0000003a;
 `
 
+const BoostButton = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20px;
+  border-radius: 3px;
+  padding: 3px 0px;
+  background-color: #108d51;
+  color: white;
+`
+
 interface ISlotProps {
   free?: boolean
   locked?: boolean
@@ -143,6 +155,7 @@ interface ISlotProps {
   onClick: () => void
   unit?: IFleetUnit
   removeFunc?: () => void
+  boostFunc?: () => void
 }
 
 const XPBoostSlot = ({ free, locked, price, selected, onClick, unit, removeFunc }: ISlotProps) => {
@@ -167,7 +180,7 @@ const XPBoostSlot = ({ free, locked, price, selected, onClick, unit, removeFunc 
     </TrainingSpot>
   )
 }
-const RayleighSlot = ({ free, locked, price, selected, onClick, unit }: ISlotProps) => {
+const RayleighSlot = ({ free, locked, price, selected, onClick, unit, boostFunc }: ISlotProps) => {
   const percentXP = unit ? (1 - unit.trainingXP / getMaximumTrainingXP(unit.unit)) * 100 : 0
   return (
     <TrainingSpot selected={selected} free={free} locked={locked} onClick={onClick}>
@@ -185,7 +198,11 @@ const RayleighSlot = ({ free, locked, price, selected, onClick, unit }: ISlotPro
 
             <XPBarStyled>
               <HitBarStyled percentXP={percentXP} />
-              <XPBarText>{percentXP}%</XPBarText>
+              {boostFunc !== undefined && Math.floor(100 - percentXP) >= 100 ? (
+                <BoostButton onClick={boostFunc}>BOOST!</BoostButton>
+              ) : (
+                <XPBarText>{Math.floor(100 - percentXP)}%</XPBarText>
+              )}
             </XPBarStyled>
           </>
         )}
@@ -233,6 +250,10 @@ const TrainingModalContent: FC = () => {
 
   function removeFromSlot(type: TTypeTraining, index: number) {
     dispatch({ type: ActionEnum.Training_RemoveUnit, payload: { training: { type: type, index: index } } })
+  }
+
+  function boostFunc(index: number) {
+    dispatch({ type: ActionEnum.Training_RayleighUpgrade, payload: { training: { type: "rayleigh", index: index } } })
   }
 
   return (
@@ -295,6 +316,7 @@ const TrainingModalContent: FC = () => {
                   />
                 )
               } else {
+                console.log(state.fleet.find((x) => x.id == Rayleigh.fleetUnitIds[index]))
                 return (
                   <RayleighSlot
                     selected={selected}
@@ -302,6 +324,7 @@ const TrainingModalContent: FC = () => {
                       clickSelect("rayleigh", index)
                     }}
                     unit={state.fleet.find((x) => x.id == Rayleigh.fleetUnitIds[index])}
+                    boostFunc={() => boostFunc(index)}
                   />
                 )
               }

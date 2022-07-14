@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
-import { getMaximumHP, getMaximumXP, getShipEffects, idNumberToString } from "../clickerFunctions"
+import { getMaximumHP, getMaximumXP, getShipEffects, idNumberToString, getMaximumTrainingXP } from "../clickerFunctions"
 import { defaultItemsList, TItem } from "../data/items"
 import { EInstance } from "../enums"
 import { EGoalRewardCurrency, EGoalType, EShipEffect, ICurrentGoal, TUnit } from "../types"
@@ -28,6 +28,7 @@ export enum ActionEnum {
   RemoveFromCrew,
   SetCaptain,
   GainXP,
+  GainTrainingXP,
   ChangeHP,
   Upgrade,
   AddItem,
@@ -43,6 +44,7 @@ export enum ActionEnum {
   Training_Unlock,
   Training_AddUnit,
   Training_RemoveUnit,
+  Training_RayleighUpgrade,
   Unlock_Menu,
   KilledEnemy,
   DungeonDone,
@@ -185,16 +187,16 @@ function getDefaultState(): State {
   //   }
   // }
 
-  // try {
-  //   // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
-  //   const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
-  //   const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
-  //   const saveJson: State = JSON.parse(saveJsonDecrypted)
-  //   saveJson.maxZoneId = 25
-  //   return saveJson
-  // } catch {
-  //   return defaultState
-  // }
+  try {
+    // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
+    const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
+    const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
+    const saveJson: State = JSON.parse(saveJsonDecrypted)
+    // saveJson.maxZoneId = 25
+    return saveJson
+  } catch {
+    return defaultState
+  }
 
   return defaultState
 }
@@ -364,6 +366,28 @@ function gameReducer(state: State, action: Action): State {
       }
 
       return { ...state, fleet: newFleet }
+    }
+    case ActionEnum.GainTrainingXP: {
+      // if (!action.payload?.training) throw new Error(`Specify arg for : ${action.type}`)
+
+      const gainXP = action?.payload?.gainXP ?? 0
+      const { Rayleigh } = state.training
+
+      const fleetCopy = hardCopy(state.fleet)
+      for (let i = 0; i < Rayleigh.fleetUnitIds.length; i++) {
+        const fleetId = Rayleigh.fleetUnitIds[i]
+        if (fleetId === undefined || fleetId === null) {
+          continue
+        }
+        const fleetUnitIndex = state.fleet.findIndex((x) => x.id == fleetId)
+        if (fleetUnitIndex > -1) {
+          const maximumTrainingXP = getMaximumTrainingXP(state.fleet[fleetUnitIndex].unit)
+          let newXP = state.fleet[fleetUnitIndex].trainingXP + gainXP
+          newXP = newXP > maximumTrainingXP ? maximumTrainingXP : newXP
+          fleetCopy[fleetUnitIndex] = { ...fleetCopy[fleetUnitIndex], trainingXP: newXP }
+        }
+      }
+      return { ...state, fleet: fleetCopy }
     }
     case ActionEnum.ChangeHP: {
       if (!action.payload?.crew) throw new Error(`Specify arg for : ${action.type}`)
@@ -863,6 +887,42 @@ function gameReducer(state: State, action: Action): State {
 
       // If Rayleigh
       // Not possible to remove unit from rayleigh
+
+      // Just in case, return the actual state without update
+      return state
+    }
+    case ActionEnum.Training_RayleighUpgrade: {
+      if (action.payload?.training === undefined) throw new Error(`Specify arg for : ${action.type}`)
+
+      const { index } = action.payload.training
+      const { maxSlots, fleetUnitIds } = state.training.Rayleigh
+
+      // If undefined index, do nothing
+      if (index === undefined || fleetUnitIds[index] === undefined || fleetUnitIds[index] === null) {
+        return state
+      }
+
+      const fleetUnitIndexFound = state.fleet.findIndex((x) => x.id == fleetUnitIds[index])
+
+      if (fleetUnitIndexFound > -1) {
+        if (
+          state.fleet[fleetUnitIndexFound].trainingXP >= getMaximumTrainingXP(state.fleet[fleetUnitIndexFound].unit) &&
+          state.fleet[fleetUnitIndexFound].level >= 100
+        ) {
+          const fleetIdsCopy = hardCopy(fleetUnitIds)
+          const fleetCopy = hardCopy(state.fleet)
+          fleetCopy[fleetUnitIndexFound] = {
+            ...fleetCopy[fleetUnitIndexFound],
+            level: 1,
+            xp: 0,
+            trainingCount: fleetCopy[fleetUnitIndexFound].trainingCount + 1,
+            trainingXP: 0,
+          }
+          fleetIdsCopy[index] = null
+
+          return { ...state, fleet: fleetCopy, training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, fleetUnitIds: fleetIdsCopy } } }
+        }
+      }
 
       // Just in case, return the actual state without update
       return state
