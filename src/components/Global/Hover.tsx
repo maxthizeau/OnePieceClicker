@@ -34,8 +34,8 @@ const HoverContent = styled.div<{
 
   z-index: 1000;
 `
-const HoverWrapper = styled.div<{ delayOpen?: number }>`
-  position: relative;
+const HoverWrapper = styled.div<{ delayOpen?: number; positionStatic?: boolean }>`
+  position: ${(props) => (props.positionStatic ? "static" : "relative")};
 
   font-family: "Open Sans", "arial";
   height: fit-content;
@@ -55,9 +55,10 @@ interface IHoverProps {
   offset?: { x?: number; y?: number }
   delayOpen?: number
   children?: React.ReactNode
+  positionStatic?: boolean
 }
 
-const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, offset, delayOpen }) => {
+const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, offset, delayOpen, positionStatic }) => {
   const refWrapper = useRef<HTMLDivElement>(null)
   const refContent = useRef<HTMLDivElement>(null)
   const [dimensionWrapper, setDimensionWrapper] = useState([0, 0])
@@ -81,7 +82,7 @@ const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, 
   }, [dimensionContent, dimensionWrapper])
 
   return (
-    <HoverWrapper ref={refWrapper} delayOpen={delayOpen}>
+    <HoverWrapper ref={refWrapper} delayOpen={delayOpen} positionStatic={positionStatic}>
       <HoverContent
         ref={refContent}
         horizontal={horizontal ?? "left"}

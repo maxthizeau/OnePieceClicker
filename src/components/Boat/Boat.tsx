@@ -9,6 +9,9 @@ import Modal from "../Modals/Modal"
 import useShip from "../../lib/hooks/useShip"
 import { IShip } from "../../lib/types"
 import { getShipEffects } from "../../lib/clickerFunctions"
+import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
+import { IMenuUnlockPayload, IMenuUnlockState, menuUnlocksPrices } from "../../lib/data/menuUnlocks"
+import { ELogType, useLogs } from "../../lib/hooks/useLogs"
 // import { TInstance } from "../../lib/types"
 
 const BoatStyled = styled.div`
@@ -97,9 +100,55 @@ const ShipEffects = ({ ship }: { ship: IShip }) => {
 
 const Boat: FC<IBoatProps> = ({}) => {
   const zoneId = useReactiveVar(zoneIdVar)
+  const { state, dispatch } = useGameState()
+  const { menuUnlocks } = state
   const zone = zones[zoneId]
   const [visibleZoneModal, setVisibleZoneModal] = useState(false)
   const { currentShip } = useShip()
+  const { addLog } = useLogs()
+
+  function unlockMenu(payloadUnlock: IMenuUnlockPayload) {
+    let price = 0
+    let unlockedMenu = ""
+    if (payloadUnlock.Shop) {
+      price += menuUnlocksPrices.Shop
+      unlockedMenu = "Shop"
+    }
+    if (payloadUnlock.Upgrades) {
+      price += menuUnlocksPrices.Upgrades
+      unlockedMenu = "Upgrades"
+    }
+    if (payloadUnlock.Mine) {
+      price += menuUnlocksPrices.Mine
+      unlockedMenu = "Mine"
+    }
+    if (payloadUnlock.Training) {
+      price += menuUnlocksPrices.Training
+      unlockedMenu = "Training"
+    }
+
+    if (state.berries < price) {
+      addLog({
+        id: `unlockMenuError-${price}-${unlockedMenu}`,
+        logTypes: [ELogType.Clicker],
+        notification: true,
+        title: "Not enough berries",
+        message: `You don't have enough berries to unlock "${unlockedMenu}"`,
+        type: "warning", // 'default', 'success', 'info', 'warning'
+      })
+    } else {
+      dispatch({ type: ActionEnum.Unlock_Menu, payload: { unlockMenu: payloadUnlock } })
+      addLog({
+        id: `unlockMenu-${price}-${unlockedMenu}`,
+        logTypes: [ELogType.Clicker],
+        notification: true,
+        title: `[${unlockedMenu}] unlocked !`,
+        message: `You can now access to ${unlockedMenu}`,
+        type: "success", // 'default', 'success', 'info', 'warning'
+      })
+    }
+  }
+
   return (
     <>
       <BoatStyled>
@@ -114,14 +163,78 @@ const Boat: FC<IBoatProps> = ({}) => {
           </h3>
           <Modal type="zone" visible={visibleZoneModal} setVisible={setVisibleZoneModal} />
           <MenuWrapper>
-            <MenuButton label="Map" icon="images/icons/winIcon.png" type="map" />
-            <MenuButton label="Boat" icon="images/icons/boatIcon.png" type="boat" />
-            <MenuButton label="Cards" icon="images/icons/vivreCardIcon.png" type="cards" />
-            <MenuButton label="Fleet" icon="images/icons/fleetIcon.png" type="fleet" />
-            <MenuButton label="Shop" icon="images/icons/shopIcon.png" type="shop" />
-            <MenuButton label="Upgrades" icon="images/icons/upgradesIcon.png" type="upgrades" />
-            <MenuButton label="Mine" icon="images/treasure-game/gems/diamond.png" type="mine" />
-            <MenuButton label="Training" icon="images/icons/xpIcon.png" type="training" />
+            <MenuButton label="Map" icon="images/icons/winIcon.png" type="map" locked={null} />
+            <MenuButton label="Boat" icon="images/icons/boatIcon.png" type="boat" locked={null} />
+            <MenuButton label="Cards" icon="images/icons/vivreCardIcon.png" type="cards" locked={null} />
+            <MenuButton label="Fleet" icon="images/icons/fleetIcon.png" type="fleet" locked={null} />
+            <MenuButton
+              label="Shop"
+              icon="images/icons/shopIcon.png"
+              type="shop"
+              locked={
+                menuUnlocks.Shop
+                  ? null
+                  : {
+                      unlockFunc: () => {
+                        unlockMenu({
+                          Shop: true,
+                        })
+                      },
+                      price: menuUnlocksPrices.Shop,
+                    }
+              }
+            />
+            <MenuButton
+              label="Upgrades"
+              icon="images/icons/upgradesIcon.png"
+              type="upgrades"
+              locked={
+                menuUnlocks.Upgrades
+                  ? null
+                  : {
+                      unlockFunc: () => {
+                        unlockMenu({
+                          Upgrades: true,
+                        })
+                      },
+                      price: menuUnlocksPrices.Upgrades,
+                    }
+              }
+            />
+            <MenuButton
+              label="Mine"
+              icon="images/treasure-game/gems/diamond.png"
+              type="mine"
+              locked={
+                menuUnlocks.Mine
+                  ? null
+                  : {
+                      unlockFunc: () => {
+                        unlockMenu({
+                          Mine: true,
+                        })
+                      },
+                      price: menuUnlocksPrices.Mine,
+                    }
+              }
+            />
+            <MenuButton
+              label="Training"
+              icon="images/icons/xpIcon.png"
+              type="training"
+              locked={
+                menuUnlocks.Training
+                  ? null
+                  : {
+                      unlockFunc: () => {
+                        unlockMenu({
+                          Training: true,
+                        })
+                      },
+                      price: menuUnlocksPrices.Training,
+                    }
+              }
+            />
           </MenuWrapper>
         </MenuAndTitleWrapper>
       </BoatStyled>

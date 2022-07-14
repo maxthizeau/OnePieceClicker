@@ -115,7 +115,7 @@ export const ShowScrollBar = css`
   }
 `
 
-export const BerryIcon = styled.span<{ width?: number; marginTop?: number; marginBottom?: number }>`
+export const BerryIcon = styled.span<{ width?: number; marginTop?: number; marginBottom?: number; marginLeft?: number; marginRight?: number }>`
   display: inline-block;
   content: "";
   width: ${(props) => (props.width ? props.width : "10")}px;
@@ -124,6 +124,8 @@ export const BerryIcon = styled.span<{ width?: number; marginTop?: number; margi
   background-size: contain;
   margin-top: ${(props) => (props.marginTop ? props.marginTop : "4")}px;
   margin-bottom: ${(props) => (props.marginBottom ? props.marginBottom : "0")}px;
+  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0")}px;
+  margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0")}px;
 
   /* background-position: -12px -10px; */
 `

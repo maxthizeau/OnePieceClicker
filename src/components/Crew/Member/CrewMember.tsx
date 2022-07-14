@@ -192,9 +192,6 @@ const CrewMember: FC<ICrewMemberProps> = ({ crewUnit }) => {
             onClick={() => {
               gameState.dispatch({ type: ActionEnum.SetCaptain, payload: { crew: crewUnit } })
               getCaptainEffect(unit.unit)
-              // console.log(getCrewCaptain(gameState.state.crew, gameState.state.fleet))
-
-              // gainXP(crewUnit, 100000)
             }}
             isCaptain={isCaptain}
           >

@@ -1,8 +1,10 @@
 import { Component, FC, useState } from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { TModalType } from "../Modals/IModalProps"
 import MapModal from "../Modals/Content/Map"
 import Modal from "../Modals/Modal"
+import { BerryIcon } from "../styled/Globals"
+import { nFormatter } from "../../lib/utils"
 
 const IconWrapper = styled.div`
   position: absolute;
@@ -18,6 +20,7 @@ const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 
   & img {
     width: 32px;
@@ -26,7 +29,7 @@ const IconWrapper = styled.div`
   }
 `
 
-const ButtonStyled = styled.a`
+const ButtonStyled = styled.a<{ locked?: boolean }>`
   padding: 15px 45px;
   border-radius: 3px;
   border: 3px solid #eee2ba;
@@ -52,30 +55,51 @@ const ButtonStyled = styled.a`
   }
 `
 
+const LockedDiv = styled.div<{ locked?: boolean }>`
+  display: flex;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: #373737dc;
+`
+
 const LabelStyled = styled.span``
 
 interface IMenuButtonProps {
   label: string
   icon: string
   type: TModalType
+  locked: {
+    unlockFunc: () => void
+    price: number
+  } | null
 }
 
-const MenuButton: FC<IMenuButtonProps> = ({ label, icon, type }) => {
+const MenuButton: FC<IMenuButtonProps> = ({ label, icon, type, locked }) => {
   const [visible, setVisible] = useState(false)
 
   return (
     <>
       <ButtonStyled
         onClick={() => {
-          setVisible(true)
+          locked !== null ? locked.unlockFunc() : setVisible(true)
         }}
       >
         <IconWrapper>
           <img src={icon} />
         </IconWrapper>
         <LabelStyled>{label}</LabelStyled>
+        {locked !== null && (
+          <LockedDiv>
+            <BerryIcon width={20} marginRight={10} /> {nFormatter(locked.price, 3)}
+          </LockedDiv>
+        )}
       </ButtonStyled>
-      <Modal type={type} visible={visible} setVisible={setVisible} />
+      {locked === null && <Modal type={type} visible={visible} setVisible={setVisible} />}
     </>
   )
 }

@@ -14,6 +14,7 @@ import { zones } from "../data/zones"
 import save from "../data/save"
 import { ELogType, useLogs } from "./useLogs"
 import UnitNotification from "../../components/Global/notifications/UnitNotification"
+import { defaultMenuUnlockState, IMenuUnlockState, menuUnlocksPrices, IMenuUnlockPayload, XPBoostUnlockPrices, RayleighUnlockPrices } from "../data/menuUnlocks"
 
 const allUnits: TUnit[] = require("../../lib/data/units.json")
 
@@ -39,10 +40,19 @@ export enum ActionEnum {
   TreasureGame_BuyMarket,
   Goal_SetCurrent,
   Goal_Claim,
+  Training_Unlock,
+  Training_AddUnit,
+  Training_RemoveUnit,
+  Unlock_Menu,
   KilledEnemy,
   DungeonDone,
   Save,
   Import,
+}
+
+export interface ITrainingPayload {
+  type: "xp" | "rayleigh"
+  fleetUnitId?: number
 }
 
 export interface IItemPayload {
@@ -67,6 +77,17 @@ export interface ICardUnit extends TUnit {
   lootOrder: number
 }
 
+export interface ITraining {
+  XPBoost: {
+    maxSlots: number
+    fleetUnitIds: number[]
+  }
+  Rayleigh: {
+    maxSlots: number
+    fleetUnitIds: number[]
+  }
+}
+
 interface State {
   maxZoneId: number
   instance: EInstance
@@ -82,6 +103,8 @@ interface State {
   treasureGameGems: { id: string; count: number }[]
   clearedGoals: number[]
   currentGoal: ICurrentGoal | null
+  menuUnlocks: IMenuUnlockState
+  training: ITraining
 }
 
 interface Payload {
@@ -106,6 +129,8 @@ interface Payload {
   goal?: number
   zoneId?: number
   treasureGameEnergyUsed?: number
+  unlockMenu?: IMenuUnlockPayload
+  training?: ITrainingPayload
 }
 
 type Action = { type: ActionEnum; payload?: Payload }
@@ -127,6 +152,17 @@ const defaultState: State = {
   unlockedShips: [0],
   clearedGoals: [],
   currentGoal: null,
+  menuUnlocks: defaultMenuUnlockState,
+  training: {
+    XPBoost: {
+      maxSlots: 1,
+      fleetUnitIds: [],
+    },
+    Rayleigh: {
+      maxSlots: 1,
+      fleetUnitIds: [],
+    },
+  },
 }
 
 function getDefaultState(): State {
@@ -538,6 +574,7 @@ function gameReducer(state: State, action: Action): State {
         currentGoal.progressValue = state.currentGoal.progressValue + action.payload.treasureGameEnergyUsed
         return { ...state, currentGoal }
       }
+      break
     }
     case ActionEnum.Goal_SetCurrent: {
       if (action.payload?.goal === undefined) throw new Error(`Specify arg for : ${action.type}`)
@@ -556,11 +593,12 @@ function gameReducer(state: State, action: Action): State {
         const fillValue = found.type == EGoalType.LOOT_VIVRECARD ? allUnits.filter((x) => x.zone == found.zoneId).length : found.value
         return { ...state, currentGoal: { ...found, progressValue, value: fillValue } }
       } else {
-        console.log("ERROR : Goal cannot be set as current")
-        console.log("notAlreadyDone", notAlreadyDone)
-        console.log("found.zoneId !== undefined", found.zoneId !== undefined)
-        console.log("found.zoneId", found.zoneId, "state.maxZoneId", state.maxZoneId)
-        console.log("goalHasBeenUnlocked", goalHasBeenUnlocked)
+        // console.log("ERROR : Goal cannot be set as current")
+        // console.log("notAlreadyDone", notAlreadyDone)
+        // console.log("found.zoneId !== undefined", found.zoneId !== undefined)
+        // console.log("found.zoneId", found.zoneId, "state.maxZoneId", state.maxZoneId)
+        // console.log("goalHasBeenUnlocked", goalHasBeenUnlocked)
+        return state
       }
     }
     case ActionEnum.Goal_Claim: {
@@ -657,9 +695,115 @@ function gameReducer(state: State, action: Action): State {
             break
         }
       }
+      return state
+    }
+    case ActionEnum.Unlock_Menu: {
+      if (action.payload?.unlockMenu === undefined) throw new Error(`Specify arg for : ${action.type}`)
+      const { unlockMenu } = action.payload
+
+      let berryCost = 0
+      const unlockStateCopy = hardCopy(state.menuUnlocks)
+
+      if (unlockMenu.Shop && !state.menuUnlocks.Shop) {
+        unlockStateCopy.Shop = true
+        berryCost += menuUnlocksPrices.Shop
+      }
+
+      if (unlockMenu.Upgrades && !state.menuUnlocks.Upgrades) {
+        unlockStateCopy.Upgrades = true
+        berryCost += menuUnlocksPrices.Upgrades
+      }
+
+      if (unlockMenu.Mine && !state.menuUnlocks.Mine) {
+        unlockStateCopy.Mine = true
+        berryCost += menuUnlocksPrices.Mine
+      }
+
+      if (unlockMenu.Training && !state.menuUnlocks.Training) {
+        unlockStateCopy.Training = true
+        berryCost += menuUnlocksPrices.Training
+      }
+
+      if (state.berries >= berryCost) {
+        return { ...state, menuUnlocks: unlockStateCopy, berries: state.berries - berryCost }
+      }
+      return state
+    }
+    case ActionEnum.Training_Unlock: {
+      if (action.payload?.training === undefined) throw new Error(`Specify arg for : ${action.type}`)
+
+      const { type, fleetUnitId } = action.payload.training
+
+      // If xp boost
+      if (type == "xp") {
+        // If not already at maximum slots number
+        if (state.training.XPBoost.maxSlots < XPBoostUnlockPrices.length) {
+          // If player has enought berries to pay the upgrade
+          if (XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1] && state.berries >= XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1]) {
+            return {
+              ...state,
+              berries: state.berries - XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1],
+              training: { ...state.training, XPBoost: { ...state.training.XPBoost, maxSlots: state.training.XPBoost.maxSlots + 1 } },
+            }
+          }
+        }
+      }
+
+      // If Rayleigh
+      if (type == "rayleigh") {
+        // If not already at maximum slots number
+        if (state.training.Rayleigh.maxSlots < RayleighUnlockPrices.length) {
+          // If player has enought berries to pay the upgrade
+          if (RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1] && state.berries >= RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1]) {
+            return {
+              ...state,
+              berries: state.berries - RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1],
+              training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, maxSlots: state.training.Rayleigh.maxSlots + 1 } },
+            }
+          }
+        }
+      }
+      // Just in case, return the actual state without update
+      return state
+    }
+    case ActionEnum.Training_AddUnit: {
+      if (action.payload?.training === undefined) throw new Error(`Specify arg for : ${action.type}`)
+
+      const { type, fleetUnitId } = action.payload.training
+
+      // If undefined fleetUnitId, do nothing
+      if (!fleetUnitId) {
+        return state
+      }
+
+      // If xp boost
+      if (type == "xp") {
+        const { maxSlots, fleetUnitIds } = state.training.XPBoost
+        // if there is a free slot
+        if (fleetUnitIds.length < maxSlots && maxSlots <= XPBoostUnlockPrices.length) {
+          return {
+            ...state,
+            training: { ...state.training, XPBoost: { ...state.training.XPBoost, fleetUnitIds: [...state.training.XPBoost.fleetUnitIds, fleetUnitId] } },
+          }
+        }
+      }
+
+      // If Rayleigh
+      if (type == "rayleigh") {
+        const { maxSlots, fleetUnitIds } = state.training.Rayleigh
+        // if there is a free slot
+        if (fleetUnitIds.length < maxSlots && maxSlots <= RayleighUnlockPrices.length) {
+          return {
+            ...state,
+            training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, fleetUnitIds: [...state.training.Rayleigh.fleetUnitIds, fleetUnitId] } },
+          }
+        }
+      }
+
+      // Just in case, return the actual state without update
+      return state
     }
     case ActionEnum.DungeonDone: {
-      console.log("dungeonDone")
       if (action.payload?.zoneId === undefined) throw new Error(`Specify arg for : ${action.type}`)
 
       const { zoneId } = action.payload
@@ -672,7 +816,6 @@ function gameReducer(state: State, action: Action): State {
 
       // If you cleared the dundeon of the last zone you can access to
       if (zoneId == state.maxZoneId) {
-        console.log("Zone Id enter")
         const maxZone = zones[zones.length - 1].id
         const newMaxZone = zoneId < maxZone ? zoneId + 1 : maxZone
 
@@ -764,6 +907,7 @@ function gameReducer(state: State, action: Action): State {
       throw new Error(`Unhandled action type: ${action.type}`)
     }
   }
+  return state
 }
 
 function GameProvider({ children }: GameProviderProps) {

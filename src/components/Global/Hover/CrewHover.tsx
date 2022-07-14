@@ -1,30 +1,34 @@
-import { FC } from "react"
+import { FC, CSSProperties } from "react"
 import styled from "styled-components"
-import { getFullImageSrc } from "../../../lib/clickerFunctions"
+import { getFullImageSrc, getUnitAttackPower, getMaximumHP, getMaximumXP, getCaptainEffect } from "../../../lib/clickerFunctions"
 import { IFleetUnit, ICrewUnit } from "../../../lib/hooks/GameContext"
+import { nFormatter } from "../../../lib/utils"
 
-const BoxStyled = styled.div`
+const BoxStyled = styled.div<{ small?: boolean }>`
   border-radius: 3px;
   border: 3px solid #b9896e;
   outline: 2px solid black;
   background: #f4f4f4;
   padding: 5px;
 
-  width: 260px;
+  width: ${(props) => (props.small ? "120" : "260")}px;
+  text-align: ${(props) => (props.small ? "left" : "center")};
 `
 
 const UnitName = styled.div`
   text-align: center;
   font-weight: bold;
+  margin-bottom: 10px;
 `
 
 const StatsTable = styled.div`
   margin: 10px 0px;
 `
 
-const SpaceBetween = styled.div`
+const SpaceBetween = styled.div<{ disable?: boolean }>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${(props) => (props.disable ? "baseline" : "space-between")};
+  flex-direction: ${(props) => (props.disable ? "column" : "row")};
 `
 
 const UnitImageWrapper = styled.div`
@@ -39,31 +43,56 @@ const UnitImageWrapper = styled.div`
 interface ICrewHoverProps {
   fleetUnit: IFleetUnit
   crewUnit?: ICrewUnit
+  hideImg?: boolean
+  hideXP?: boolean
+  hideCaptain?: boolean
+  small?: boolean
+  style?: CSSProperties
 }
 
-const CrewHover: FC<ICrewHoverProps> = ({ fleetUnit, crewUnit }) => {
+const CrewHover: FC<ICrewHoverProps> = ({ fleetUnit, crewUnit, small, hideXP, hideCaptain, hideImg, style }) => {
   return (
-    <BoxStyled>
+    <BoxStyled style={style} small={small}>
       <UnitName>{fleetUnit.unit.name}</UnitName>
 
       <StatsTable>
-        <UnitName>Level 12</UnitName>
-        <SpaceBetween>
-          <span>ATK : 2 120</span> <span>HP : 29 000 </span>
+        <UnitName>Level {fleetUnit.level}</UnitName>
+
+        <SpaceBetween disable={small}>
+          <span>ATK : {nFormatter(getUnitAttackPower(fleetUnit), 2)} </span>{" "}
+          <span>Base ATK : {nFormatter(getUnitAttackPower({ ...fleetUnit, level: 1 }), 2)}</span>
         </SpaceBetween>
-        <SpaceBetween>
-          <span>XP : 210</span> <span>Max XP : 8 880 </span>
+        <hr />
+        <SpaceBetween disable={small}>
+          <span>HP : {nFormatter(fleetUnit.hp, 2)} </span> <span>Max HP : {nFormatter(getMaximumHP(fleetUnit), 2)} </span>
         </SpaceBetween>
-        <SpaceBetween>
-          <span>Rarity : ⭐⭐⭐⭐⭐</span>
+        {!hideXP && (
+          <>
+            <hr />
+            <SpaceBetween disable={small}>
+              <span>XP : {nFormatter(fleetUnit.xp, 2)} </span> <span>Max XP : {nFormatter(getMaximumXP(fleetUnit), 2)} </span>
+            </SpaceBetween>
+          </>
+        )}
+        <hr />
+        <SpaceBetween disable={small}>
+          <span>Rarity : {[...Array(fleetUnit.unit.stars)].map((x) => `⭐`)} </span>
         </SpaceBetween>
-        <SpaceBetween>
-          <span>Captain Effect : +10 % Click Damage</span>
-        </SpaceBetween>
+        {!hideCaptain && (
+          <div>
+            <hr />
+            <span>Captain Effect :</span>
+            {getCaptainEffect(fleetUnit.unit).map((x, index) => (
+              <div key={`captaineffect-${index}`}>{x.toString}</div>
+            ))}
+          </div>
+        )}
       </StatsTable>
-      <UnitImageWrapper>
-        <img src={getFullImageSrc(fleetUnit.unit.id)} />
-      </UnitImageWrapper>
+      {!hideImg && (
+        <UnitImageWrapper>
+          <img src={getFullImageSrc(fleetUnit.unit.id)} />
+        </UnitImageWrapper>
+      )}
       {/* <UnitName>Base Stats</UnitName> */}
     </BoxStyled>
   )

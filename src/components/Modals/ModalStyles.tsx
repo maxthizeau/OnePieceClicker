@@ -64,6 +64,10 @@ export const ModalSubtitle = styled.p`
   margin: 10px auto;
 `
 
+export const SmallModalSubtitle = styled(ModalSubtitle)`
+  font-size: 0.7rem;
+`
+
 export const ActionButton = styled.button`
   cursor: pointer;
 `

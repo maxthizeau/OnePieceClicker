@@ -51,15 +51,16 @@ const useCards = () => {
     }
     const rand = Math.round(Math.random() * 100)
 
+    const boostTutorialZone = card.zone == 0 ? 3 : 1
     const upgradeBoost = Math.pow(gameState.state.upgrades.LootChance.valuePerLevel, gameState.state.upgrades.LootChance.level)
     const itemBoost = isItemActive("dendenmushi") ? 1.2 : 1
     // Add captain effect here
-    const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost * itemBoost
-    // console.log("LOOT Log : ")
-    // console.log("Unit Rarity : ", card.stars)
-    // console.log("rand : ", rand)
-    // console.log("lootPercent : ", lootPercent)
-    // console.log("If Lootpercent >= 100 --> Loot forced")
+    const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost * itemBoost * boostTutorialZone
+    console.log("LOOT Log : ")
+    console.log("Unit Rarity : ", card.stars)
+    console.log("rand : ", rand)
+    console.log("lootPercent : ", lootPercent)
+    console.log("If Lootpercent >= 100 --> Loot forced")
 
     const lootIt = rand <= lootPercent
     if (lootIt) {
