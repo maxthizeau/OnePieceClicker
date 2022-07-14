@@ -6,17 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen-schema": "apollo client:download-schema --endpoint http://localhost:5000/graphql ./src/lib/graphql/generated/schema.graphqls",
+    "codegen-ts": "apollo client:codegen --target typescript --localSchemaFile ./src/lib/graphql/generated/schema.graphqls --outputFlat --includes \"src/lib/graphql/**/*.ts\" --excludes \"src/lib/graphql/generated/**\" --addTypename --globalTypesFile \"src/lib/graphql/generated/graphql-global-types.ts\" ./src/lib/graphql/generated",
+    "codegen": "yarn codegen-schema && yarn codegen-ts"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@apollo/client": "^3.6.6",
+    "antd": "^4.20.7",
+    "apollo": "^2.33.11",
+    "crypto-js": "^4.1.1",
+    "graphql": "^16.5.0",
     "next": "12.1.6",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-apollo": "^3.1.5",
+    "react-dom": "18.1.0",
+    "react-notifications-component": "^4.0.1",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/plugin-transform-typescript": "^7.18.4",
+    "@babel/preset-typescript": "^7.17.12",
+    "@types/crypto-js": "^4.1.1",
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.5",
+    "@types/styled-components": "^5.1.25",
+    "babel-plugin-styled-components": "^2.0.7",
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "typescript": "4.6.4"
