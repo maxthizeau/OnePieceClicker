@@ -178,7 +178,7 @@ const RayleighSlot = ({ free, locked, price, selected, onClick, unit }: ISlotPro
             Unlock price: <br /> <BerryIcon /> {nFormatter(price, 3)}
           </div>
         )}
-        {!locked && !free && !unit && <>Error : Unit not found</>}
+        {!locked && !free && !unit && <>Error : Unit not found !</>}
         {!locked && !free && unit && (
           <>
             <img src={getThumbImageSrc(unit.unit.id)} />
