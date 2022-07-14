@@ -1,6 +1,7 @@
 import { FC } from "react"
 import styled from "styled-components"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
+import { defaultUpgrades } from "../../../lib/data/upgrades"
 import useUpgrades from "../../../lib/hooks/useUpgrades"
 import { BerryIcon } from "../../styled/Globals"
 
@@ -108,8 +109,8 @@ const UpgradesModalContent: FC = () => {
         title="Click Power"
         subtitle="Boost the click power (+100%)"
         level={upgrades.ClickPower.level}
-        maximumLevel={upgrades.ClickPower.prices.length}
-        price={upgrades.ClickPower.prices[upgrades.ClickPower.level] * 1000}
+        maximumLevel={defaultUpgrades.ClickPower.prices.length}
+        price={defaultUpgrades.ClickPower.prices[upgrades.ClickPower.level] * 1000}
         onClick={() => levelUp("ClickPower")}
       />
       <UpgradeBox
@@ -117,17 +118,17 @@ const UpgradesModalContent: FC = () => {
         title="Crew Power"
         subtitle="Boost your crew power (+100%)"
         level={upgrades.CrewPower.level}
-        maximumLevel={upgrades.CrewPower.prices.length}
+        maximumLevel={defaultUpgrades.CrewPower.prices.length}
         onClick={() => levelUp("CrewPower")}
-        price={upgrades.CrewPower.prices[upgrades.CrewPower.level] * 1000}
+        price={defaultUpgrades.CrewPower.prices[upgrades.CrewPower.level] * 1000}
       />
       <UpgradeBox
         icon="images/icons/vivreCardIcon.png"
         title="Loot Chance"
         subtitle="Increase your vivre card loot chance (+10%)"
         level={upgrades.LootChance.level}
-        maximumLevel={upgrades.LootChance.prices.length}
-        price={upgrades.LootChance.prices[upgrades.LootChance.level] * 1000}
+        maximumLevel={defaultUpgrades.LootChance.prices.length}
+        price={defaultUpgrades.LootChance.prices[upgrades.LootChance.level] * 1000}
         onClick={() => levelUp("LootChance")}
       />
       <UpgradeBox
@@ -135,8 +136,8 @@ const UpgradesModalContent: FC = () => {
         title="XP Boost"
         subtitle="Gain more XP from defeating an enemy (+10%)"
         level={upgrades.XP.level}
-        maximumLevel={upgrades.XP.prices.length}
-        price={upgrades.XP.prices[upgrades.XP.level] * 1000}
+        maximumLevel={defaultUpgrades.XP.prices.length}
+        price={defaultUpgrades.XP.prices[upgrades.XP.level] * 1000}
         onClick={() => levelUp("XP")}
       />
       <UpgradeBox
@@ -144,8 +145,8 @@ const UpgradesModalContent: FC = () => {
         title="Berry Boost"
         subtitle="Earn more berries when you defeat an enemy (+10%)"
         level={upgrades.Berry.level}
-        maximumLevel={upgrades.Berry.prices.length}
-        price={upgrades.Berry.prices[upgrades.Berry.level] * 1000}
+        maximumLevel={defaultUpgrades.Berry.prices.length}
+        price={defaultUpgrades.Berry.prices[upgrades.Berry.level] * 1000}
         onClick={() => levelUp("Berry")}
       />
       <UpgradeBox
@@ -153,8 +154,8 @@ const UpgradesModalContent: FC = () => {
         title="Heal"
         subtitle="Heal more with food (+20%)"
         level={upgrades.Heal.level}
-        maximumLevel={upgrades.Heal.prices.length}
-        price={upgrades.Heal.prices[upgrades.Heal.level] * 1000}
+        maximumLevel={defaultUpgrades.Heal.prices.length}
+        price={defaultUpgrades.Heal.prices[upgrades.Heal.level] * 1000}
         onClick={() => levelUp("Heal")}
       />
       <UpgradeBox
@@ -162,8 +163,8 @@ const UpgradesModalContent: FC = () => {
         title="Crew +1"
         subtitle="Increase the crew size and add one more member (+1)"
         level={upgrades.CrewMembers.level}
-        maximumLevel={upgrades.CrewMembers.prices.length}
-        price={upgrades.CrewMembers.prices[upgrades.CrewMembers.level] * 1000}
+        maximumLevel={defaultUpgrades.CrewMembers.prices.length}
+        price={defaultUpgrades.CrewMembers.prices[upgrades.CrewMembers.level] * 1000}
         onClick={() => levelUp("CrewMembers")}
       />
     </>

@@ -5,7 +5,8 @@ import CardLootNotification from "../../components/Global/notifications/UnitNoti
 import { getPriceUnit, getMaximumHP } from "../clickerFunctions"
 import useFleet from "./useFleet"
 import useShip from "./useShip"
-// import useLogs, { ELogType } from "./useLogs"
+import useItems from "./useItems"
+import { useLogs, ELogType } from "./useLogs"
 
 type TResponse = {
   success: boolean
@@ -36,7 +37,8 @@ const useCards = () => {
   const gameState = useGameState()
   const { getCaptainBoost } = useFleet().crewFunctions
   const { getShipBoost } = useShip()
-  // const { addLog } = useLogs()
+  const { isItemActive } = useItems()
+  const { addLog } = useLogs()
 
   const cards = gameState.state.cards
 
@@ -50,8 +52,9 @@ const useCards = () => {
     const rand = Math.round(Math.random() * 100)
 
     const upgradeBoost = Math.pow(gameState.state.upgrades.LootChance.valuePerLevel, gameState.state.upgrades.LootChance.level)
+    const itemBoost = isItemActive("dendenmushi") ? 1.2 : 1
     // Add captain effect here
-    const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost
+    const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost * itemBoost
     // console.log("LOOT Log : ")
     // console.log("Unit Rarity : ", card.stars)
     // console.log("rand : ", rand)
@@ -67,12 +70,13 @@ const useCards = () => {
         },
       })
 
-      // addLog({
-      //   logTypes: [ELogType.VivreCard, ELogType.Clicker],
-      //   notification: true,
-      //   type: "success",
-      //   content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
-      // })
+      addLog({
+        id: `VivreCard-${card.id}`,
+        logTypes: [ELogType.VivreCard, ELogType.Clicker],
+        notification: true,
+        type: "success",
+        content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
+      })
       return true
     }
 

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { intWithSpaces } from "../../../../lib/clickerFunctions"
 import { ETreasureGameUpgrades, IMineUpgrade, mineUpgradesList } from "../../../../lib/data/treasureGame"
 import { ActionEnum, useGameState } from "../../../../lib/hooks/GameContext"
-// import useLogs, { ELogType } from "../../../../lib/hooks/useLogs"
+import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../../lib/utils"
 import { BerryIcon } from "../../../styled/Globals"
 const UpgradeBoxStyled = styled.div`
@@ -94,18 +94,18 @@ const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, price,
 
 const MineUpgrade: FC = () => {
   const gameState = useGameState()
-  // const { addLog } = useLogs()
+  const { addLog } = useLogs()
 
   function upgradeMine(upgrade: IMineUpgrade, currentLevel: number) {
     if (gameState.state.berries < upgrade.prices[currentLevel - 1]) {
-      // LogToAdd
-      // addLog({
-      //   logTypes: [ELogType.Mine],
-      //   notification: true,
-      //   title: "Not enought berries",
-      //   message: "You don't have enought berries to do this upgrade",
-      //   type: "warning", // 'default', 'success', 'info', 'warning'
-      // })
+      addLog({
+        id: `mineUpgradeError-${upgrade.id}-${currentLevel}`,
+        logTypes: [ELogType.Mine],
+        notification: true,
+        title: "Not enought berries",
+        message: "You don't have enought berries to do this upgrade",
+        type: "warning", // 'default', 'success', 'info', 'warning'
+      })
     } else {
       gameState.dispatch({
         type: ActionEnum.TreasureGame_Upgrade,

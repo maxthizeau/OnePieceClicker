@@ -125,7 +125,7 @@ const ItemShopBox: FC<IItemShopBoxProps> = ({ icon, title, price, onClick, selec
 }
 
 const ShopModalContent: FC = () => {
-  const { items, addItem: buyItem } = useItems()
+  const { items, buyItem } = useItems()
   const [selected, setSelected] = useState<number>(0)
   const [amount, setAmount] = useState<number>(1)
 
@@ -172,6 +172,7 @@ const ShopModalContent: FC = () => {
             <ItemShopButtonStyled onClick={() => setAmount(amount + 1)}>+ 1</ItemShopButtonStyled>
             <ItemShopButtonStyled onClick={() => setAmount(amount + 10)}>+ 10</ItemShopButtonStyled>
             <ItemShopButtonStyled onClick={() => setAmount(amount + 100)}>+ 100</ItemShopButtonStyled>
+            <ItemShopButtonStyled onClick={() => setAmount(amount + 1000)}>+ 1000</ItemShopButtonStyled>
           </ShopForm>
           <ShopBuyButton
             onClick={() => {

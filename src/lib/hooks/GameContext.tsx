@@ -17,8 +17,6 @@ import UnitNotification from "../../components/Global/notifications/UnitNotifica
 
 const allUnits: TUnit[] = require("../../lib/data/units.json")
 
-const maximumCrewMember = 6
-
 export enum ActionEnum {
   ChangeInstance,
   AddBerries,
@@ -148,16 +146,16 @@ function getDefaultState(): State {
   //   }
   // }
 
-  try {
-    // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
-    const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
-    const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
-    const saveJson: State = JSON.parse(saveJsonDecrypted)
-    saveJson.maxZoneId = 25
-    return saveJson
-  } catch {
-    return defaultState
-  }
+  // try {
+  //   // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
+  //   const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
+  //   const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
+  //   const saveJson: State = JSON.parse(saveJsonDecrypted)
+  //   saveJson.maxZoneId = 25
+  //   return saveJson
+  // } catch {
+  //   return defaultState
+  // }
 
   return defaultState
 }
@@ -177,6 +175,7 @@ function addBerries(state: State, action: Action): State {
 }
 
 function gameReducer(state: State, action: Action): State {
+  const maximumCrewMember = 2 + state.upgrades.CrewMembers.level
   switch (action.type) {
     case ActionEnum.ChangeInstance: {
       if (!action.payload || action.payload.instance === undefined) throw new Error(`Specify arg for : ${action.type}`)
@@ -355,6 +354,7 @@ function gameReducer(state: State, action: Action): State {
     case ActionEnum.AddItem: {
       if (action.payload?.item === undefined) throw new Error(`Specify arg for : ${action.type}`)
       const payloadItem = action.payload?.item
+      const berriesChange = action.payload?.berriesChange && action.payload?.berriesChange >= 0 ? action.payload?.berriesChange : 0
 
       // Copy the object to make update
       const newItems = hardCopy(state.items)
@@ -364,7 +364,7 @@ function gameReducer(state: State, action: Action): State {
 
       newItems[itemIndex].quantity = newItems[itemIndex].quantity + payloadItem.quantity
 
-      return { ...state, items: newItems }
+      return { ...state, items: newItems, berries: state.berries - berriesChange }
     }
     case ActionEnum.UseItem: {
       if (action.payload?.item === undefined) throw new Error(`Specify arg for : ${action.type}`)
@@ -438,16 +438,18 @@ function gameReducer(state: State, action: Action): State {
 
       // Copy the object to make update
       const newUpgrades = hardCopy(state.upgrades)
-      if (newUpgrades[payloadUpgrade] === undefined) {
+      const defaultUpgrade = defaultUpgrades[payloadUpgrade]
+      if (newUpgrades[payloadUpgrade] === undefined || !defaultUpgrade) {
         return state
       }
+
       const upgrade = newUpgrades[payloadUpgrade]
 
       // if already max level, return state, do nothing
-      if (upgrade.level + 1 > upgrade.maxLevel) {
+      if (upgrade.level + 1 > defaultUpgrade.maxLevel) {
         return state
       }
-      const price = upgrade.prices[upgrade.level] * 1000
+      const price = defaultUpgrade.prices[upgrade.level] * 1000
       // if user doesn't have enought berries, do nothing
       if (state.berries < price) {
         return state

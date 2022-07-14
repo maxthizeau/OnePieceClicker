@@ -5,6 +5,7 @@ import { useGameState } from "../../lib/hooks/GameContext"
 import useItems from "../../lib/hooks/useItems"
 import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
+import { TItemKey } from "../../lib/data/items"
 
 const CurrenciesListStyled = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const selectQuantity: { label: string; quantity: number }[] = [
 ]
 
 type TItemToShowAsCurrency = {
-  key: string
+  key: TItemKey
   canUseIt: boolean
 }
 
@@ -47,10 +48,6 @@ const CurrenciesList: FC = () => {
       canUseIt: false,
     },
     {
-      key: "cola",
-      canUseIt: true,
-    },
-    {
       key: "healFood",
       canUseIt: true,
     },
@@ -59,7 +56,15 @@ const CurrenciesList: FC = () => {
       canUseIt: true,
     },
     {
+      key: "cola",
+      canUseIt: true,
+    },
+    {
       key: "dendenmushi",
+      canUseIt: true,
+    },
+    {
+      key: "berryboost",
       canUseIt: true,
     },
   ]
@@ -91,6 +96,7 @@ const CurrenciesList: FC = () => {
               canUseIt={item.canUseIt}
               itemKey={item.key}
               stateItem={stateItem}
+              formatNumber={true}
               spendItemFunc={
                 item.canUseIt
                   ? () => {

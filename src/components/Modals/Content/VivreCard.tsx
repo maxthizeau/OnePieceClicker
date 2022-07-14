@@ -6,7 +6,7 @@ import useCards from "../../../lib/hooks/useCards"
 import { ICardUnit, useGameState } from "../../../lib/hooks/GameContext"
 import { Store } from "react-notifications-component"
 import UnitNotification from "../../Global/notifications/UnitNotification"
-// import useLogs, { ELogType } from "../../../lib/hooks/useLogs"
+import { useLogs, ELogType } from "../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../lib/utils"
 import { BerryIcon } from "../../styled/Globals"
 
@@ -16,7 +16,7 @@ const VivreModalContent: FC = () => {
   const [data, setData] = useState<ICardUnit[]>([])
   const [filterFleet, setFilterFleet] = useState(false)
   const [search, setSearch] = useState("")
-  // const { addLog } = useLogs()
+  const { addLog } = useLogs()
 
   const findIndexFleetFunc = (cardUnit: ICardUnit) => gameState.state.fleet.findIndex((fleetUnit) => fleetUnit.unit.id == cardUnit.id)
 
@@ -119,13 +119,14 @@ const VivreModalContent: FC = () => {
                     title: res.title,
                     message: res.message,
                   }
-              // LogToAdd
-              // addLog({
-              //   ...notifProps,
-              //   logTypes: [ELogType.VivreCard],
-              //   notification: true,
-              //   type: res.success == true ? "success" : "warning", // 'default', 'success', 'info', 'warning'
-              // })
+
+              addLog({
+                ...notifProps,
+                id: `vivreCard-${record.id}`,
+                logTypes: [ELogType.VivreCard],
+                notification: true,
+                type: res.success == true ? "success" : "warning", // 'default', 'success', 'info', 'warning'
+              })
             }}
           >
             Recruit

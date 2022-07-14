@@ -1,22 +1,15 @@
 import { useEffect } from "react"
+import { defaultItemsList, TItemKey } from "../data/items"
 import { TZone, zones } from "../data/zones"
 import { ActionEnum, useGameState } from "./GameContext"
 import { ELogType, useLogs } from "./useLogs"
-
-export type TItemKey = "logPoses" | "demonFruits" | "healFood" | "cola" | "dendenmushi"
 
 const useItems = () => {
   const gameState = useGameState()
   const { items } = gameState.state
   const { addLog } = useLogs()
-  // const [itemsWithQty]
-  // items.find((x) => x.itemKey ==)
 
-  // useEffect(() => {
-
-  // }, [])
-
-  const addItem = (itemKey: string, quantity: number) => {
+  const addItem = (itemKey: TItemKey, quantity: number) => {
     gameState.dispatch({
       type: ActionEnum.AddItem,
       payload: {
@@ -27,8 +20,38 @@ const useItems = () => {
       },
     })
   }
+  const buyItem = (itemKey: TItemKey, quantity: number): boolean => {
+    const item = defaultItemsList.find((x) => x.itemKey == itemKey)
+    if (!item) {
+      return false
+    }
+    const priceWithQuantity = item.price * Math.floor(quantity)
+    if (gameState.state.berries >= priceWithQuantity) {
+      gameState.dispatch({
+        type: ActionEnum.AddItem,
+        payload: {
+          item: {
+            key: itemKey,
+            quantity: Math.floor(quantity),
+          },
+          berriesChange: priceWithQuantity,
+        },
+      })
+      return true
+    } else {
+      addLog({
+        id: `buyItem-${itemKey}-${quantity}`,
+        logTypes: [ELogType.Clicker],
+        notification: true,
+        title: "Not enough berries",
+        message: "Reduce the quantity or come back when you have enough berries",
+        type: "warning",
+      })
+      return false
+    }
+  }
 
-  const spendItem = (itemKey: string, quantity: number) => {
+  const spendItem = (itemKey: TItemKey, quantity: number) => {
     gameState.dispatch({
       type: ActionEnum.UseItem,
       payload: {
@@ -37,7 +60,7 @@ const useItems = () => {
     })
   }
 
-  const isItemActive = (itemKey: string): boolean => {
+  const isItemActive = (itemKey: TItemKey): boolean => {
     const itemFound = items.find((x) => x.itemKey == itemKey)
     const now = new Date().getTime()
     if (!itemFound?.end) return false
@@ -51,10 +74,6 @@ const useItems = () => {
     }
     const now = new Date().getTime()
     const logPose = items.find((x) => x.itemKey == "logPose")
-    console.log("Enter dungeon")
-    console.log("Spend : ", zone.dungeonCost)
-    console.log("Zone Loc : ", zone.location)
-    console.log("Zone  ID: ", zone.id)
     if (!logPose || logPose.quantity < zone.dungeonCost) {
       addLog({
         id: `enterDungeon-${zone.id}-${now}`,
@@ -72,7 +91,7 @@ const useItems = () => {
     }
   }
 
-  return { items, addItem, spendItem, isItemActive, enterDungeon } as const
+  return { items, addItem, buyItem, spendItem, isItemActive, enterDungeon } as const
 }
 
 export default useItems

@@ -57,10 +57,11 @@ const useLogs = () => {
   }
 
   function addLog(log: ILog) {
-    const sendNotif = context?.addInLog(log)
+    console.log("addLog")
+    // const sendNotif = context?.addInLog(log)
     // console.log("NEW LOG : ")
     // console.log(sendNotif, log.notification)
-    if (log.notification && sendNotif) {
+    if (log.notification) {
       Store.addNotification({
         title: log.title,
         message: log.message,

@@ -2,6 +2,7 @@ import { getUnitAttackPower } from "../clickerFunctions"
 import { ECaptainEffect, EShipEffect } from "../types"
 import { useGameState } from "./GameContext"
 import useFleet from "./useFleet"
+import useItems from "./useItems"
 import useShip from "./useShip"
 import useUpgrades from "./useUpgrades"
 
@@ -11,6 +12,7 @@ const usePower = () => {
   const { getCaptainBoost } = crewFunctions
   const { getShipBoost } = useShip()
   const [upgrades] = useUpgrades()
+  const { isItemActive } = useItems()
 
   const calculCrewPower = (): number => {
     let crewPower = 0
@@ -28,8 +30,9 @@ const usePower = () => {
     const captainEffect = getCaptainBoost(ECaptainEffect.CREW_POWER)
     const shipBoost = getShipBoost(EShipEffect.CREW_POWER)
     const upgradeBoost = Math.pow(upgrades.CrewPower.valuePerLevel, upgrades.CrewPower.level)
+    const itemBoost = isItemActive("demonFruit") ? 1.2 : 1
     // console.log("BOOST : ", upgradeBoost, upgrades.CrewPower)
-    crewPower = crewPower * captainEffect * shipBoost * upgradeBoost
+    crewPower = crewPower * captainEffect * shipBoost * upgradeBoost * itemBoost
 
     return Math.round(crewPower)
   }
@@ -48,7 +51,8 @@ const usePower = () => {
     }
     clickPower = 1 + clickPower * 0.32
     const upgradeBoost = Math.pow(upgrades.ClickPower.valuePerLevel, upgrades.ClickPower.level)
-    clickPower = clickPower * captainEffect * shipBoost * upgradeBoost
+    const itemBoost = isItemActive("demonFruit") ? 1.2 : 1
+    clickPower = clickPower * captainEffect * shipBoost * upgradeBoost * itemBoost
     return Math.round(clickPower)
   }
   const crewPower: number = calculCrewPower()

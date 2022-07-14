@@ -63,11 +63,12 @@ const useFleet = () => {
     }
     const shipBoost = getShipBoost(EShipEffect.XP_GAIN)
     const captainBoost = getCaptainBoost(ECaptainEffect.XP)
+    const itemBoost = isItemActive("cola") ? 1.2 : 1
 
     // const filteredCrew = crew.filter((x) => fleet.find((fleetMember) => fleetMember.id == x.fleetId && fleetMember.hp > 0))
     const rngCrew = Math.floor(Math.random() * crew.length)
     if (!memberHas0HP(crew[rngCrew])) {
-      const finalAmount = amount * shipBoost * captainBoost
+      const finalAmount = amount * shipBoost * captainBoost * itemBoost
       gameState.dispatch({ type: ActionEnum.GainXP, payload: { gainXP: finalAmount, crew: crew[rngCrew] } })
       console.log(`Crew member : ${crew[rngCrew].fleetId} --> + ${finalAmount} XP`)
     }

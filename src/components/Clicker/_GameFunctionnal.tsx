@@ -57,7 +57,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   // const [crewPower, clickPower] = [10000000000, 100000000]
   const [_, lootCard] = useCards()
   const { getCaptainBoost, rngCrewMemberGainXP, crewLooseHP } = useFleet().crewFunctions
-  const { enterDungeon } = useItems()
+  const { enterDungeon, isItemActive } = useItems()
   const { addLog } = useLogs()
   const gameState = useGameState()
 
@@ -140,7 +140,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     setEnableHit(false)
     currentUnit && lootCard(currentUnit?.unit)
     const captainEffect = getCaptainBoost(ECaptainEffect.BERRY)
-    const berryWon = currentUnit ? Math.round(getBerryRewardFromUnit(currentUnit.unit) * captainEffect) : 0
+    const itemBoost = isItemActive("berryboost") ? 1.2 : 1
+    const berryWon = currentUnit ? Math.round(getBerryRewardFromUnit(currentUnit.unit) * captainEffect * itemBoost) : 0
     console.log("Berries : ", berryWon)
     gameState.dispatch({
       type: ActionEnum.AddBerries,

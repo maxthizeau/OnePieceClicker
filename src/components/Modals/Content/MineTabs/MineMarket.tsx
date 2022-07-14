@@ -8,7 +8,7 @@ import useUnitData from "../../../../lib/hooks/useUnitData"
 import CardLootNotification from "../../../../components/Global/notifications/UnitNotification"
 import { getMarketList } from "../../../../lib/treasureGame/marketFunctions"
 import { TUnit } from "../../../../lib/types"
-// import useLogs, { ELogType } from "../../../../lib/hooks/useLogs"
+import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
 const MarketBoxStyled = styled.div<{ owned?: boolean }>`
   padding: 5px 10px;
   border-radius: 3px;
@@ -118,20 +118,20 @@ const MineMarket: FC = () => {
   const gameState = useGameState()
   const marketList = getMarketList()
   const [units] = useUnitData()
-  // const { addLog } = useLogs()
+  const { addLog } = useLogs()
   // console.log(marketList)
 
   const buyItem = (id: number, currency: number, price: number, unit: TUnit) => {
     const finalPrice = price * (unit.stars + 1)
     if (gameState.state.treasureGameGems[currency].count < finalPrice) {
-      // LogToAdd
-      // addLog({
-      //   logTypes: [ELogType.Mine],
-      //   notification: true,
-      //   title: "Not enought gems",
-      //   message: "You don't have enought gems to buy this item",
-      //   type: "warning",
-      // })
+      addLog({
+        id: `buyMineMarket-error-${unit.id}`,
+        logTypes: [ELogType.Mine],
+        notification: true,
+        title: "Not enought gems",
+        message: "You don't have enought gems to buy this item",
+        type: "warning",
+      })
     } else {
       gameState.dispatch({
         type: ActionEnum.TreasureGame_BuyMarket,
@@ -144,12 +144,13 @@ const MineMarket: FC = () => {
           },
         },
       })
-      // LogToAdd
-      // addLog({
-      //   logTypes: [ELogType.Mine, ELogType.VivreCard],
-      //   notification: true,
-      //   content: <CardLootNotification label={"You bought a Vivre Card"} unit={unit} />,
-      // })
+
+      addLog({
+        id: `buyMineMarket-${unit.id}`,
+        logTypes: [ELogType.Mine, ELogType.VivreCard],
+        notification: true,
+        content: <CardLootNotification label={"You bought a Vivre Card"} unit={unit} />,
+      })
     }
   }
 

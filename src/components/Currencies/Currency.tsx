@@ -10,6 +10,7 @@ import { TItem } from "../../lib/data/items"
 import useInterval from "../../lib/hooks/useInterval"
 import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
+import { nFormatter } from "../../lib/utils"
 
 const GainTextStyled = styled.div<{ showGain: boolean; negative?: boolean; x?: number }>`
   @keyframes slideOutToTop {
@@ -146,11 +147,12 @@ interface ICurrencyProps {
   stateItem?: TItem
   moveX?: boolean
   style?: CSSProperties
+  formatNumber?: boolean
 }
 
 const animationDuration = 1500 // milliseconds
 
-const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey, spendItemFunc, stateItem, moveX = false, style }) => {
+const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey, spendItemFunc, stateItem, moveX = false, style, formatNumber }) => {
   const [gains, setGains] = useState<{ id: number; value: number; timeEnd: number; x: number }[]>([])
   const [nextGainIndex, setNextGainIndex] = useState(0)
   const [timer, setTimer] = useState<number>(0)
@@ -203,7 +205,7 @@ const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey,
           <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
         )}
 
-        <TextStyled>{intWithSpaces(valueMonitored)}</TextStyled>
+        <TextStyled>{formatNumber ? nFormatter(valueMonitored, 1) : intWithSpaces(valueMonitored)}</TextStyled>
       </CurrencyWrapper>
       {/* <GainText value="+400" /> */}
 

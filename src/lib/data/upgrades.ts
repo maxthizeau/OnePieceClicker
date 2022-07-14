@@ -68,8 +68,8 @@ export const defaultUpgrades: TUpgrade = {
 
   CrewMembers: {
     level: 0,
-    maxLevel: 7,
+    maxLevel: 5,
     valuePerLevel: 1,
-    prices: [1000, 2000, 3000, 4000, 5000, 6000, 7000],
+    prices: [1000, 10000, 100000, 1000000, 5000000],
   },
 }
