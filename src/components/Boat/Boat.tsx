@@ -1,21 +1,16 @@
-import { gql, useQuery, useReactiveVar } from "@apollo/client"
 import React, { FC, useState } from "react"
 import styled from "styled-components"
 import { zones } from "../../lib/data/zones"
 import MenuButton from "./MenuButton"
-import { zoneIdVar } from "../../lib/cache"
-import MapModal from "../Modals/Content/Map"
 import Modal from "../Modals/Modal"
 import useShip from "../../lib/hooks/useShip"
 import { IShip } from "../../lib/types"
 import { getShipEffects } from "../../lib/clickerFunctions"
 import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
-import { IMenuUnlockPayload, IMenuUnlockState, menuUnlocksPrices } from "../../lib/data/menuUnlocks"
+import { IMenuUnlockPayload, menuUnlocksPrices } from "../../lib/data/menuUnlocks"
 import { ELogType, useLogs } from "../../lib/hooks/useLogs"
 import useTranslation from "next-translate/useTranslation"
 import Hover from "../Global/Hover"
-import BasicHover from "../Global/Hover/BasicHover"
-// import { TInstance } from "../../lib/types"
 
 const BoatStyled = styled.div`
   padding: 20px;
@@ -27,14 +22,11 @@ const BoatStyled = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-basis: 100%;
-  /* max-width: 100%; */
+
   @media only screen and (min-width: 1200px) {
     width: auto;
     flex-wrap: nowrap;
   }
-  /*
-  @media only screen and (min-width: 1550px) {
-  } */
 `
 
 const ImageWrapper = styled.div`
@@ -130,10 +122,10 @@ const ShipEffects = ({ ship }: { ship: IShip }) => {
 
 const Boat: FC<IBoatProps> = ({}) => {
   const { t } = useTranslation()
-  const zoneId = useReactiveVar(zoneIdVar)
+
   const { state, dispatch } = useGameState()
   const { menuUnlocks } = state
-  const zone = zones[zoneId]
+  const zone = zones[state.currentZone]
   const [visibleZoneModal, setVisibleZoneModal] = useState(false)
   const { currentShip } = useShip()
   const { addLog } = useLogs()

@@ -12,15 +12,10 @@
     "codegen": "yarn codegen-schema && yarn codegen-ts"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
-    "@apollo/client": "^3.6.6",
-    "apollo": "^2.33.11",
     "crypto-js": "^4.1.1",
-    "graphql": "^16.5.0",
     "next": "12.1.6",
     "next-translate": "^1.5.0",
     "react": "18.1.0",
-    "react-apollo": "^3.1.5",
     "react-dom": "18.1.0",
     "react-notifications-component": "^4.0.1",
     "styled-components": "^5.3.5"

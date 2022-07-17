@@ -1,6 +1,5 @@
 import type { NextPage } from "next"
 import Head from "next/head"
-
 import Clicker from "../components/Clicker/Game"
 import { Column, Container, Header, Row, Logo } from "../components/styled/Globals"
 import CurrenciesList from "../components/Currencies/CurrenciesList"
@@ -8,10 +7,7 @@ import StatsList from "../components/Stats/StatsList"
 import Goals from "../components/Goals/Goals"
 import Crew from "../components/Crew/Crew"
 import Boat from "../components/Boat/Boat"
-
 import ClientOnly from "../components/ClientOnly"
-import { zoneIdVar } from "../lib/cache"
-import { useApolloClient, useReactiveVar } from "@apollo/client"
 import Zone from "../components/Clicker/Zone"
 import { useState } from "react"
 import { zones } from "../lib/data/zones"
@@ -38,20 +34,12 @@ const AdminButton = styled.a`
 `
 
 const Home: NextPage = () => {
-  const client = useApolloClient()
-  const zoneId = useReactiveVar(zoneIdVar)
   const { instance, changeInstance } = useInstance()
   const [cards, lootCard] = useCards()
   const [paused, setPaused] = useState(false)
   const gameState = useGameState()
   const [save, reset, downloadSave] = useSave()
-
-  // const [, updateState] = useState({})
-  // const forceUpdate = useCallback(() => updateState({}), [])
-
-  // useEffect(() => {
-  //   forceUpdate()
-  // }, [instance])
+  const zoneId = gameState.state.currentZone
 
   return (
     <>

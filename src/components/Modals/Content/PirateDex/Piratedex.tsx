@@ -1,11 +1,10 @@
-import { useReactiveVar } from "@apollo/client"
 import { Fragment, useState } from "react"
 import styled from "styled-components"
-import { zoneIdVar } from "../../../../lib/cache"
 import useUnitData from "../../../../lib/hooks/useUnitData"
 import { zones } from "../../../../lib/data/zones"
 import PirateList from "./PirateList"
 import useTranslation from "next-translate/useTranslation"
+import { useGameState } from "../../../../lib/hooks/GameContext"
 
 const PiratedexWrapper = styled.div`
   padding: 10px 20px;
@@ -63,7 +62,7 @@ const Label = styled.div``
 
 const Piratedex = () => {
   const [data, dataByRarity] = useUnitData()
-  const zoneId = useReactiveVar(zoneIdVar)
+  const zoneId = useGameState().state.currentZone
   const zone = zones[zoneId]
   const [rarity, setRarity] = useState(dataByRarity[0].stars)
   const [showOwned, setShowOwned] = useState(true)

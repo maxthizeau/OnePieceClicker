@@ -2,8 +2,6 @@ import "../styles/globals.css"
 import type { AppProps } from "next/app"
 import { GlobalStyle } from "../components/styled/Globals"
 import { ThemeProvider } from "styled-components"
-import { ApolloProvider } from "@apollo/client"
-import { client } from "../lib/apollo"
 import { GameProvider } from "../lib/hooks/GameContext"
 import "react-notifications-component/dist/theme.css"
 import { ReactNotifications } from "react-notifications-component"
@@ -32,7 +30,7 @@ const theme: ThemeInterface = {
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
+    <>
       <GlobalStyle />
 
       <ThemeProvider theme={theme}>
@@ -45,7 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </TreasureGameProvider>
         </GameProvider>
       </ThemeProvider>
-    </ApolloProvider>
+    </>
   )
 }
 

@@ -20,6 +20,7 @@ const allUnits: TUnit[] = require("../../lib/data/units.json")
 
 export enum ActionEnum {
   ChangeInstance,
+  ChangeZone,
   AddBerries,
   SpendBerries,
   LootCard,
@@ -94,6 +95,7 @@ export interface ITraining {
 }
 
 interface State {
+  currentZone: number
   maxZoneId: number
   instance: EInstance
   berries: number
@@ -143,6 +145,7 @@ type Dispatch = (action: Action) => void
 type GameProviderProps = { children: React.ReactNode }
 
 const defaultState: State = {
+  currentZone: 0,
   maxZoneId: 0,
   instance: EInstance.Zone,
   berries: 0,
@@ -194,6 +197,7 @@ function getDefaultState(): State {
     const saveJson: State = JSON.parse(saveJsonDecrypted)
     // saveJson.maxZoneId = 25
     saveJson.berries = 20000000000
+    saveJson.currentZone = 10
     return saveJson
   } catch {
     return defaultState
@@ -222,6 +226,13 @@ function gameReducer(state: State, action: Action): State {
     case ActionEnum.ChangeInstance: {
       if (!action.payload || action.payload.instance === undefined) throw new Error(`Specify arg for : ${action.type}`)
       return { ...state, instance: action.payload.instance }
+    }
+    case ActionEnum.ChangeZone: {
+      if (!action.payload || action.payload.zoneId === undefined) throw new Error(`Specify arg for : ${action.type}`)
+      if (action.payload.zoneId > state.maxZoneId) {
+        return state
+      }
+      return { ...state, currentZone: action.payload.zoneId }
     }
     case ActionEnum.AddBerries: {
       if (!action.payload || action.payload.berriesChange === undefined) throw new Error(`Specify amount arg for : ${action.type}`)
