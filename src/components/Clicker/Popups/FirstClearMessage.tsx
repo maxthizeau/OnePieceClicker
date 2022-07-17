@@ -6,6 +6,7 @@ import { TZone, zones } from "../../../lib/data/zones"
 import useUnitData from "../../../lib/hooks/useUnitData"
 import { IDungeonState, IShip, TUnit } from "../../../lib/types"
 import { MenuButton } from "../ClickerStyles"
+import useTranslation from "next-translate/useTranslation"
 
 const PopupStyled = styled.div`
   position: absolute;
@@ -66,19 +67,21 @@ const ShowWithImage = styled.div`
 `
 
 const ShowZone: FC<{ content: TContent }> = ({ content }) => {
+  const { t } = useTranslation()
   const value: TZone = content.value
   return (
     <ShowStyled>
-      <div>You have access to a new zone </div>
-      <div>{value.location ?? "Unknown"}</div>
+      <div>{t("game:Clicker.Popups.new-zone-available")} </div>
+      <div>{value.location ? t(`zones:${value.id}-${value.location}`) : "Unknown"}</div>
     </ShowStyled>
   )
 }
 const ShowFleetMember: FC<{ content: TContent }> = ({ content }) => {
+  const { t } = useTranslation()
   const value: TUnit = content.value
   return (
     <ShowStyled>
-      <div>A new member has joined your fleet ! </div>
+      <div>{t("game:Clicker.Popups.new-fleet-member")}</div>
       <ShowWithImage>
         <img src={getThumbImageSrc(value.id)} />
         <div>{value.name ?? "Unknown"}</div>
@@ -87,10 +90,11 @@ const ShowFleetMember: FC<{ content: TContent }> = ({ content }) => {
   )
 }
 const ShowBoat: FC<{ content: TContent }> = ({ content }) => {
+  const { t } = useTranslation()
   const value: IShip = content.value
   return (
     <ShowStyled>
-      <div>New ship :</div>
+      <div>{t("game:Clicker.Popups.new-ship")}</div>
       <ShowWithImage>
         <img src={`images/ships/icon/${value.thumb}_t2.png`} />
         <div>{value.name ?? "Unknown"}</div>
@@ -103,6 +107,7 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
   const [content, setContent] = useState<TContent[]>([])
   const [showIndex, setShowIndex] = useState(0)
   const [units] = useUnitData()
+  const { t } = useTranslation()
   useEffect(() => {
     const newContent: TContent[] = []
     const currentZone = zones.find((x) => x.id == zoneId)
@@ -137,12 +142,12 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
   }
   return (
     <PopupStyled>
-      <TitleStyled>Victory !</TitleStyled>
+      <TitleStyled>{t("game:Clicker.Popups.victory")} !</TitleStyled>
       {content[showIndex] && content[showIndex].type == EContentType.ZONE && <ShowZone content={content[showIndex]} />}
       {content[showIndex] && content[showIndex].type == EContentType.FLEET && <ShowFleetMember content={content[showIndex]} />}
       {content[showIndex] && content[showIndex].type == EContentType.BOAT && <ShowBoat content={content[showIndex]} />}
       <MenuButton style={{ marginTop: "20px" }} onClick={() => setShowIndex(showIndex + 1)}>
-        Next
+        {t("game:Clicker.Popups.next")}
       </MenuButton>
     </PopupStyled>
   )

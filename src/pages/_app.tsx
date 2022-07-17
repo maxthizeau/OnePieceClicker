@@ -34,6 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <GlobalStyle />
+
       <ThemeProvider theme={theme}>
         <GameProvider>
           <TreasureGameProvider>

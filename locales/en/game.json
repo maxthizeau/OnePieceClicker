@@ -1,0 +1,175 @@
+{
+  "BoatMenu": {
+    "Map": "Map",
+    "Boat": "Boat",
+    "Cards": "Cards",
+    "Fleet": "Fleet",
+    "Shop": "Shop",
+    "Upgrades": "Upgrades",
+    "Mine": "Mine",
+    "Training": "Training"
+  },
+  "Clicker": {
+    "Main": {
+      "back-button": "Back",
+      "farm-button": "Farm",
+      "stop-button": "Stop"
+    },
+    "Popups": {
+      "victory": "VICTORY",
+      "defeat": "DEFEAT",
+      "victory-message": "You saved your nakamas !",
+      "defeat-message": "The boss had time to flee, strengthen your crew and try again.",
+      "new-zone-available": "You have access to a new zone",
+      "new-fleet-member": "A new member has joined your fleet !",
+      "new-ship": "New ship available :",
+      "next": "Next",
+      "back-to-seaport": "Go back to the seaport",
+      "try-again": "Try again (Click faster !)",
+      "fight-again": "Fight again",
+      "farm-dungeon": "Farm it (until you stop it)"
+    },
+    "Zone": {
+      "visit-island": "Visit Island",
+      "save-nakamas": "Save Nakamas"
+    }
+  },
+  "Crew": {
+    "empty-slot": "Empty slot"
+  },
+  "Currencies": {
+    "select-amount": "Select the amount of item to use",
+    "logPose-title": "Log Pose",
+    "healFood-title": "Heal Food",
+    "cola-title": "Cola",
+    "demonFruit-title": "Demon Fruit",
+    "dendenmushi-title": "Den den Mushi",
+    "berryboost-title": "Berry Boost",
+    "logPose-description": "Very useful to enter in a dungeon",
+    "healFood-description": "Heal your all your crew members of $_VALUE_$ after defeating an enemy",
+    "cola-description": "Boost XP of 20% for 30 seconds",
+    "demonFruit-description": "Boost Crew Power and Click Power of 20% for 30 seconds",
+    "dendenmushi-description": "Boost your chance to loot vivre card of 20% for 30 seconds",
+    "berryboost-description": "Earn 20% more berries when defeating enemies for 30 seconds"
+  },
+  "Modals": {
+    "close-button": "Close (Esc)",
+
+    "Boat": {
+      "effect-crew-power": "Crew Power",
+      "effect-click-power": "Click Power",
+      "effect-vivre-card": "Vivre Card loot chance",
+      "effect-xp-boost": "XP earned",
+      "effect-berries": "Berries earned",
+      "effect-captain-boost": "Captain Boost",
+      "effect-energy-refill-speed": "Energy refill speed in Mine",
+      "effect-double-loot-mine": "Double loot chance in Mine",
+      "effect-rayleigh-training-speed": "Rayleigh Training Speed",
+      "effect-item-duration": "Item duration",
+      "your-ship": "Your ship",
+      "all-ships": "All ships",
+      "hide-filters": "Hide Filters",
+      "show-filters": "Show Filters",
+      "search-by-name": "Search by name",
+      "filter-by-effect": "Filter by effect...",
+      "filter-minimum-value": "Mininimum value (%)"
+    },
+    "Fleet": {
+      "fleet-label": "FLEET",
+      "fleet-modal-subtitle": "All members you recruited in your fleet. You can add them to your crew whenever you want.",
+      "show-lvl1-stats": "Show Lvl.1 Stats"
+    },
+    "Goals": {
+      "goal-label": "Goals",
+      "goal-reward": "Reward : ",
+      "filter-by-zone": "Filter by zone"
+    },
+    "MapV1": {
+      "select-zone": "Select a zone"
+    },
+    "Mine": {
+      "mine-label": "Mine",
+      "upgrade-mine-label": "Upgrade",
+      "market-mine-label": "Market",
+      "market-subtitle": "Market : Buy and sell your gems. There is a new market every 6 hours",
+      "upgrade-subtitle": "Upgrade : Mine more efficiently"
+    },
+    "Shop": {
+      "shop-label": "Shop",
+      "shop-subtitle": "Select the item you want to buy",
+      "buy-button": "Buy"
+    },
+    "Training": {
+      "free-slot": "Free Slot",
+      "unlock-price": "Unlock price:",
+      "error-unit-not-found": "Error : Unit not found",
+      "boost-button": "BOOST!",
+      "training-label": "Training",
+      "xp-boost-label": "XP Boost",
+      "xp-boost-description": "Units in XP Boost gains an additionnal 50% of all XP gains. You can select any unit in your fleet.",
+      "rayleigh-label": "Rayleigh Training",
+      "rayleigh-description": "Once a fleet member is level 100, Rayleigh can teach him Haki. He will be back at lvl 1 but will earn 10% base attack.",
+      "select-unit": "Select Unit :",
+      "show-crew-only": "Show Crew Only",
+      "select-slot-first": "Select a slot first",
+      "select-a-unit": "Select a unit",
+      "atk-minimum": "ATK Minimum",
+      "lvl-minimum": "Lvl. Minimum",
+      "sort-by": "Sort by...",
+      "base-atk": "Base ATK",
+      "current-atk": "Current ATK",
+      "level": "Level"
+    },
+    "Upgrades": {
+      "upgrades-label": "Upgrades",
+      "click-power-title": "Click Power",
+      "click-power-description": "Boost the click power",
+      "crew-power-title": "Crew Power",
+      "crew-power-description": "Boost your crew power",
+      "loot-chance-title": "Loot Chance",
+      "loot-chance-description": "Increase your vivre card loot chance ",
+      "xp-boost-title": "XP Boost",
+      "xp-boost-description": "Gain more XP from defeating an enemy",
+      "berry-boost-title": "Berry Boost",
+      "berry-boost-description": "Earn more berries when you defeat an enemy",
+      "heal-title": "Heal",
+      "heal-description": "Heal more with food",
+      "crew-size-title": "Crew +1",
+      "crew-size-description": "Increase the crew size and add one more member"
+    },
+    "VivreCard": {
+      "vivre-card-label": "VIVRE CARDS",
+      "vivre-card-description": "All the vivre cards you found are here. You can use them to recruit pirates into your fleet.",
+      "fleet-members": "fleet members",
+      "search-unit": "Search unit"
+    },
+    "Zone": {
+      "show-looted-cards": "Show looted cards :"
+    }
+  },
+  "Stats": {},
+  "Tables": {
+    "table-column-name": "Name",
+    "table-column-rarity": "Rarity",
+    "table-column-level": "Level",
+    "table-column-action": "Action",
+    "table-column-cost": "Captain Pwr.",
+    "table-column-hplvlmax": "HP Lvl Max",
+    "table-column-atklvl1": "ATK Lvl 1",
+    "table-column-price": "Price",
+    "table-action-to-crew": "To crew",
+    "table-action-in-crew": "In crew",
+    "table-action-in-fleet": "In fleet",
+    "table-action-recruit-card": "Recruit card",
+    "table-action-recruit": "Recruit"
+  },
+  "Goals": {
+    "KILL_ENEMIES-label": "Beat {{value}} enemies in {{location}}",
+    "CLEAR_DUNGEON-label": "Finish {{value}} times the dungeon of {{location}}",
+    "LOOT_VIVRECARD-label": "Loot all vivre cards of {{location}}",
+    "MINE_ENERGY-label": "Use {{value} energy in the mine",
+    "MINE_LOOT-label": "Loot {{value}} gems in the mine",
+    "claim-reward": "Claim Reward",
+    "select-new-goal": "Select a new goal..."
+  }
+}

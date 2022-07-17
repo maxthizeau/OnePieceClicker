@@ -3,7 +3,7 @@ import { ShowScrollBar } from "../styled/Globals"
 
 export const ModalContainer = styled.div`
   background-color: #00000042;
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -12,6 +12,10 @@ export const ModalContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  & h3 {
+    margin: 20px 0px 20px 0px;
+  }
 `
 
 export const ModalStyled = styled.div`
@@ -23,7 +27,7 @@ export const ModalStyled = styled.div`
   /* min-width: 500px; */
   /* max-width: 800px; */
   padding: 20px;
-  max-height: 80vh;
+  max-height: 90vh;
   max-width: 1200px;
   overflow: scroll;
   ${ShowScrollBar}
@@ -44,7 +48,7 @@ export const ModalButtonStyled = styled.a`
 export const CloseModalIcon = styled.a`
   position: absolute;
   cursor: pointer;
-  top: 8vh;
+  top: 2vh;
   left: 0;
   right: 0;
   margin-left: auto;

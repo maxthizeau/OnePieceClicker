@@ -11,7 +11,11 @@ const ClientOnly: FC<any> = ({ children, ...delegated }) => {
     return null
   }
 
-  return <div {...delegated}>{children}</div>
+  return (
+    <div style={{ width: "100%" }} {...delegated}>
+      {children}
+    </div>
+  )
 }
 
 export default ClientOnly

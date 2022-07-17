@@ -12,6 +12,7 @@ import { getShipEffects } from "../../lib/clickerFunctions"
 import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
 import { IMenuUnlockPayload, IMenuUnlockState, menuUnlocksPrices } from "../../lib/data/menuUnlocks"
 import { ELogType, useLogs } from "../../lib/hooks/useLogs"
+import useTranslation from "next-translate/useTranslation"
 // import { TInstance } from "../../lib/types"
 
 const BoatStyled = styled.div`
@@ -22,37 +23,55 @@ const BoatStyled = styled.div`
   outline: 2px solid black;
   background: #eee2ba;
   display: flex;
+  flex-wrap: wrap;
+  flex-basis: 100%;
   /* max-width: 100%; */
+  @media only screen and (min-width: 1200px) {
+    width: auto;
+    flex-wrap: nowrap;
+  }
+  /*
+  @media only screen and (min-width: 1550px) {
+  } */
 `
 
 const ImageWrapper = styled.div`
-  width: 250px;
-
+  width: 100%;
   padding: 20px;
-
   border-radius: 3px;
   border: 3px solid #b9896e;
   outline: 2px solid black;
   background: white;
   text-align: center;
-
+  order: 1;
+  margin-top: 10px;
   & img {
     width: 150px;
+  }
+  @media only screen and (min-width: 1200px) {
+    width: 240px;
+    order: 0;
+    margin-top: 0px;
   }
 `
 
 const ShipName = styled.div`
-  margin-bottom: 20px;
-  width: 170px;
+  /* margin-bottom: 20px; */
+  width: 80%;
   font-size: 0.8em;
+  margin: 0px auto 20px auto;
 `
 
 const MenuWrapper = styled.div`
+  order: 0;
   padding: 20px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
+  @media only screen and (min-width: 1200px) {
+    order: 1;
+  }
 `
 
 const MenuAndTitleWrapper = styled.div`
@@ -99,6 +118,7 @@ const ShipEffects = ({ ship }: { ship: IShip }) => {
 }
 
 const Boat: FC<IBoatProps> = ({}) => {
+  const { t } = useTranslation()
   const zoneId = useReactiveVar(zoneIdVar)
   const { state, dispatch } = useGameState()
   const { menuUnlocks } = state
@@ -132,8 +152,8 @@ const Boat: FC<IBoatProps> = ({}) => {
         id: `unlockMenuError-${price}-${unlockedMenu}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: "Not enough berries",
-        message: `You don't have enough berries to unlock "${unlockedMenu}"`,
+        title: t(`notifications:warning.title-not-enough-berries`),
+        message: t(`notifications:warning.warning-message-unlock-menu`, { unlockedMenu: unlockedMenu }),
         type: "warning", // 'default', 'success', 'info', 'warning'
       })
     } else {
@@ -142,8 +162,8 @@ const Boat: FC<IBoatProps> = ({}) => {
         id: `unlockMenu-${price}-${unlockedMenu}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: `[${unlockedMenu}] unlocked !`,
-        message: `You can now access to ${unlockedMenu}`,
+        title: t(`notifications:success.title-unlock-menu`, { unlockedMenu: unlockedMenu }),
+        message: t(`notifications:success.message-unlock-menu`, { unlockedMenu: unlockedMenu }),
         type: "success", // 'default', 'success', 'info', 'warning'
       })
     }
@@ -159,16 +179,16 @@ const Boat: FC<IBoatProps> = ({}) => {
         </ImageWrapper>
         <MenuAndTitleWrapper>
           <h3 style={{ cursor: "pointer" }} onClick={() => setVisibleZoneModal(true)}>
-            Zone #{zone.id} : {zone.location}
+            Zone #{zone.id} : {t(`zones:${zone.id}-${zone.location}`)}
           </h3>
           <Modal type="zone" visible={visibleZoneModal} setVisible={setVisibleZoneModal} />
           <MenuWrapper>
-            <MenuButton label="Map" icon="images/icons/winIcon.png" type="map" locked={null} />
-            <MenuButton label="Boat" icon="images/icons/boatIcon.png" type="boat" locked={null} />
-            <MenuButton label="Cards" icon="images/icons/vivreCardIcon.png" type="cards" locked={null} />
-            <MenuButton label="Fleet" icon="images/icons/fleetIcon.png" type="fleet" locked={null} />
+            <MenuButton label={t("game:BoatMenu.Map")} icon="images/icons/winIcon.png" type="map" locked={null} />
+            <MenuButton label={t("game:BoatMenu.Boat")} icon="images/icons/boatIcon.png" type="boat" locked={null} />
+            <MenuButton label={t("game:BoatMenu.Cards")} icon="images/icons/vivreCardIcon.png" type="cards" locked={null} />
+            <MenuButton label={t("game:BoatMenu.Fleet")} icon="images/icons/fleetIcon.png" type="fleet" locked={null} />
             <MenuButton
-              label="Shop"
+              label={t("game:BoatMenu.Shop")}
               icon="images/icons/shopIcon.png"
               type="shop"
               locked={
@@ -185,7 +205,7 @@ const Boat: FC<IBoatProps> = ({}) => {
               }
             />
             <MenuButton
-              label="Upgrades"
+              label={t("game:BoatMenu.Upgrades")}
               icon="images/icons/upgradesIcon.png"
               type="upgrades"
               locked={
@@ -202,7 +222,7 @@ const Boat: FC<IBoatProps> = ({}) => {
               }
             />
             <MenuButton
-              label="Mine"
+              label={t("game:BoatMenu.Mine")}
               icon="images/treasure-game/gems/diamond.png"
               type="mine"
               locked={
@@ -219,7 +239,7 @@ const Boat: FC<IBoatProps> = ({}) => {
               }
             />
             <MenuButton
-              label="Training"
+              label={t("game:BoatMenu.Training")}
               icon="images/icons/xpIcon.png"
               type="training"
               locked={

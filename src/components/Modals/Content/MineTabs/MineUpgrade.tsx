@@ -7,6 +7,7 @@ import { ActionEnum, useGameState } from "../../../../lib/hooks/GameContext"
 import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../../lib/utils"
 import { BerryIcon } from "../../../styled/Globals"
+import useTranslation from "next-translate/useTranslation"
 const UpgradeBoxStyled = styled.div`
   padding: 5px 10px;
   border-radius: 3px;
@@ -55,6 +56,7 @@ const UpgradeButtonStyled = styled.a<{ disabled?: boolean }>`
 `
 
 interface IUpgradeBoxProps {
+  upgradeId: ETreasureGameUpgrades
   icon: string
   title: string
   subtitle: string
@@ -66,7 +68,8 @@ interface IUpgradeBoxProps {
 
 // const MineUpgradeList
 
-const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, price, maximumLevel, onClick }) => {
+const UpgradeBox: FC<IUpgradeBoxProps> = ({ upgradeId, icon, title, subtitle, level, price, maximumLevel, onClick }) => {
+  const { t } = useTranslation()
   const disabled = level >= maximumLevel
   return (
     <UpgradeBoxStyled>
@@ -74,8 +77,8 @@ const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, price,
         <img src={icon} />
       </UpgradeIcon>
       <UpgradeText>
-        <p className="main-title">{title}</p>
-        <p className="sub-title">{subtitle}</p>
+        <p className="main-title">{t(`treasureGame:Upgrades.${Object.values(ETreasureGameUpgrades)[upgradeId]}-title`)}</p>
+        <p className="sub-title">{t(`treasureGame:Upgrades.${Object.values(ETreasureGameUpgrades)[upgradeId]}-subtitle`)}</p>
       </UpgradeText>
 
       <UpgradeLevel>Lvl. {level}</UpgradeLevel>
@@ -94,6 +97,7 @@ const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, price,
 
 const MineUpgrade: FC = () => {
   const gameState = useGameState()
+  const { t } = useTranslation()
   const { addLog } = useLogs()
 
   function upgradeMine(upgrade: IMineUpgrade, currentLevel: number) {
@@ -102,8 +106,9 @@ const MineUpgrade: FC = () => {
         id: `mineUpgradeError-${upgrade.id}-${currentLevel}`,
         logTypes: [ELogType.Mine],
         notification: true,
-        title: "Not enought berries",
-        message: "You don't have enought berries to do this upgrade",
+        title: t("notifications:warning.title-not-enough-berries"),
+        message: t("notifications:warning.message-mine-market-upgrade"),
+
         type: "warning", // 'default', 'success', 'info', 'warning'
       })
     } else {
@@ -118,7 +123,7 @@ const MineUpgrade: FC = () => {
 
   return (
     <>
-      <h5>Upgrade : Mine more efficiently</h5>
+      <h5>{t("game:Modals.Mine.upgrade-subtitle")}</h5>
 
       {mineUpgradesList.map((upgrade, index) => {
         console.log(gameState.state)
@@ -127,6 +132,7 @@ const MineUpgrade: FC = () => {
         return (
           <UpgradeBox
             key={`upgrade-mine-${index}`}
+            upgradeId={upgrade.id}
             icon={upgrade.icon}
             title={upgrade.title}
             subtitle={upgrade.subtitle}

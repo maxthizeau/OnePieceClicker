@@ -6,6 +6,7 @@ import useCards from "../../lib/hooks/useCards"
 import usePower from "../../lib/hooks/usePower"
 import Currency from "../Currencies/Currency"
 import Stat from "./Stat"
+import useTranslation from "next-translate/useTranslation"
 
 const StatsListStyled = styled.div`
   color: white;
@@ -17,16 +18,17 @@ const StatsListStyled = styled.div`
 `
 
 const StatsList: FC = () => {
+  const { t } = useTranslation()
   const [crewPower, clickPower] = usePower()
   const [cards] = useCards()
-  const gameState = useGameState()
+
   return (
     <>
       <StatsListStyled>
-        <Stat logo="images/icons/clickPowerIcon.png" label="Click Power" value={intWithSpaces(clickPower).toString()} />
-        <Stat logo="images/icons/crewPowerIcon.png" label="Crew Power" value={intWithSpaces(crewPower).toString()} />
+        <Stat logo="images/icons/clickPowerIcon.png" label={t("common:click-power")} value={intWithSpaces(clickPower).toString()} />
+        <Stat logo="images/icons/crewPowerIcon.png" label={t("common:crew-power")} value={intWithSpaces(crewPower).toString()} />
+        <Stat logo="images/icons/poneglyphIcon.png" label={t("common:vivre-cards")} value={`${cards.length} / 3200`} />
         {/* <Stat logo="images/icons/winIcon.png" label="Islands Discovered" value="32" /> */}
-        <Stat logo="images/icons/poneglyphIcon.png" label="Vivre Cards" value={`${cards.length} / 3200`} />
       </StatsListStyled>
     </>
   )

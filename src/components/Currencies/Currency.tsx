@@ -11,6 +11,7 @@ import useInterval from "../../lib/hooks/useInterval"
 import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
 import { nFormatter } from "../../lib/utils"
+import useTranslation from "next-translate/useTranslation"
 
 const GainTextStyled = styled.div<{ showGain: boolean; negative?: boolean; x?: number }>`
   @keyframes slideOutToTop {
@@ -42,7 +43,7 @@ const GainTextStyled = styled.div<{ showGain: boolean; negative?: boolean; x?: n
   animation: 1s ease-out 0s 1 slideOutToTop;
 `
 
-export const CurrencyStyled = styled.div<{ clickable: boolean; classicFont?: boolean }>`
+export const CurrencyStyled = styled.div<{ clickable: boolean; classicFont?: boolean; isMainCurrency?: boolean }>`
   @keyframes anime {
     0% {
       transform: scale(1);
@@ -91,34 +92,45 @@ export const CurrencyStyled = styled.div<{ clickable: boolean; classicFont?: boo
   &.animate:after {
     animation: anime 2s ease-out 1s infinite;
   }
+
+  ${({ isMainCurrency }) => (isMainCurrency ? "  width:340px!important;margin:10px auto;" : "")}
+  @media only screen and (min-width: 1550px) {
+    ${({ isMainCurrency }) => isMainCurrency && "  width:340px!important;"}
+  }
+  @media only screen and (min-width: 992px) {
+    ${({ isMainCurrency }) => isMainCurrency && "margin:auto; margin-left:0px; width: 340px; height:74px; justify-content: center; margin-top: 10px;"}
+  }
 `
 
-const CurrencyWrapper = styled.div`
+const CurrencyWrapper = styled.div<{ isMainCurrency?: boolean }>`
   display: flex;
-  padding-right: 15px;
+  ${({ isMainCurrency }) => (isMainCurrency ? "flex-direction: row;" : "flex-direction: column;")}/* @media only screen and (min-width: 1550px) {
+  } */
 `
 
 export const SigStyled = styled.div`
   display: flex;
+
   padding: 10px;
 
   & img {
     width: 25px;
     height: 25px;
   }
-
-  .outline-white {
-    /* filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white); */
-  }
 `
 
-export const TextStyled = styled.div`
+export const TextStyled = styled.div<{ isMainCurrency?: boolean }>`
   color: white;
   text-shadow: 2px 2px 0px black;
   display: flex;
-  padding-left: 8px;
   align-self: center;
   font-size: 1em;
+
+  /* @media only screen and (max-width: 1200px) and (max-width: 1550px) { */
+  ${({ isMainCurrency }) => (isMainCurrency ? "padding-top:5px;justify-content: center;flex-grow: 1;text-align: center;" : "padding-bottom:5px;")}/* } */
+  /* @media only screen and (min-width: 1550px) {
+    padding-left: 8px;
+  } */
 `
 
 const Timer = styled.div`
@@ -148,16 +160,30 @@ interface ICurrencyProps {
   moveX?: boolean
   style?: CSSProperties
   formatNumber?: boolean
+  isMainCurrency?: boolean
 }
 
 const animationDuration = 1500 // milliseconds
 
-const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey, spendItemFunc, stateItem, moveX = false, style, formatNumber }) => {
+const Currency: FC<ICurrencyProps> = ({
+  valueMonitored,
+  icon,
+  canUseIt,
+  itemKey,
+  spendItemFunc,
+  stateItem,
+  moveX = false,
+  style,
+  formatNumber,
+  isMainCurrency,
+}) => {
   const [gains, setGains] = useState<{ id: number; value: number; timeEnd: number; x: number }[]>([])
   const [nextGainIndex, setNextGainIndex] = useState(0)
   const [timer, setTimer] = useState<number>(0)
   const [previousValue, setPreviousValue] = useState(0)
   const currentDateTime = new Date().getTime()
+  const { t } = useTranslation()
+  const { replaceHealDescriptionWithValue } = useItems()
   // useEffect(() => {
 
   //   // setShowGain(<GainTextStyled showGain={true}>+ 400</GainTextStyled>)
@@ -195,17 +221,34 @@ const Currency: FC<ICurrencyProps> = ({ valueMonitored, icon, canUseIt, itemKey,
       }}
       clickable={canUseIt ?? false}
       style={style}
+      isMainCurrency={isMainCurrency}
     >
-      <CurrencyWrapper>
+      <CurrencyWrapper isMainCurrency={isMainCurrency}>
         {stateItem ? (
-          <Hover hoverContent={<BasicHover content={stateItem?.description ?? ""} />} horizontal="center" vertical="bottom" delayOpen={200} offset={{ y: 10 }}>
-            <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
-          </Hover>
+          // <Hover
+          //   hoverContent={
+          //     <BasicHover
+          //       content={
+          //         stateItem
+          //           ? stateItem.itemKey == "healFood"
+          //             ? replaceHealDescriptionWithValue(t(`game:Currencies.${stateItem.itemKey}-description`))
+          //             : t(`game:Currencies.${stateItem.itemKey}-description`)
+          //           : ""
+          //       }
+          //     />
+          //   }
+          //   horizontal="center"
+          //   vertical="bottom"
+          //   delayOpen={200}
+          //   offset={{ y: 10 }}
+          // >
+          <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
         ) : (
+          // </Hover>
           <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
         )}
 
-        <TextStyled>{formatNumber ? nFormatter(valueMonitored, 1) : intWithSpaces(valueMonitored)}</TextStyled>
+        <TextStyled isMainCurrency={isMainCurrency}>{formatNumber ? nFormatter(valueMonitored, 1) : intWithSpaces(valueMonitored)}</TextStyled>
       </CurrencyWrapper>
       {/* <GainText value="+400" /> */}
 

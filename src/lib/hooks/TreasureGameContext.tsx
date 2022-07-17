@@ -10,6 +10,7 @@ import { ActionEnum, useGameState } from "./GameContext"
 import useInterval from "./useInterval"
 import { useLogs, ELogType } from "./useLogs"
 import useShip from "./useShip"
+import useTranslation from "next-translate/useTranslation"
 
 type TNotification = {
   type: "error" | "gem" | "success" | "warning"
@@ -130,6 +131,7 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
 }
 
 const useTreasureGame = () => {
+  const { t } = useTranslation()
   const context = useContext(TreasureGameContext)
   const gameState = useGameState()
   const { addLog } = useLogs()
@@ -207,10 +209,10 @@ const useTreasureGame = () => {
     if (doubleLoot) {
       gameState.dispatch({ type: ActionEnum.TreasureGame_LootGem, payload: { treasureGameGem: { id: gems[index].stone } } })
       gameState.dispatch({ type: ActionEnum.TreasureGame_LootGem, payload: { treasureGameGem: { id: gems[index].stone } } })
-      sendNotification(notifId, "gem", "[Double Gem !] You found two gems", gemName, gems[index].stone)
+      sendNotification(notifId, "gem", t("treasureGame:double-gem-loot"), gemName, gems[index].stone)
     } else {
       gameState.dispatch({ type: ActionEnum.TreasureGame_LootGem, payload: { treasureGameGem: { id: gems[index].stone } } })
-      sendNotification(notifId, "gem", "You found a gem", gemName, gems[index].stone)
+      sendNotification(notifId, "gem", t("treasureGame:gem-loot"), gemName, gems[index].stone)
     }
   }
 
@@ -220,12 +222,7 @@ const useTreasureGame = () => {
       console.log(index)
       console.log(level[index])
       if (level[index][0] != 1 || level[index][1] != 1) {
-        sendNotification(
-          `move-${x}-${y}`,
-          "error",
-          "Impossible to move",
-          "There seems to be something blocking the way. Use the pickaxe or a bomb to clear the path."
-        )
+        sendNotification(`move-${x}-${y}`, "error", t("treasureGame:impossible-to-move"), t("treasureGame:impossible-to-move-message"))
       } else {
         const enoughtEnergy = spendEnergy(config.energyCosts.move)
         if (enoughtEnergy) {
@@ -235,7 +232,7 @@ const useTreasureGame = () => {
           }
           setCharPosition({ x: x, y: y })
         } else {
-          sendNotification("energy-move", "warning", "Not enought energy", "You don't have enought energy to do this action")
+          sendNotification("energy-move", "warning", t("treasureGame:not-enough-energy"), t("treasureGame:not-enough-energy-message"))
         }
       }
     },
@@ -322,17 +319,17 @@ const useTreasureGame = () => {
         }
         setLevelState(levelStateTmp)
       } else {
-        sendNotification("energy-scan", "warning", "Not enought energy", "You don't have enought energy to do this action")
+        sendNotification("energy-scan", "warning", t("treasureGame:not-enough-energy"), t("treasureGame:not-enough-energy-message"))
       }
     }
     if (mode == EGameMode.DIG) {
       console.log("DIG Click")
       if (levelState[index] != EBlockState.SHOW || isBorder(index, level.length)) {
         // console.log("WARNING : You cannot pickaxe this block")
-        sendNotification(`dig-error-noborder-${index}`, "error", "Impossible action", "You cannot pickaxe this block")
+        sendNotification(`dig-error-noborder-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-cannot-pickaxe-this-block"))
       } else if (level[index][0] == 1 && level[index][1] == 1) {
         // console.log("WARNING : You can only pickaxe walls")
-        sendNotification(`dig-error-onlywall-${index}`, "error", "Impossible action", "You can only pickaxe walls")
+        sendNotification(`dig-error-onlywall-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-can-only-pickaxe-walls"))
       } else {
         const enoughtEnergy = spendEnergy(config.energyCosts.pickaxe)
         if (enoughtEnergy) {
@@ -340,14 +337,14 @@ const useTreasureGame = () => {
           levelTmp[index] = [1, 1]
           setLevel(levelTmp)
         } else {
-          sendNotification("energy-dig", "warning", "Not enought energy", "You don't have enought energy to do this action")
+          sendNotification("energy-dig", "warning", t("treasureGame:not-enough-energy"), t("treasureGame:not-enough-energy-message"))
         }
       }
     }
     if (mode == EGameMode.BOMB) {
       console.log("Nuke Click")
       if (levelState[index] != EBlockState.SHOW || isBorder(index, level.length)) {
-        sendNotification(`bomb-error-${index}`, "error", "Impossible action", "You cannot bomb this block")
+        sendNotification(`bomb-error-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-cannot-bomb-this-block"))
       } else {
         const enoughtEnergy = spendEnergy(config.energyCosts.bomb)
         if (enoughtEnergy) {
@@ -364,7 +361,7 @@ const useTreasureGame = () => {
 
           setLevel(levelTmp)
         } else {
-          sendNotification(`energy-bomb`, "warning", "Not enought energy", "You don't have enought energy to do this action")
+          sendNotification(`energy-bomb`, "warning", t("treasureGame:not-enough-energy"), t("treasureGame:not-enough-energy-message"))
         }
       }
     }

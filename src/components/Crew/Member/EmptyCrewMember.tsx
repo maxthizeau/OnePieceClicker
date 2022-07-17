@@ -8,6 +8,7 @@ import BasicHover from "../../Global/Hover/BasicHover"
 import CrewHover from "../../Global/Hover/CrewHover"
 import CrewHealthBar from "./CrewHealthBar"
 import CrewXPBar from "./CrewXPBar"
+import useTranslation from "next-translate/useTranslation"
 
 const CrewMemberWrapperStyled = styled.div<{ isCaptain?: boolean }>`
   width: 100%;
@@ -26,7 +27,8 @@ const CrewMemberWrapperStyled = styled.div<{ isCaptain?: boolean }>`
 `
 
 const EmptyCrewMember: FC = () => {
-  return <CrewMemberWrapperStyled>Free slot</CrewMemberWrapperStyled>
+  const { t } = useTranslation()
+  return <CrewMemberWrapperStyled>{t("game:Crew.empty-slot")}</CrewMemberWrapperStyled>
 }
 
 export default EmptyCrewMember

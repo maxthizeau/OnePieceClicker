@@ -3,4 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-module.exports = nextConfig
+const nextTranslate = require("next-translate")
+
+module.exports = nextTranslate(nextConfig)
+// module.exports = nextConfig

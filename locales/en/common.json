@@ -1,0 +1,19 @@
+{
+  "changeLanguage": "Change Language",
+  "navigation": {
+    "guide": "Guide",
+    "saveImport": "Save / Import",
+    "language": "Language"
+  },
+  "click-power": "Click Power",
+  "crew-power": "Crew Power",
+  "vivre-card": "Vivre Card",
+  "vivre-cards": "Vivre Cards",
+  "reset": "Reset",
+  "select": "Select",
+  "owned": "Owned",
+  "hide": "Hide",
+  "show": "Show",
+  "Yes": "Yes",
+  "No": "Yes"
+}

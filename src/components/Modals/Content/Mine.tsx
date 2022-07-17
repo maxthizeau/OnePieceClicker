@@ -3,11 +3,15 @@ import styled from "styled-components"
 import TreasureFinder from "../../TreasureGame/TreasureFinder"
 import MineMarket from "./MineTabs/MineMarket"
 import MineUpgrade from "./MineTabs/MineUpgrade"
+import useTranslation from "next-translate/useTranslation"
 
 const ModalContainerStyled = styled.div`
   width: 645px;
   height: 850px;
   /* padding: 20px 0px ; */
+  & h5 {
+    margin: 10px;
+  }
 `
 
 const TabButtonsContainer = styled.div`
@@ -25,6 +29,7 @@ const TabButton = styled.a<{ active?: boolean }>`
 `
 
 const MineModalContent: FC = () => {
+  const { t } = useTranslation()
   const [tab, setTab] = useState("mine")
 
   return (
@@ -33,13 +38,13 @@ const MineModalContent: FC = () => {
 
       <TabButtonsContainer>
         <TabButton active={tab == "mine"} onClick={() => setTab("mine")}>
-          Mine
+          {t("game:Modals.Mine.mine-label")}
         </TabButton>
         <TabButton active={tab == "upgrade"} onClick={() => setTab("upgrade")}>
-          Upgrade
+          {t("game:Modals.Mine.upgrade-mine-label")}
         </TabButton>
         <TabButton active={tab == "market"} onClick={() => setTab("market")}>
-          Market
+          {t("game:Modals.Mine.market-mine-label")}
         </TabButton>
       </TabButtonsContainer>
       {tab == "mine" && <TreasureFinder />}

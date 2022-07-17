@@ -1,5 +1,6 @@
 import { FC } from "react"
 import { MenuButton, MenuButtonWrapper } from "../ClickerStyles"
+import useTranslation from "next-translate/useTranslation"
 
 interface IVictoryMenuProps {
   buttonDisabled: boolean
@@ -9,16 +10,19 @@ interface IVictoryMenuProps {
 }
 
 const VictoryMenu: FC<IVictoryMenuProps> = ({ buttonDisabled, setFarmMode, resetDungeon, back }) => {
+  const { t } = useTranslation()
   return (
     <MenuButtonWrapper>
       <MenuButton disabled={buttonDisabled} onClick={() => back()}>
-        Go back to the seaport
+        {t("game:Clicker.Popups.back-to-seaport")}
       </MenuButton>
       <MenuButton disabled={buttonDisabled} onClick={() => resetDungeon()}>
-        Fight again (once)
+        {/* Fight again (once) */}
+        {t("game:Clicker.Popups.fight-again")}
       </MenuButton>
       <MenuButton disabled={buttonDisabled} onClick={() => setFarmMode()}>
-        Farm it (until you stop it)
+        {/* Farm it (until you stop it) */}
+        {t("game:Clicker.Popups.farm-dungeon")}
       </MenuButton>
     </MenuButtonWrapper>
   )

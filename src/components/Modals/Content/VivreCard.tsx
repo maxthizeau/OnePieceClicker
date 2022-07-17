@@ -9,8 +9,10 @@ import UnitNotification from "../../Global/notifications/UnitNotification"
 import { useLogs, ELogType } from "../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../lib/utils"
 import { BerryIcon } from "../../styled/Globals"
+import useTranslation from "next-translate/useTranslation"
 
 const VivreModalContent: FC = () => {
+  const { t } = useTranslation()
   const [cards, _, recruitCard] = useCards()
   const gameState = useGameState()
   const [data, setData] = useState<ICardUnit[]>([])
@@ -37,28 +39,32 @@ const VivreModalContent: FC = () => {
     },
 
     {
-      label: "Name",
+      label: t("game:Tables.table-column-name"),
       dataKey: "name",
       key: "name",
       sortMode: "string",
       align: "left",
     },
     {
-      label: "Cost.",
+      label: t("game:Tables.table-column-cost"),
       dataKey: "cost",
       key: "cost",
       sortMode: "number",
+      render: (record, text) => {
+        return `${Math.round((record.cost / 65) * 100)}%`
+        // return text
+      },
     },
     {
-      label: "Rarity.",
+      label: t("game:Tables.table-column-rarity"),
       dataKey: "stars",
       key: "stars",
       sortMode: "number",
     },
     {
-      label: "HP Lvl Max",
-      dataKey: "HPLvl1",
-      key: "HPLvl1",
+      label: t("game:Tables.table-column-hplvlmax"),
+      dataKey: "HPLvlMax",
+      key: "HPLvlMax",
       // sortMode: "number",
       sort: (a, b) => {
         const aHP = getMaximumHP(a, 100)
@@ -70,7 +76,7 @@ const VivreModalContent: FC = () => {
       },
     },
     {
-      label: "ATK Lvl 1",
+      label: t("game:Tables.table-column-atklvl1"),
       dataKey: "ATK",
       key: "ATK",
 
@@ -84,7 +90,7 @@ const VivreModalContent: FC = () => {
       },
     },
     {
-      label: "Price",
+      label: t("game:Tables.table-column-price"),
       dataKey: "price",
       key: "price",
       render: (record, _) => {
@@ -102,18 +108,18 @@ const VivreModalContent: FC = () => {
       },
     },
     {
-      label: "Action",
+      label: t("game:Tables.table-column-action"),
       dataKey: "action",
       key: "action",
       render: (record, text) => {
-        if (findIndexFleetFunc(record) != -1) return <span>In Fleet</span>
+        if (findIndexFleetFunc(record) != -1) return <span>{t("game:Tables.table-action-in-fleet")}</span>
         return (
           <ActionButton
             onClick={() => {
               const res = recruitCard(record)
               const notifProps = res.success
                 ? {
-                    content: <UnitNotification label={res.title ?? "Recruit card"} unit={record} />,
+                    content: <UnitNotification label={res.title ?? t("game:Tables.table-action-recruit-card")} unit={record} />,
                   }
                 : {
                     title: res.title,
@@ -129,7 +135,7 @@ const VivreModalContent: FC = () => {
               })
             }}
           >
-            Recruit
+            {t("game:Tables.table-action-recruit")}
           </ActionButton>
         )
       },
@@ -156,11 +162,13 @@ const VivreModalContent: FC = () => {
 
   return (
     <>
-      <h3>VIVRE CARDS</h3>
-      <ModalSubtitle>All the vivre cards you found are here. You can use them to recruit pirates into your fleet.</ModalSubtitle>
+      <h3>{t("game:Modals.VivreCard.vivre-card-label")}</h3>
+      <ModalSubtitle>{t("game:Modals.VivreCard.vivre-card-description")}</ModalSubtitle>
       <TableFilters>
-        <FilterButton onClick={() => filterFleetMember(!filterFleet)}>{!filterFleet ? "Hide" : "Show"} fleet members</FilterButton>
-        <SearchInput placeholder="Search unit" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <FilterButton onClick={() => filterFleetMember(!filterFleet)}>
+          {!filterFleet ? t("common:hide") : t("common:show")} {t("game:Modals.VivreCard.fleet-members")}
+        </FilterButton>
+        <SearchInput placeholder={t("game:Modals.VivreCard.search-unit")} value={search} onChange={(e) => setSearch(e.target.value)} />
       </TableFilters>
       <Table
         style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}

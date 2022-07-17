@@ -9,6 +9,7 @@ import { RayleighUnlockPrices, XPBoostUnlockPrices } from "../../../lib/data/men
 import { nFormatter } from "../../../lib/utils"
 import { ELogType, useLogs } from "../../../lib/hooks/useLogs"
 import { TTypeTraining } from "../../../lib/types"
+import useTranslation from "next-translate/useTranslation"
 
 const ExtraModalStyles = styled.div`
   min-height: 800px;
@@ -159,16 +160,17 @@ interface ISlotProps {
 }
 
 const XPBoostSlot = ({ free, locked, price, selected, onClick, unit, removeFunc }: ISlotProps) => {
+  const { t } = useTranslation()
   return (
     <TrainingSpot selected={selected} free={free} locked={locked} onClick={onClick}>
       <InsideTrainingSpot>
-        {free && <div>Free Slot</div>}
+        {free && <div>{t("game:Modals.Training.free-slot")}</div>}
         {locked && price !== undefined && (
           <div>
-            Unlock price: <br /> <BerryIcon /> {nFormatter(price, 3)}
+            {t("game:Modals.Training.unlock-price")} <br /> <BerryIcon /> {nFormatter(price, 3)}
           </div>
         )}
-        {!locked && !free && !unit && <>Error : Unit not found</>}
+        {!locked && !free && !unit && <>{t("game:Modals.Training.error-unit-not-found")}</>}
         {!locked && !free && unit && (
           <>
             <img src={getThumbImageSrc(unit.unit.id)} />
@@ -181,17 +183,18 @@ const XPBoostSlot = ({ free, locked, price, selected, onClick, unit, removeFunc 
   )
 }
 const RayleighSlot = ({ free, locked, price, selected, onClick, unit, boostFunc }: ISlotProps) => {
+  const { t } = useTranslation()
   const percentXP = unit ? (1 - unit.trainingXP / getMaximumTrainingXP(unit.unit)) * 100 : 0
   return (
     <TrainingSpot selected={selected} free={free} locked={locked} onClick={onClick}>
       <InsideTrainingSpot>
-        {free && <div>Free Slot</div>}
+        {free && <div>{t("game:Modals.Training.free-slot")}</div>}
         {locked && price !== undefined && (
           <div>
-            Unlock price: <br /> <BerryIcon /> {nFormatter(price, 3)}
+            {t("game:Modals.Training.unlock-price")} <br /> <BerryIcon /> {nFormatter(price, 3)}
           </div>
         )}
-        {!locked && !free && !unit && <>Error : Unit not found !</>}
+        {!locked && !free && !unit && <>{t("game:Modals.Training.error-unit-not-found")}</>}
         {!locked && !free && unit && (
           <>
             <img src={getThumbImageSrc(unit.unit.id)} />
@@ -199,7 +202,7 @@ const RayleighSlot = ({ free, locked, price, selected, onClick, unit, boostFunc 
             <XPBarStyled>
               <HitBarStyled percentXP={percentXP} />
               {boostFunc !== undefined && Math.floor(100 - percentXP) >= 100 ? (
-                <BoostButton onClick={boostFunc}>BOOST!</BoostButton>
+                <BoostButton onClick={boostFunc}>{t("game:Modals.Training.boost-button")}</BoostButton>
               ) : (
                 <XPBarText>{Math.floor(100 - percentXP)}%</XPBarText>
               )}
@@ -217,6 +220,7 @@ type TSelectedSlot = {
 }
 
 const TrainingModalContent: FC = () => {
+  const { t } = useTranslation()
   const { state, dispatch } = useGameState()
   const { addLog } = useLogs()
   const { XPBoost, Rayleigh } = state.training
@@ -229,7 +233,7 @@ const TrainingModalContent: FC = () => {
         id: `unlockTraining-${price}-${type}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: "Slot unlocked",
+        title: t("notifications:success.title-training-slot-unlocked"),
         type: "success", // 'default', 'success', 'info', 'warning'
       })
     } else {
@@ -237,8 +241,8 @@ const TrainingModalContent: FC = () => {
         id: `unlockTraining-${price}-${type}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: "Not enough berries",
-        message: `You don't have enough berries to unlock this slot`,
+        title: t("notifications:warning.title-not-enough-berries"),
+        message: t("notifications:warning.message-unlock-training-slot"),
         type: "warning", // 'default', 'success', 'info', 'warning'
       })
     }
@@ -258,10 +262,10 @@ const TrainingModalContent: FC = () => {
 
   return (
     <ExtraModalStyles>
-      <h3>Training</h3>
-      <Row>
-        <Column span={12}>
-          <h4>XP Boost</h4>
+      <h3>{t("game:Modals.Training.training-label")}</h3>
+      <Row gutter={[0, 0]}>
+        <Column span={12} sm={24} xs={24}>
+          <h4>{t("game:Modals.Training.xp-boost-label")}</h4>
 
           <TrainingSpotList>
             {[...Array(XPBoostUnlockPrices.length)].map((_, index) => {
@@ -293,11 +297,11 @@ const TrainingModalContent: FC = () => {
               }
             })}
           </TrainingSpotList>
-          <SmallModalSubtitle>Units in XP Boost gains an additionnal 50% of all XP gains. You can select any unit in your fleet.</SmallModalSubtitle>
+          <SmallModalSubtitle>{t("game:Modals.Training.xp-boost-description")}</SmallModalSubtitle>
+          <Divider />
         </Column>
-        <Divider />
-        <Column span={12}>
-          <h4>Rayleigh Training</h4>
+        <Column span={12} sm={24} xs={24}>
+          <h4>{t("game:Modals.Training.rayleigh-label")}</h4>
 
           <TrainingSpotList>
             {[...Array(RayleighUnlockPrices.length)].map((_, index) => {
@@ -330,9 +334,7 @@ const TrainingModalContent: FC = () => {
               }
             })}
           </TrainingSpotList>
-          <SmallModalSubtitle>
-            Once a fleet member is level 100, Rayleigh can teach him Haki. He will be back at lvl 1 but will earn 10% base attack.{" "}
-          </SmallModalSubtitle>
+          <SmallModalSubtitle>{t("game:Modals.Training.rayleigh-description")}</SmallModalSubtitle>
         </Column>
       </Row>
       <SelectUnit selected={selectedSlot} />

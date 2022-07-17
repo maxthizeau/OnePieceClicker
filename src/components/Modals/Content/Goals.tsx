@@ -6,12 +6,14 @@ import { EGoalRewardCurrency, EGoalType, TGoal } from "../../../lib/types"
 import { getThumbImageSrc, idNumberToString, intWithSpaces } from "../../../lib/clickerFunctions"
 import { useGameState } from "../../../lib/hooks/GameContext"
 import { getPrintableRewardCurrency, goalToString } from "../../../lib/goalsFunctions"
+import useTranslation from "next-translate/useTranslation"
 
 const ExtraModalStyles = styled.div`
   width: 800px;
   height: 800px;
   & h3 {
     text-align: center;
+    margin: 10px 0px;
   }
 `
 
@@ -107,18 +109,19 @@ const defaultFilters: IGoalFilters = {
 }
 
 const GoalBox: FC<IGoalBoxProps> = ({ goal, select }) => {
-  const { toString, logo } = goalToString(goal)
+  const { t } = useTranslation()
+  const { logo, goalKey, location, value } = goalToString(goal)
   const { amount, logo: rewardLogo } = getPrintableRewardCurrency(goal)
   return (
     <GoalBoxStyled>
       <img src={`images/icons/${logo}.png`} />
       <GoalText>
-        <div>{toString}</div>
+        <div>{t(`game:Goals.${goalKey}-label`, { value: value, location: t(`zones:${goal.zoneId}-${location}`) })}</div>
         <GoalRewardText>
-          Reward : {amount} <RewardLogo src={rewardLogo} />
+          {t("game:Modals.Goals.goal-reward")} {amount} <RewardLogo src={rewardLogo} />
         </GoalRewardText>
       </GoalText>
-      <GoalButton onClick={select}>Select</GoalButton>
+      <GoalButton onClick={select}>{t("common:select")}</GoalButton>
     </GoalBoxStyled>
   )
 }
@@ -144,12 +147,13 @@ function formatFilters(filters: IGoalFilters): EGoalType[] {
 }
 
 const GoalsModalContent: FC = () => {
+  const { t } = useTranslation()
   const { maxZoneId } = useGameState().state
   const { getPossibleGoals, setCurrentGoal } = useGoals()
   const [filters, setFilters] = useState(defaultFilters)
   return (
     <ExtraModalStyles>
-      <h3>GOALS</h3>
+      <h3>{t("game:Modals.Goals.goal-label")}</h3>
       <Filters>
         <GoalButton
           className={filters.killEnemies ? `filtered` : ``}
@@ -192,19 +196,19 @@ const GoalsModalContent: FC = () => {
           <img src={`images/icons/diamondIcon.png`} />
         </GoalButton>
         <SelectZone onChange={(e) => setFilters({ ...filters, zone: parseInt(e.target.value) })}>
-          <option value={-1}>Filter by zone</option>
+          <option value={-1}>{t("game:Modals.Goals.filter-by-zone")}</option>
           {zones.map((x) => {
             if (x.id > maxZoneId) {
               return
             }
             return (
               <option value={x.id} key={`option-${x.id}`}>
-                {x.location}
+                {t(`zones:${x.id}-${x.location}`)}
               </option>
             )
           })}
         </SelectZone>
-        <GoalButton onClick={() => setFilters(defaultFilters)}>Reset</GoalButton>
+        <GoalButton onClick={() => setFilters(defaultFilters)}>{t("common:reset")}</GoalButton>
       </Filters>
       {getPossibleGoals({ hideTypes: formatFilters(filters), zone: filters.zone }).map((x) => {
         return <GoalBox key={x.id} goal={x} select={() => setCurrentGoal(x.id)} />

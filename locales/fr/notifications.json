@@ -1,0 +1,28 @@
+{
+  "warning": {
+    "title-not-enough-berries": "Vous n'avez pas assez de Berry",
+    "warning-message-unlock-menu": "Vous n'avez pas assez de Berry pour débloquer \"{{unlockedMenu}}\"",
+    "title-not-enough-gems": "Vous n'avez pas assez de gemmes",
+    "message-not-enough-gems": "Vous n'avez pas assez de gemmes pour acheté cet objet",
+    "message-mine-market-upgrade": "Vous n'avez pas assez de Berry pour faire cette amélioration",
+    "message-unlock-training-slot": "Vous n'avez pas assez de Berry pour débloquer cet emplacement",
+    "message-not-enough-berries-to-recruit": "Vous n'avez pas assez de Berry pour recruter ce membre",
+    "message-recruit-error-no-card": "Vous essayez de tricher ! Vous avez besoin de la carte pour recruter un membre.",
+    "message-recruit-already-in-fleet": "Cette unité est déjà dans votre flotte",
+    "message-not-enough-berries-to-buy-at-shop": "Réduisez la quantité ou revenez quand vous aurez plus de Berry",
+    "title-cannot-enter-dungeon": "Impossible d'entrer dans le donjon",
+    "message-cannot-enter-dungeon": "Vous avez besoin de plus de Log Poses pour entrer. Vous pouvez en acheter dans la boutique"
+  },
+  "success": {
+    "title-unlock-menu": "[{{unlockedMenu}}] débloqué !",
+    "message-unlock-menu": "Vous pouvez maintenant accéder à {{unlockedMenu}}",
+    "title-fleet-new-member": "[Flotte] Nouveau membre !",
+    "title-new-ship": "[Nouveau navire] !",
+    "message-new-ship": "Vous avez un nouveau navire : {{name}}",
+    "title-mine-market-buy": "Vous avez acheté une Vivre Card",
+    "title-training-slot-unlocked": "Emplacement débloqué",
+    "title-vivre-card-found": "Vivre Card trouvée",
+    "title-recruit-successful": "Recrutement effectué avec succès",
+    "message-recruit-successful": "{{name}} est désormais dans votre flotte. Il vous a coûté ${price} Berry."
+  }
+}

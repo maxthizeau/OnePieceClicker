@@ -7,6 +7,7 @@ import { BLOCK_PER_ROW, EBlockState, EGameMode, IGem } from "../../lib/treasureG
 import CharSprite from "./CharSprite"
 import { useTreasureGame } from "../../lib/hooks/TreasureGameContext"
 import useInterval from "../../lib/hooks/useInterval"
+import useTranslation from "next-translate/useTranslation"
 
 const GameContainer = styled.div<{ mode?: EGameMode }>`
   display: grid;
@@ -200,6 +201,7 @@ const ShowLevel: FC<IShowLevel> = ({ level, levelState, charPosition, gems, clic
 const TreasureFinder = () => {
   const { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config } = useTreasureGame()
   const [timer, setTimer] = useState(config.timer - Math.floor((new Date().getTime() - lastEnergyUpdateTimestamp) / 1000))
+  const { t } = useTranslation()
 
   const keyPress = useCallback(
     (event: KeyboardEvent) => {
@@ -222,7 +224,7 @@ const TreasureFinder = () => {
           break
       }
 
-      console.log(event.key, "pressed")
+      // console.log(event.key, "pressed")
     },
     [charPosition, level, levelState, charFunctions]
   )
@@ -243,7 +245,9 @@ const TreasureFinder = () => {
   return (
     <>
       <GameTextContainer>
-        <GameText>Refill in : {timer}</GameText>
+        <GameText>
+          {t("treasureGame:refill-in")} {timer}
+        </GameText>
         <GameText>
           <EnergyIcon width={22} marginBottom={-5} /> {energy} / {config.maxEnergy}
         </GameText>
@@ -270,7 +274,7 @@ const TreasureFinder = () => {
               }}
               active={mode == EGameMode.NORMAL}
             >
-              Move
+              {t("treasureGame:move")}
               <span>
                 {config.energyCosts.move} <EnergyIcon />
               </span>
@@ -282,7 +286,7 @@ const TreasureFinder = () => {
               }}
               active={mode == EGameMode.DIG}
             >
-              Pickaxe
+              {t("treasureGame:pickaxe")}
               <span>
                 {config.energyCosts.pickaxe} <EnergyIcon />
               </span>
@@ -327,7 +331,7 @@ const TreasureFinder = () => {
               }}
               active={mode == EGameMode.SCAN}
             >
-              Scan
+              {t("treasureGame:scan")}
               <span>
                 {config.energyCosts.scan} <EnergyIcon />
               </span>
@@ -339,7 +343,7 @@ const TreasureFinder = () => {
               }}
               active={mode == EGameMode.BOMB}
             >
-              Bomb
+              {t("treasureGame:bomb")}
               <span>
                 {config.energyCosts.bomb} <EnergyIcon />
               </span>

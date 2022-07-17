@@ -280,43 +280,43 @@ export function getShipEffects(ship: IShip) {
     switch (shipEffects[i]) {
       case EShipEffect.CREW_POWER:
         maxValue = 50
-        toString = "Crew Power"
+        toString = "crew-power"
         break
       case EShipEffect.CLICK_POWER:
         maxValue = 50
-        toString = "Click Power"
+        toString = "click-power"
         break
       case EShipEffect.LOOT_CHANCE:
         maxValue = 30
-        toString = "Vivre Card loot chance"
+        toString = "vivre-card"
         break
       case EShipEffect.XP_GAIN:
         maxValue = 30
-        toString = "XP earned"
+        toString = "xp-boost"
         break
       case EShipEffect.BERRY:
         maxValue = 30
-        toString = "Berries earned"
+        toString = "berries"
         break
       case EShipEffect.CAPTAIN_BOOST:
         maxValue = 200
-        toString = "Captain Boost"
+        toString = "captain-boost"
         break
       case EShipEffect.MINE_ENERGY:
         maxValue = 50
-        toString = "Energy Refill speed in mine"
+        toString = "energy-refill-speed"
         break
       case EShipEffect.MINE_DOUBLELOOT_CHANCE:
         maxValue = 50
-        toString = "Chance of double loot in mine"
+        toString = "double-loot-mine"
         break
       case EShipEffect.TRAINING_SPEED:
         maxValue = 30
-        toString = "Training speed with Rayleigh"
+        toString = "rayleigh-training-speed"
         break
       case EShipEffect.ITEM_DURATION:
         maxValue = 50
-        toString = "Item duration"
+        toString = "item-duration"
         break
 
       default:

@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react"
 import styled from "styled-components"
 import LostMenu from "./LostMenu"
 import VictoryMenu from "./VictoryMenu"
+import useTranslation from "next-translate/useTranslation"
 
 const PopupStyled = styled.div`
   position: absolute;
@@ -33,19 +34,15 @@ interface IEndDungeonMessageProps {
 
 const EndDungeonMessage: FC<IEndDungeonMessageProps> = ({ type, setFarmMode, resetDungeon, back }) => {
   const [buttonDisabled, setButtonDisabled] = useState(true)
-
+  const { t } = useTranslation()
   // Disable buttons for short time to prevent missclicks due to spam click
   useEffect(() => {
     setInterval(() => setButtonDisabled(false), 500)
   }, [])
 
-  const label = type == "victory" ? "VICTORY" : type == "lost" ? "DEFEAT" : "Title : UNDEFINED STATE"
+  const label = type == "victory" ? t("game:Clicker.Popups.victory") : type == "lost" ? t("game:Clicker.Popups.defeat") : "Title : UNDEFINED STATE"
   const subtitle =
-    type == "victory"
-      ? "You saved your nakamas !"
-      : type == "lost"
-      ? "The boss had time to flee, strengthen your crew and try again."
-      : "SubTitle : UNDEFINED STATE"
+    type == "victory" ? t("game:Clicker.Popups.victory-message") : type == "lost" ? t("game:Clicker.Popups.defeat-message") : "SubTitle : UNDEFINED STATE"
 
   return (
     <PopupStyled>

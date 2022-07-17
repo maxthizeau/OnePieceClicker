@@ -7,6 +7,7 @@ import useFleet from "./useFleet"
 import useShip from "./useShip"
 import useItems from "./useItems"
 import { useLogs, ELogType } from "./useLogs"
+import useTranslation from "next-translate/useTranslation"
 
 type TResponse = {
   success: boolean
@@ -39,6 +40,7 @@ const useCards = () => {
   const { getShipBoost } = useShip()
   const { isItemActive } = useItems()
   const { addLog } = useLogs()
+  const { t } = useTranslation("notifications")
 
   const cards = gameState.state.cards
 
@@ -54,13 +56,12 @@ const useCards = () => {
     const boostTutorialZone = card.zone == 0 ? 3 : 1
     const upgradeBoost = Math.pow(gameState.state.upgrades.LootChance.valuePerLevel, gameState.state.upgrades.LootChance.level)
     const itemBoost = isItemActive("dendenmushi") ? 1.2 : 1
-    // Add captain effect here
     const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost * itemBoost * boostTutorialZone
-    console.log("LOOT Log : ")
-    console.log("Unit Rarity : ", card.stars)
-    console.log("rand : ", rand)
-    console.log("lootPercent : ", lootPercent)
-    console.log("If Lootpercent >= 100 --> Loot forced")
+    // console.log("LOOT Log : ")
+    // console.log("Unit Rarity : ", card.stars)
+    // console.log("rand : ", rand)
+    // console.log("lootPercent : ", lootPercent)
+    // console.log("If Lootpercent >= 100 --> Loot forced")
 
     const lootIt = rand <= lootPercent
     if (lootIt) {
@@ -76,7 +77,7 @@ const useCards = () => {
         logTypes: [ELogType.VivreCard, ELogType.Clicker],
         notification: true,
         type: "success",
-        content: <CardLootNotification label={"Vivre Card Found"} unit={card} />,
+        content: <CardLootNotification label={t("notifications:success.title-vivre-card-found")} unit={card} />,
       })
       return true
     }
@@ -92,17 +93,20 @@ const useCards = () => {
     const unitPrice = getPriceUnit(card)
     // User has berries price
     if (gameState.state.berries < unitPrice) {
-      response.message = "You don't have enought berries to recruit"
+      response.message = t("notifications:warning.message-not-enough-berries-to-recruit")
+      // "You don't have enough berries to recruit"
       return response
     }
     // User has card
     if (gameState.state.cards.find((x) => x.id == card.id) === undefined) {
-      response.message = "You're trying to cheat ! You need the card to recruit it "
+      response.message = t("notifications:warning.message-recruit-error-no-card")
+      // "You're trying to cheat ! You need the card to recruit it "
       return response
     }
     // Card not already in fleet
     if (gameState.state.fleet.find((x) => x.unit.id == card.id) !== undefined) {
-      response.message = "This pirate is already in your fleet ! "
+      response.message = t("notifications:warning.message-recruit-already-in-fleet")
+      // "This pirate is already in your fleet ! "
       return response
     }
 
@@ -114,7 +118,11 @@ const useCards = () => {
       },
     })
 
-    return { success: true, title: "Recruit successful", message: `${card.name} is now in your fleet. It cost you ${unitPrice} Berries.` }
+    return {
+      success: true,
+      title: t("notifications:success.title-recruit-successful"),
+      message: t("notifications:success.message-recruit-successful", { name: card.name, price: unitPrice }),
+    }
   }
 
   return [cards, loot, recruitCard] as const

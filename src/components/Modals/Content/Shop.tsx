@@ -3,7 +3,10 @@ import styled from "styled-components"
 import { ModalSubtitle } from "../ModalStyles"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
 import useItems from "../../../lib/hooks/useItems"
-import { defaultItemsList } from "../../../lib/data/items"
+import { defaultItemsList, TItemKey } from "../../../lib/data/items"
+import useTranslation from "next-translate/useTranslation"
+import Hover from "../../Global/Hover"
+import BasicHover from "../../Global/Hover/BasicHover"
 
 const ShopWrapper = styled.div`
   display: flex;
@@ -107,18 +110,27 @@ interface IItemShopBoxProps {
   icon: string
   title: string
   price: number
+  itemKey: TItemKey
   onClick: () => void
   selected?: boolean
 }
 
-const ItemShopBox: FC<IItemShopBoxProps> = ({ icon, title, price, onClick, selected = false }) => {
+const ItemShopBox: FC<IItemShopBoxProps> = ({ icon, title, itemKey, price, onClick, selected = false }) => {
+  const { replaceHealDescriptionWithValue } = useItems()
+  const { t } = useTranslation("game")
   return (
     <ItemShopBoxStyled onClick={onClick} selected={selected}>
-      <ItemShopIcon>
-        <img src={icon} />
-      </ItemShopIcon>
+      <Hover
+        hoverContent={<BasicHover content={replaceHealDescriptionWithValue(t(`game:Currencies.${itemKey}-description`))} />}
+        vertical="top"
+        horizontal="center"
+      >
+        <ItemShopIcon>
+          <img src={icon} />
+        </ItemShopIcon>
+      </Hover>
 
-      <ItemShopTitle>{title}</ItemShopTitle>
+      <ItemShopTitle>{t(`game:Currencies.${itemKey}-title`)}</ItemShopTitle>
       <ItemShopPrice>฿ {intWithSpaces(price)}</ItemShopPrice>
     </ItemShopBoxStyled>
   )
@@ -128,11 +140,12 @@ const ShopModalContent: FC = () => {
   const { items, buyItem } = useItems()
   const [selected, setSelected] = useState<number>(0)
   const [amount, setAmount] = useState<number>(1)
+  const { t } = useTranslation()
 
   return (
     <>
-      <h3>Shop</h3>
-      <ModalSubtitle>Select the item you want to buy</ModalSubtitle>
+      <h3>{t("game:Modals.Shop.shop-label")}</h3>
+      <ModalSubtitle>{t("game:Modals.Shop.shop-subtitle")}</ModalSubtitle>
       <ShopWrapper>
         {defaultItemsList.map((item, index) => {
           return (
@@ -141,6 +154,7 @@ const ShopModalContent: FC = () => {
               icon={item.icon}
               title={item.title}
               price={item.price}
+              itemKey={item.itemKey}
               onClick={() => {
                 setSelected(index)
               }}
@@ -177,10 +191,10 @@ const ShopModalContent: FC = () => {
           <ShopBuyButton
             onClick={() => {
               buyItem(defaultItemsList[selected].itemKey, amount)
-              setAmount(1)
+              // setAmount(1)
             }}
           >
-            Buy <span className="price-text">(฿ {intWithSpaces(amount * defaultItemsList[selected].price)})</span>
+            {t("game:Modals.Shop.buy-button")} <span className="price-text">(฿ {intWithSpaces(amount * defaultItemsList[selected].price)})</span>
           </ShopBuyButton>
         </ShopFormWrapper>
       </ShopWrapper>

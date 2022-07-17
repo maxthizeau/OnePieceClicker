@@ -7,6 +7,7 @@ import Map from "../../Map/MapFunctionnal"
 import { ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
 import { EShipEffect, IShip } from "../../../lib/types"
 import { getShipEffects } from "../../../lib/clickerFunctions"
+import useTranslation from "next-translate/useTranslation"
 
 const ModalWrapper = styled.div`
   /* min-height: 700px !important; */
@@ -27,6 +28,7 @@ const ShipWrapper = styled.div`
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
+  margin: auto;
   /* overflow: scroll; */
 `
 
@@ -128,8 +130,7 @@ const ShipDescription = styled.div`
   justify-content: space-between;
   & ${ShipEffectItem} {
     background: none;
-    /* width: 50%; */
-    flex: 1 1 0 !important;
+    width: 45%;
 
     &:nth-child(odd):not(:last-child) {
       border-right: 2px solid black;
@@ -155,6 +156,7 @@ const FilterButton = styled.button`
 
 const ShipHover = ({ ship }: { ship: IShip }) => {
   const effects = getShipEffects(ship)
+  const { t } = useTranslation()
   //   console.log(ship.name)
   return (
     <ShipHoverStyled>
@@ -163,7 +165,7 @@ const ShipHover = ({ ship }: { ship: IShip }) => {
       </b>
       {effects.map((x, index) => (
         <ShipEffectItem key={`effect-${ship.name}-${index}`}>
-          <span className="name-effect">{x.toString}</span>
+          <span className="name-effect">{t(`game:Modals.Boat.effect-${x.toString}`)}</span>
           <span className="value-effect">+ {x.value} %</span>
         </ShipEffectItem>
       ))}
@@ -172,6 +174,7 @@ const ShipHover = ({ ship }: { ship: IShip }) => {
 }
 
 const BoatModalContent: FC = () => {
+  const { t } = useTranslation()
   const { currentShip, unlockedShips, changeShip, getShipFromId } = useShip()
   const [showFilters, setShowFilters] = useState(false)
   const [searchName, setSearchName] = useState("")
@@ -180,7 +183,7 @@ const BoatModalContent: FC = () => {
   let shipsShown = 0
   return (
     <ModalWrapper>
-      <h3>Your ship</h3>
+      <h3>{t("game:Modals.Boat.your-ship")}</h3>
       <YourShip>
         <ShipImage>
           <img src={`images/ships/icon/${currentShip.thumb}_t2.png`} />
@@ -190,36 +193,38 @@ const BoatModalContent: FC = () => {
           {getShipEffects(currentShip).map((x, index) => {
             return (
               <ShipEffectItem key={`effect-${currentShip.name}-${index}`}>
-                <span className="name-effect">{x.toString}</span>
+                <span className="name-effect">{t(`game:Modals.Boat.effect-${x.toString}`)}</span>
                 <span className="value-effect">+ {x.value} %</span>
               </ShipEffectItem>
             )
           })}
         </ShipDescription>
       </YourShip>
-      <h3>All ships</h3>
+      <h3>{t("game:Modals.Boat.all-ships")}</h3>
 
-      <FilterButton onClick={() => setShowFilters(!showFilters)}>{showFilters ? "Hide Filters" : "Show Filters"}</FilterButton>
+      <FilterButton onClick={() => setShowFilters(!showFilters)}>
+        {showFilters ? t("game:Modals.Boat.hide-filters") : t("game:Modals.Boat.show-filters")}
+      </FilterButton>
       {showFilters && (
         <Filters>
           <FiltersColumns>
-            <SearchInput placeholder="Search by name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+            <SearchInput placeholder={t("game:Modals.Boat.search-by-name")} value={searchName} onChange={(e) => setSearchName(e.target.value)} />
             <FormWrapper>
               <select value={searchEffect} onChange={(e) => setSearchEffect(parseInt(e.target.value))}>
-                <option value={-1}>Filter by effect...</option>
-                <option value={EShipEffect.CREW_POWER}>Crew Power</option>
-                <option value={EShipEffect.CLICK_POWER}> Click Power</option>
-                <option value={EShipEffect.LOOT_CHANCE}> Vivre Card</option>
-                <option value={EShipEffect.XP_GAIN}> XP earned</option>
-                <option value={EShipEffect.BERRY}> Berries earned</option>
-                <option value={EShipEffect.CAPTAIN_BOOST}> Captain Boost</option>
-                <option value={EShipEffect.MINE_ENERGY}> Mine Energy Refill</option>
-                <option value={EShipEffect.MINE_DOUBLELOOT_CHANCE}> Mine Double Loot</option>
-                <option value={EShipEffect.TRAINING_SPEED}> Training Speed</option>
-                <option value={EShipEffect.ITEM_DURATION}> Item Duration</option>
+                <option value={-1}>{t("game:Modals.Boat.filter-by-effect")}</option>
+                <option value={EShipEffect.CREW_POWER}>{t("game:Modals.Boat.effect-crew-power")}</option>
+                <option value={EShipEffect.CLICK_POWER}> {t("game:Modals.Boat.effect-click-power")}</option>
+                <option value={EShipEffect.LOOT_CHANCE}> {t("game:Modals.Boat.effect-vivre-card")}</option>
+                <option value={EShipEffect.XP_GAIN}> {t("game:Modals.Boat.effect-xp-boost")}</option>
+                <option value={EShipEffect.BERRY}> {t("game:Modals.Boat.effect-berries")}</option>
+                <option value={EShipEffect.CAPTAIN_BOOST}> {t("game:Modals.Boat.captain-boost")}</option>
+                <option value={EShipEffect.MINE_ENERGY}> {t("game:Modals.Boat.effect-energy-refill-speed")}</option>
+                <option value={EShipEffect.MINE_DOUBLELOOT_CHANCE}> {t("game:Modals.Boat.effect-double-loot-mine")}</option>
+                <option value={EShipEffect.TRAINING_SPEED}> {t("game:Modals.Boat.effect-rayleigh-training-speed")}</option>
+                <option value={EShipEffect.ITEM_DURATION}> {t("game:Modals.Boat.effect-item-duration")}</option>
               </select>
               <SearchInput
-                placeholder="Mininimum value (%)"
+                placeholder={t("game:Modals.Boat.filter-minimum-value")}
                 value={searchMinimumEffect}
                 onChange={(e) => setSearchMinimumEffect(e.target.value == "" ? 0 : parseInt(e.target.value.replace(/\D/g, "")))}
               />
@@ -232,7 +237,7 @@ const BoatModalContent: FC = () => {
               setSearchMinimumEffect(0)
             }}
           >
-            Reset
+            {t("common:reset")}
           </ResetButton>
         </Filters>
       )}

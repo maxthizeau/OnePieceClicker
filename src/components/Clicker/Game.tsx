@@ -1,6 +1,15 @@
-import React from "react"
-import { filterUnitsByZone, getDungeonUnits, getFullImageSrc, getNextUnitByRarity } from "../../lib/clickerFunctions"
-import { IDungeonState, TUnit } from "../../lib/types"
+import React, { FC, useCallback, useEffect, useState } from "react"
+import {
+  filterUnitsByZone,
+  getBerryRewardFromUnit,
+  getDungeonUnits,
+  getFullImageSrc,
+  getHPLossFromUnit,
+  getNextUnitByRarity,
+  getPriceUnit,
+  getXPGainFromUnit,
+} from "../../lib/clickerFunctions"
+import { ECaptainEffect, IDungeonState, TCurrentUnit, TUnit } from "../../lib/types"
 import { Center } from "../styled/Globals"
 import { CharacterImage, CharacterName, StyledGame } from "./ClickerStyles"
 import HealthBar from "./HealthBar"
@@ -9,110 +18,85 @@ import EndDungeonMessage from "./Popups/EndDungeonMessage"
 import ClickerMenu from "./ClickerMenu"
 import Debug from "./Debug"
 import DungeonTimer from "./DungeonTimer"
-import { GameStateContext, IContext } from "../../lib/hooks/GameContext"
-
+import { ActionEnum, IContext, useGameState } from "../../lib/hooks/GameContext"
+import useInterval from "../../lib/hooks/useInterval"
+import useInstance from "../../lib/hooks/useInstance"
+import useCards from "../../lib/hooks/useCards"
+import usePower from "../../lib/hooks/usePower"
+import useFleet from "../../lib/hooks/useFleet"
+import useItems from "../../lib/hooks/useItems"
+import { useLogs, ELogType } from "../../lib/hooks/useLogs"
+import UnitNotification from "../Global/notifications/UnitNotification"
+import { zones } from "../../lib/data/zones"
+import { ships } from "../../lib/data/ships"
+import FirstClearMessage from "./Popups/FirstClearMessage"
+import useTranslation from "next-translate/useTranslation"
 const data: TUnit[] = require("../../lib/data/units.json")
 
-export interface GameProps {
+interface IGameProps {
   zoneId: number
   paused: boolean
-  instance: EInstance
-  changeInstance: (arg: EInstance) => void
-  gameState: IContext
-  lootCard: (card: TUnit) => boolean
   debug?: boolean
 }
 
-type GameState = {
-  zoneId: number
-  units: TUnit[]
-  dungeon: IDungeonState | null
-  currentUnit: {
-    i: number
-    unit: TUnit
-    hp: number
-  }
-}
+// type GameState = {
+//   zoneId: number
+//   units: TUnit[]
+//   dungeon: IDungeonState | null
+//   currentUnit: TCurrentUnit
+// }
 const baseDungeonTime = 30
 
-class Game extends React.Component<GameProps, GameState> {
-  static contextType = GameStateContext
-  declare context: React.ContextType<typeof GameStateContext>
+const Game: FC<IGameProps> = (props: IGameProps) => {
+  const [intervalDungeon, setIntervalDungeon] = useState<number>(baseDungeonTime)
+  const [units, setUnits] = useState<TUnit[]>(data)
+  const [dungeon, setDungeon] = useState<IDungeonState | null>(null)
+  const [currentUnit, setCurrentUnit] = useState<TCurrentUnit>()
+  const [enableHit, setEnableHit] = useState(true)
+  const { instance, changeInstance } = useInstance()
+  const [crewPower, clickPower] = usePower()
+  // const [crewPower, clickPower] = [10000000000, 100000000]
+  const [_, lootCard] = useCards()
+  const { getCaptainBoost, rngCrewMemberGainXP, crewLooseHP } = useFleet().crewFunctions
+  const { enterDungeon, isItemActive } = useItems()
+  const { addLog } = useLogs()
+  const gameState = useGameState()
+  const { t } = useTranslation()
 
-  interval: any
-  intervalDungeon: number
-
-  constructor(props: GameProps) {
-    super(props)
-    this.intervalDungeon = baseDungeonTime
-
-    this.state = this.initState(props.zoneId)
+  function setHP(newHP: number) {
+    if (!currentUnit) return
+    setCurrentUnit({ ...currentUnit, hp: newHP })
   }
 
-  initState = (zoneId: number): GameState => {
-    const zoneUnits = data.filter((x) => x.zone == zoneId)
-    console.log("initstate")
+  function startDungeonTimer() {
+    setIntervalDungeon(baseDungeonTime)
+  }
+
+  const initState = () => {
+    const zoneUnits = data.filter((x) => x.zone == props.zoneId)
     let dungeon: IDungeonState | null = null
-    if (this.props.instance == EInstance.Dungeon) {
-      console.log("This is a dungeon !")
+
+    // If this is a dungeon, init the dungeon state
+    if (instance == EInstance.Dungeon) {
       dungeon = {
         isDungeon: true,
         state: "inprogress",
-        dungeonUnits: getDungeonUnits(data, this.props.zoneId),
+        dungeonUnits: getDungeonUnits(data, props.zoneId),
         currentUnitIndex: 0,
         farmMode: false,
+        alreadyClearedOnce: gameState.state.maxZoneId > props.zoneId,
       }
-      this.startDungeonTimer()
+      startDungeonTimer()
     }
 
+    // Prepare current unit (if dungeon --> dungeonUnits[0])
     const randomUnit = !dungeon ? zoneUnits[Math.floor(Math.random() * zoneUnits.length)] : dungeon.dungeonUnits[dungeon.currentUnitIndex]
-    return {
-      zoneId: zoneId,
-      units: data,
-      dungeon,
-      currentUnit: { i: 0, unit: randomUnit, hp: randomUnit.clickerMaxHP },
-    }
+    setUnits(data)
+    setDungeon(dungeon)
+    setCurrentUnit({ unit: randomUnit, hp: randomUnit.clickerMaxHP })
   }
 
-  setHP = (newHP: number) => {
-    this.setState({ ...this.state, currentUnit: { ...this.state.currentUnit, hp: newHP } })
-  }
-
-  onHit = (e: React.MouseEvent) => {
-    e.preventDefault()
-    const clickPower = 100000000
-    this.hit(clickPower)
-  }
-
-  hit = (value: number) => {
-    const hp = this.state.currentUnit ? this.state.currentUnit.hp : 0
-    const newHP = hp - value < 0 ? 0 : hp - value
-    if (newHP > 0) {
-      this.setHP(newHP)
-    } else {
-      this.setHP(0)
-      setTimeout(() => {
-        this.nextUnit()
-      }, 500)
-    }
-  }
-
-  nextUnit = () => {
-    const { dungeon, units } = this.state
-    const zoneUnits = filterUnitsByZone(units, this.props.zoneId)
-    // this.context?.dispatch(({type, payload}) => {
-    this.props.lootCard(this.state.currentUnit.unit)
-    // })
-    if (dungeon) {
-      this.nextDungeonUnit()
-    } else {
-      const randomUnit = getNextUnitByRarity(zoneUnits)
-      this.setState({ ...this.state, currentUnit: { i: 0, unit: randomUnit, hp: randomUnit.clickerMaxHP } })
-    }
-  }
-
-  nextDungeonUnit = () => {
-    const { dungeon } = this.state
+  function nextDungeonUnit() {
     if (!dungeon) return null
     const { state, currentUnitIndex, dungeonUnits, isDungeon } = dungeon
 
@@ -125,145 +109,224 @@ class Game extends React.Component<GameProps, GameState> {
     if (dungeon.dungeonUnits.length <= dungeon.currentUnitIndex + 1) {
       console.log("Last enemy defeated")
       newDungeonState = { ...dungeon, state: "victory" }
-      this.setState({ ...this.state, dungeon: newDungeonState, currentUnit: { ...this.state.currentUnit, hp: 0 } })
-      this.dungeonVictory()
+      setDungeon(newDungeonState)
+      currentUnit && setCurrentUnit({ ...currentUnit, hp: 0 })
+      dungeonVictory()
     } else {
       console.log("Another enemy is coming")
       const nextDungeonUnit: TUnit = dungeon.dungeonUnits[dungeon.currentUnitIndex + 1]
-      newDungeonState = { ...dungeon, currentUnitIndex: dungeon.currentUnitIndex + 1 }
-      this.setState({ ...this.state, dungeon: newDungeonState, currentUnit: { i: 0, hp: nextDungeonUnit.clickerMaxHP, unit: nextDungeonUnit } })
+      setDungeon({ ...dungeon, currentUnitIndex: dungeon.currentUnitIndex + 1 })
+      setCurrentUnit({ hp: nextDungeonUnit.clickerMaxHP, unit: nextDungeonUnit })
     }
   }
 
-  resetDungeon = (farmMode?: boolean) => {
-    if (!this.state.dungeon) return null
+  function nextUnit() {
+    console.log("nextUnit")
 
-    const newDungeonState: IDungeonState = {
-      ...this.state.dungeon,
-      state: "inprogress",
-      dungeonUnits: getDungeonUnits(this.state.units, this.props.zoneId),
-      currentUnitIndex: 0,
-      farmMode: farmMode !== undefined ? farmMode : this.state.dungeon.farmMode,
-    }
+    const zoneUnits = filterUnitsByZone(units, props.zoneId)
 
-    this.startDungeonTimer()
-
-    this.setState({
-      ...this.state,
-      currentUnit: { i: 0, unit: newDungeonState.dungeonUnits[0], hp: newDungeonState.dungeonUnits[0].clickerMaxHP },
-      dungeon: newDungeonState,
-    })
-  }
-
-  dungeonVictory = () => {
-    if (this.state.dungeon?.farmMode) {
-      this.resetDungeon()
-    }
-  }
-
-  changeFarmMode = (farmMode: boolean, reset = false) => {
-    console.log("Change farm mode to ", farmMode)
-    if (!this.state.dungeon) return
-    console.log("not returned ")
-    if (reset) {
-      this.resetDungeon(farmMode)
+    if (dungeon) {
+      nextDungeonUnit()
     } else {
-      this.setState({ ...this.state, dungeon: { ...this.state.dungeon, farmMode } })
+      const randomUnit = getNextUnitByRarity(zoneUnits)
+
+      if (!randomUnit) return
+      setCurrentUnit({ unit: randomUnit, hp: randomUnit.clickerMaxHP })
     }
   }
 
-  tick = () => {
-    console.log("--------")
-    console.log("--TICK--")
-    const crewPower = 10000000
+  function currentUnitDies() {
+    console.log("[Current Unit Dies]")
+    console.log("Current unit :  ", currentUnit)
+    setHP(0)
+    setEnableHit(false)
+    currentUnit && lootCard(currentUnit?.unit)
+    const captainEffect = getCaptainBoost(ECaptainEffect.BERRY)
+    const itemBoost = isItemActive("berryboost") ? 1.2 : 1
+    const berryWon = currentUnit ? Math.round(getBerryRewardFromUnit(currentUnit.unit) * captainEffect * itemBoost) : 0
+    console.log("Berries : ", berryWon)
+    gameState.dispatch({
+      type: ActionEnum.AddBerries,
+      payload: {
+        berriesChange: berryWon,
+      },
+    })
+    console.log("Berries : ", berryWon)
+    currentUnit && rngCrewMemberGainXP(getXPGainFromUnit(currentUnit))
+    currentUnit && crewLooseHP(getHPLossFromUnit(currentUnit))
+    gameState.dispatch({ type: ActionEnum.KilledEnemy, payload: { zoneId: props.zoneId } })
+    setTimeout(() => {
+      nextUnit()
+      setEnableHit(true)
+    }, 200)
+  }
+
+  function hit(value: number) {
+    if (!currentUnit || currentUnit?.hp <= 0) {
+      return
+    }
+    const hp = currentUnit ? currentUnit.hp : 0
+    const newHP = hp - value < 0 ? 0 : hp - value
+    if (newHP > 0) {
+      setHP(newHP)
+    } else {
+      currentUnitDies()
+    }
+  }
+  function resetDungeon(farmMode?: boolean) {
+    if (!dungeon) return null
+
+    const canEnter = enterDungeon(props.zoneId)
+    if (canEnter) {
+      const newDungeonState: IDungeonState = {
+        ...dungeon,
+        state: "inprogress",
+        dungeonUnits: getDungeonUnits(units, props.zoneId),
+        currentUnitIndex: 0,
+        farmMode: farmMode !== undefined ? farmMode : dungeon.farmMode,
+        alreadyClearedOnce: gameState.state.maxZoneId > props.zoneId,
+      }
+      startDungeonTimer()
+      setCurrentUnit({ unit: newDungeonState.dungeonUnits[0], hp: newDungeonState.dungeonUnits[0].clickerMaxHP })
+      setDungeon(newDungeonState)
+    }
+  }
+
+  function dungeonVictory() {
+    if (dungeon && !dungeon.alreadyClearedOnce) {
+      const zone = zones[props.zoneId]
+      for (let i = 0; i < zone.freeMembers.length; i++) {
+        const freeMemberId = zone.freeMembers[i]
+        const freeMemberFull = units.find((x) => x.id == freeMemberId)
+        if (!freeMemberFull) {
+          continue
+        }
+
+        addLog({
+          id: `newVivreCard-${freeMemberId}`,
+          logTypes: [ELogType.VivreCard, ELogType.Clicker],
+          notification: true,
+          type: "success",
+          content: <UnitNotification label={t("notifications:success.title-fleet-new-member")} unit={freeMemberFull} />,
+        })
+      }
+      for (let i = 0; i < zone.freeBoat.length; i++) {
+        const freeBoatId = zone.freeBoat[i]
+        const freeBoatFull = ships.find((x) => x.id == freeBoatId)
+        if (!freeBoatFull) {
+          continue
+        }
+
+        addLog({
+          id: `newShip-${freeBoatId}`,
+          logTypes: [ELogType.VivreCard, ELogType.Clicker],
+          notification: true,
+          type: "success",
+          title: t("title-new-ship"),
+          message: t("message-new-ship", { name: freeBoatFull.name }),
+        })
+      }
+    }
+
+    gameState.dispatch({ type: ActionEnum.DungeonDone, payload: { zoneId: props.zoneId } })
+    if (dungeon?.farmMode) {
+      resetDungeon()
+    }
+  }
+
+  function onHit(e: React.MouseEvent) {
+    e.preventDefault()
+    enableHit && hit(clickPower)
+  }
+
+  function changeFarmMode(farmMode: boolean, reset = false) {
+    // console.log("Change farm mode to ", farmMode)
+    if (!dungeon) return
+    if (reset) {
+      resetDungeon(farmMode)
+    } else {
+      setDungeon({ ...dungeon, farmMode })
+    }
+  }
+  function endDungeonTimer() {
+    if (dungeon && dungeon.state !== "lost") {
+      setDungeon({ ...dungeon, state: "lost" })
+    }
+  }
+
+  const tick = () => {
     // Handle Auto Hit
-    if (!this.props.paused) {
-      if (!this.state.dungeon || this.state.dungeon.state == "inprogress") {
-        // this.hit() updates state, wont work if this.endDungeonTimer() runs too since it also modify the state
-        console.log("HIT !")
-        this.hit(crewPower)
+    // console.log("PAUSED : ", props.paused)
+    // console.log("--TICK--")
+    if (!props.paused) {
+      if (!dungeon || dungeon.state == "inprogress") {
+        // hit() updates state, wont work if endDungeonTimer() runs too since it also modify the state
+        // console.log("HIT !")
+        hit(crewPower)
       }
     }
     // Handle Dungeon Timer
-    if (this.state.dungeon && this.state.dungeon.state == "inprogress") {
-      if (this.intervalDungeon <= 0) {
-        this.endDungeonTimer()
+    if (dungeon && dungeon.state == "inprogress") {
+      if (intervalDungeon <= 0) {
+        endDungeonTimer()
       } else {
-        this.intervalDungeon -= 1
+        setIntervalDungeon(intervalDungeon - 1)
       }
     }
-    console.log("--------")
   }
 
-  startDungeonTimer() {
-    this.intervalDungeon = baseDungeonTime
-  }
+  useEffect(() => {
+    initState()
+  }, [])
 
-  endDungeonTimer() {
-    console.log("END TIMER")
-    if (this.state.dungeon && this.state.dungeon.state !== "lost") {
-      this.setState({ ...this.state, dungeon: { ...this.state.dungeon, state: "lost" } })
-    }
-  }
+  useInterval(() => {
+    tick()
+  }, 1000)
 
-  componentDidMount() {
-    this.interval = setInterval(() => this.tick(), 1000)
-    console.log("Context : ")
-    console.log(this.context?.state)
-  }
+  if (!currentUnit) return null
+  const { hp, unit } = currentUnit
+  const { debug = false } = props
 
-  componentDidUpdate() {
-    // console.log("Interval : ", this.intervalDungeon)
-  }
+  return (
+    <>
+      <StyledGame>
+        <Debug debug={debug} unit={unit} dungeon={dungeon} instance={instance} />
 
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
+        <ClickerMenu
+          buttonLabel1={t("game:Clicker.Main.back-button")}
+          buttonFunction1={() => {
+            changeInstance(EInstance.Zone)
+          }}
+          buttonLabel2={dungeon?.farmMode ? t("game:Clicker.Main.stop-button") : t("game:Clicker.Main.farm-button")}
+          buttonFunction2={() => {
+            changeFarmMode(!dungeon?.farmMode)
+          }}
+          dungeon={dungeon}
+        />
 
-  render() {
-    const { hp, unit, i } = this.state.currentUnit
-    const dungeon = this.state.dungeon
-    const { instance, changeInstance, debug = false } = this.props
-    return (
-      <>
-        <StyledGame>
-          <Debug debug={debug} unit={unit} dungeon={dungeon} instance={instance} />
-
-          <ClickerMenu
-            buttonLabel1="Back"
-            buttonFunction1={() => {
+        {dungeon && dungeon.state !== "inprogress" && (
+          <EndDungeonMessage
+            type={dungeon.state}
+            back={() => {
               changeInstance(EInstance.Zone)
             }}
-            buttonLabel2={dungeon?.farmMode ? "Stop" : "Farm"}
-            buttonFunction2={() => {
-              this.changeFarmMode(!dungeon?.farmMode)
-            }}
-            dungeon={dungeon}
+            setFarmMode={() => changeFarmMode(true, true)}
+            resetDungeon={() => resetDungeon()}
           />
+        )}
+        {dungeon && dungeon.state == "victory" && !dungeon.alreadyClearedOnce && <FirstClearMessage dungeon={dungeon} zoneId={props.zoneId} />}
+        <Center>
+          {dungeon && dungeon.state == "inprogress" && <DungeonTimer timer={intervalDungeon} />}
+          <CharacterImage src={getFullImageSrc(unit.id)} onClick={onHit} />
+        </Center>
 
-          {dungeon && dungeon.state !== "inprogress" && (
-            <EndDungeonMessage
-              type={dungeon.state}
-              back={() => {
-                changeInstance(EInstance.Zone)
-              }}
-              setFarmMode={() => this.changeFarmMode(true, true)}
-              resetDungeon={this.resetDungeon}
-            />
-          )}
-          <Center>
-            {dungeon && dungeon.state == "inprogress" && <DungeonTimer timer={this.intervalDungeon} />}
-            <CharacterImage src={getFullImageSrc(unit.id)} onClick={this.onHit} />
-          </Center>
+        <CharacterName>{unit.name}</CharacterName>
+        <HealthBar maxHP={unit.clickerMaxHP} currentHP={hp} />
 
-          <CharacterName>{unit.name}</CharacterName>
-          <HealthBar maxHP={unit.clickerMaxHP} currentHP={hp} />
-
-          {/* <div>ATK : 255</div> */}
-        </StyledGame>
-      </>
-    )
-  }
+        {/* <div>ATK : 255</div> */}
+      </StyledGame>
+    </>
+  )
 }
 
 export default Game

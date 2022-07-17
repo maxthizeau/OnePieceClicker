@@ -42,16 +42,21 @@ const ButtonStyled = styled.a<{ locked?: boolean }>`
   font-size: 1.2em;
   margin-left: 45px;
   display: flex;
-  flex: 1 1 30%;
+  flex: 1 1 45%;
   align-self: flex-start;
   cursor: pointer;
-
   &:hover ${IconWrapper} {
     /* top: -11.5px; */
     img {
       width: 38px;
       height: 38px;
     }
+  }
+  @media only screen and (min-width: 992px) {
+    flex-basis: 30%;
+  }
+  @media only screen and (min-width: 1200px) {
+    flex-basis: 30%;
   }
 `
 

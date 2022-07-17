@@ -2,41 +2,52 @@ import { getThumbImageSrc, idNumberToString, intWithSpaces } from "./clickerFunc
 import { zones } from "./data/zones"
 import { EGoalRewardCurrency, EGoalType, TGoal } from "./types"
 
-export function goalToString(goal: TGoal): { toString: string; logo: string } {
-  const zone = zones.find((x) => x.id == goal.zoneId)
-  const defaultGoal = { toString: "Error", logo: "warningIcon" }
+export function goalToString(goal: TGoal): { toString: string; logo: string; goalKey: string; value: number; location: string } {
+  const defaultGoal = { toString: "Error", logo: "warningIcon", goalKey: "ERROR", value: 0, location: "" }
+  const zone = goal?.zoneId !== undefined ? zones.find((x) => x.id == goal.zoneId) : null
+
+  defaultGoal.location = zone?.location ?? ""
+  // defaultGoal.zoneId = zone?.location ?? ""
+  defaultGoal.value = goal?.value ?? 0
   switch (goal.type) {
     case EGoalType.KILL_ENEMIES:
       if (!zone) return defaultGoal
       defaultGoal.toString = `Beat ${goal.value} enemies in ${zone.location}`
       defaultGoal.logo = "crewPowerIcon"
+      defaultGoal.goalKey = "KILL_ENEMIES"
+
       return defaultGoal
 
     case EGoalType.CLEAR_DUNGEON:
       if (!zone) return defaultGoal
       defaultGoal.toString = `Finish ${goal.value} times the dungeon of ${zone.location}`
       defaultGoal.logo = "logPoseIcon"
+      defaultGoal.goalKey = "CLEAR_DUNGEON"
       return defaultGoal
 
     case EGoalType.LOOT_VIVRECARD:
       if (!zone) return defaultGoal
       defaultGoal.toString = `Loot all vivre cards of ${zone.location}`
       defaultGoal.logo = "memberIcon"
+      defaultGoal.goalKey = "LOOT_VIVRECARD"
       return defaultGoal
 
     case EGoalType.MINE_ENERGY:
       defaultGoal.toString = `Use ${goal.value} energy in the mine`
       defaultGoal.logo = "energyRefillcon"
+      defaultGoal.goalKey = "MINE_ENERGY"
       return defaultGoal
 
     case EGoalType.MINE_LOOT:
       defaultGoal.toString = `Loot ${goal.value} gems in the mine`
       defaultGoal.logo = "diamondIcon"
+      defaultGoal.goalKey = "MINE_LOOT"
       return defaultGoal
 
     default:
       defaultGoal.toString = `Unknown goal`
       defaultGoal.logo = "warningIcon"
+      defaultGoal.goalKey = "UNKNOWN_GOAL"
       return defaultGoal
   }
 }

@@ -11,10 +11,11 @@ import ZoneModalContent from "./Content/Zone"
 import MineModalContent from "./Content/Mine"
 import TrainingModalContent from "./Content/Training"
 import GoalsModalContent from "./Content/Goals"
+import useTranslation from "next-translate/useTranslation"
 
 const Modal: FC<IModalProps> = (props) => {
   const { visible, setVisible, type } = props
-
+  const { t } = useTranslation()
   const [hoverModal, setHoverModal] = useState(false)
 
   // Function called when user press Escape
@@ -32,6 +33,17 @@ const Modal: FC<IModalProps> = (props) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (hoverModal) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [hoverModal])
+
   if (!visible) return null
 
   return (
@@ -40,7 +52,7 @@ const Modal: FC<IModalProps> = (props) => {
         !hoverModal && setVisible(false)
       }}
     >
-      <CloseModalIcon onClick={() => setVisible(false)}>Close (Esc)</CloseModalIcon>
+      <CloseModalIcon onClick={() => setVisible(false)}>{t("game:Modals.close-button")}</CloseModalIcon>
       <ModalStyled onMouseEnter={() => setHoverModal(true)} onMouseLeave={() => setHoverModal(false)}>
         {type == "map" && <MapModalContent />}
         {type == "cards" && <VivreModalContent />}

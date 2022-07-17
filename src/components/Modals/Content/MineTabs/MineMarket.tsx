@@ -9,6 +9,7 @@ import CardLootNotification from "../../../../components/Global/notifications/Un
 import { getMarketList } from "../../../../lib/treasureGame/marketFunctions"
 import { TUnit } from "../../../../lib/types"
 import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
+import useTranslation from "next-translate/useTranslation"
 const MarketBoxStyled = styled.div<{ owned?: boolean }>`
   padding: 5px 10px;
   border-radius: 3px;
@@ -91,6 +92,7 @@ interface IMarketBoxProps {
 }
 
 const MarketBox: FC<IMarketBoxProps> = ({ icon, title, price, currency, onClick, owned }) => {
+  const { t } = useTranslation()
   return (
     <MarketBoxStyled owned={owned}>
       <MarketIcon>
@@ -98,12 +100,12 @@ const MarketBox: FC<IMarketBoxProps> = ({ icon, title, price, currency, onClick,
       </MarketIcon>
       <MarketText>
         <p className="main-title">{title}</p>
-        <p className="sub-title">[Vivre Card]</p>
+        <p className="sub-title">[{t("common:vivre-card")}]</p>
       </MarketText>
 
       <MarketButtonStyled disabled={owned} onClick={!owned ? onClick : undefined}>
         {owned ? (
-          "Owned"
+          t("common:owned")
         ) : (
           <>
             {price} <MarketCurrency src={`images/treasure-game/gems/${currency}.png`} />
@@ -119,6 +121,7 @@ const MineMarket: FC = () => {
   const marketList = getMarketList()
   const [units] = useUnitData()
   const { addLog } = useLogs()
+  const { t } = useTranslation()
   // console.log(marketList)
 
   const buyItem = (id: number, currency: number, price: number, unit: TUnit) => {
@@ -128,8 +131,9 @@ const MineMarket: FC = () => {
         id: `buyMineMarket-error-${unit.id}`,
         logTypes: [ELogType.Mine],
         notification: true,
-        title: "Not enought gems",
-        message: "You don't have enought gems to buy this item",
+        title: t("notifications:warning.title-not-enough-gems"),
+
+        message: t("notifications:warning.message-not-enough-gems"),
         type: "warning",
       })
     } else {
@@ -149,17 +153,14 @@ const MineMarket: FC = () => {
         id: `buyMineMarket-${unit.id}`,
         logTypes: [ELogType.Mine, ELogType.VivreCard],
         notification: true,
-        content: <CardLootNotification label={"You bought a Vivre Card"} unit={unit} />,
+        content: <CardLootNotification label={t("notifications:success.title-mine-market-buy")} unit={unit} />,
       })
     }
   }
 
   return (
     <>
-      <h5>
-        Market : Buy and sell your loot. <br />
-        There is a new market every 6 hours
-      </h5>
+      <h5>{t("game:Modals.Mine.market-subtitle")}</h5>
       <Inventory>
         {gameState.state.treasureGameGems.map((gem, index) => {
           return (
@@ -190,34 +191,6 @@ const MineMarket: FC = () => {
           />
         )
       })}
-      {/* <MarketBox
-        icon={getThumbImageSrc("0310")}
-        title="[Vivre Card] Monkey D. Luffy - Gear 2nd"
-        price={10}
-        currency={"diamond"}
-        onClick={() => console.log("buy")}
-      />
-      <MarketBox
-        icon={getThumbImageSrc("0310")}
-        title="[Vivre Card] Monkey D. Luffy - Gear 2nd"
-        price={10}
-        currency={"diamond"}
-        onClick={() => console.log("buy")}
-      />
-      <MarketBox
-        icon={getThumbImageSrc("0310")}
-        title="[Vivre Card] Monkey D. Luffy - Gear 2nd"
-        price={10}
-        currency={"diamond"}
-        onClick={() => console.log("buy")}
-      />
-      <MarketBox
-        icon={getThumbImageSrc("0310")}
-        title="[Vivre Card] Monkey D. Luffy - Gear 2nd"
-        price={10}
-        currency={"diamond"}
-        onClick={() => console.log("buy")}
-      /> */}
     </>
   )
 }

@@ -5,6 +5,7 @@ import { zoneIdVar } from "../../../../lib/cache"
 import useUnitData from "../../../../lib/hooks/useUnitData"
 import { zones } from "../../../../lib/data/zones"
 import PirateList from "./PirateList"
+import useTranslation from "next-translate/useTranslation"
 
 const PiratedexWrapper = styled.div`
   padding: 10px 20px;
@@ -66,6 +67,7 @@ const Piratedex = () => {
   const zone = zones[zoneId]
   const [rarity, setRarity] = useState(dataByRarity[0].stars)
   const [showOwned, setShowOwned] = useState(true)
+  const { t } = useTranslation()
   return (
     <PiratedexWrapper>
       <h3>{zone.location}</h3>
@@ -86,8 +88,8 @@ const Piratedex = () => {
           </select>
         </InputField> */}
         <InputField>
-          <Label>Show looted cards : </Label>
-          <button onClick={() => setShowOwned(!showOwned)}> {showOwned ? `✅ Yes` : `🚫 No`}</button>
+          <Label>{t("game:Modals.Zone.show-looted-cards")}</Label>
+          <button onClick={() => setShowOwned(!showOwned)}> {showOwned ? `✅ ${t("common:Yes")}` : `🚫 ${t("common:No")}`}</button>
         </InputField>
       </Filters>
       {dataByRarity.reverse().map((rarity) => {

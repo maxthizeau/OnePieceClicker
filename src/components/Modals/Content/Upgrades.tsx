@@ -1,9 +1,11 @@
+import { t } from "i18next"
 import { FC } from "react"
 import styled from "styled-components"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
 import { defaultUpgrades } from "../../../lib/data/upgrades"
 import useUpgrades from "../../../lib/hooks/useUpgrades"
 import { BerryIcon } from "../../styled/Globals"
+import useTranslation from "next-translate/useTranslation"
 
 const UpgradeBoxStyled = styled.div`
   padding: 20px;
@@ -99,6 +101,7 @@ const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, maximu
 
 const UpgradesModalContent: FC = () => {
   const [upgrades, levelUp] = useUpgrades()
+  const { t } = useTranslation()
 
   return (
     <>
@@ -106,8 +109,8 @@ const UpgradesModalContent: FC = () => {
 
       <UpgradeBox
         icon="images/icons/clickPowerBlackIcon.png"
-        title="Click Power"
-        subtitle="Boost the click power (+100%)"
+        title={t("game:Modals.Upgrades.click-power-title")}
+        subtitle={`${t("game:Modals.Upgrades.click-power-description")} (+100%)`}
         level={upgrades.ClickPower.level}
         maximumLevel={defaultUpgrades.ClickPower.prices.length}
         price={defaultUpgrades.ClickPower.prices[upgrades.ClickPower.level] * 1000}
@@ -115,8 +118,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/crewPowerIcon.png"
-        title="Crew Power"
-        subtitle="Boost your crew power (+100%)"
+        title={t("game:Modals.Upgrades.crew-power-title")}
+        subtitle={`${t("game:Modals.Upgrades.crew-power-description")} (+100%)`}
         level={upgrades.CrewPower.level}
         maximumLevel={defaultUpgrades.CrewPower.prices.length}
         onClick={() => levelUp("CrewPower")}
@@ -124,8 +127,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/vivreCardIcon.png"
-        title="Loot Chance"
-        subtitle="Increase your vivre card loot chance (+10%)"
+        title={t("game:Modals.Upgrades.loot-chance-title")}
+        subtitle={`${t("game:Modals.Upgrades.loot-chance-description")} (+10%)`}
         level={upgrades.LootChance.level}
         maximumLevel={defaultUpgrades.LootChance.prices.length}
         price={defaultUpgrades.LootChance.prices[upgrades.LootChance.level] * 1000}
@@ -133,8 +136,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/xpIcon.png"
-        title="XP Boost"
-        subtitle="Gain more XP from defeating an enemy (+10%)"
+        title={t("game:Modals.Upgrades.xp-boost-title")}
+        subtitle={`${t("game:Modals.Upgrades.xp-boost-description")} (+10%)`}
         level={upgrades.XP.level}
         maximumLevel={defaultUpgrades.XP.prices.length}
         price={defaultUpgrades.XP.prices[upgrades.XP.level] * 1000}
@@ -142,8 +145,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/berry.png"
-        title="Berry Boost"
-        subtitle="Earn more berries when you defeat an enemy (+10%)"
+        title={t("game:Modals.Upgrades.berry-boost-title")}
+        subtitle={`${t("game:Modals.Upgrades.berry-boost-description")} (+10%)`}
         level={upgrades.Berry.level}
         maximumLevel={defaultUpgrades.Berry.prices.length}
         price={defaultUpgrades.Berry.prices[upgrades.Berry.level] * 1000}
@@ -151,8 +154,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/foodIcon.png"
-        title="Heal"
-        subtitle="Heal more with food (+20%)"
+        title={t("game:Modals.Upgrades.heal-title")}
+        subtitle={`${t("game:Modals.Upgrades.heal-description")} (+20%)`}
         level={upgrades.Heal.level}
         maximumLevel={defaultUpgrades.Heal.prices.length}
         price={defaultUpgrades.Heal.prices[upgrades.Heal.level] * 1000}
@@ -160,8 +163,8 @@ const UpgradesModalContent: FC = () => {
       />
       <UpgradeBox
         icon="images/icons/memberIcon.png"
-        title="Crew +1"
-        subtitle="Increase the crew size and add one more member (+1)"
+        title={t("game:Modals.Upgrades.crew-size-title")}
+        subtitle={`${t("game:Modals.Upgrades.crew-size-description")} (+1)`}
         level={upgrades.CrewMembers.level}
         maximumLevel={defaultUpgrades.CrewMembers.prices.length}
         price={defaultUpgrades.CrewMembers.prices[upgrades.CrewMembers.level] * 1000}

@@ -3,11 +3,14 @@ import { defaultItemsList, TItemKey } from "../data/items"
 import { TZone, zones } from "../data/zones"
 import { ActionEnum, useGameState } from "./GameContext"
 import { ELogType, useLogs } from "./useLogs"
+import useTranslation from "next-translate/useTranslation"
+import { defaultUpgrades } from "../data/upgrades"
 
 const useItems = () => {
   const gameState = useGameState()
   const { items } = gameState.state
   const { addLog } = useLogs()
+  const { t } = useTranslation("notifications")
 
   const addItem = (itemKey: TItemKey, quantity: number) => {
     gameState.dispatch({
@@ -43,8 +46,8 @@ const useItems = () => {
         id: `buyItem-${itemKey}-${quantity}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: "Not enough berries",
-        message: "Reduce the quantity or come back when you have enough berries",
+        title: t("notifications:warning.title-not-enough-berries"),
+        message: t("notifications:warning.message-not-enough-berries-to-buy-at-shop"),
         type: "warning",
       })
       return false
@@ -79,8 +82,8 @@ const useItems = () => {
         id: `enterDungeon-${zone.id}-${now}`,
         logTypes: [ELogType.Clicker],
         notification: true,
-        title: "Unable to enter the dungeon",
-        message: "You need more Log Poses to enter, you can buy some in the shop.",
+        title: t("notifications:warning.title-cannot-enter-dungeon"),
+        message: t("notifications:warning.message-cannot-enter-dungeon"),
         type: "warning",
       })
       return false
@@ -91,7 +94,15 @@ const useItems = () => {
     }
   }
 
-  return { items, addItem, buyItem, spendItem, isItemActive, enterDungeon } as const
+  const replaceHealDescriptionWithValue = (desc: string): string => {
+    const baseHealValue = 500
+    const upgradeBoost = Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
+    const healingValue = Math.floor(baseHealValue * upgradeBoost)
+
+    return desc.replace("$_VALUE_$", healingValue.toString())
+  }
+
+  return { items, addItem, buyItem, spendItem, isItemActive, enterDungeon, replaceHealDescriptionWithValue } as const
 }
 
 export default useItems

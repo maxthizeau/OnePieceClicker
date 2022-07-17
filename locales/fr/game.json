@@ -1,0 +1,175 @@
+{
+  "BoatMenu": {
+    "Map": "Carte",
+    "Boat": "Navire",
+    "Cards": "Vivre Cards",
+    "Fleet": "Flotte",
+    "Shop": "Boutique",
+    "Upgrades": "Améliorations",
+    "Mine": "Mine",
+    "Training": "Entraînement"
+  },
+  "Clicker": {
+    "Main": {
+      "back-button": "Retour",
+      "farm-button": "Farm",
+      "stop-button": "Stop"
+    },
+    "Popups": {
+      "victory": "VICTOIRE",
+      "defeat": "DÉFAITE",
+      "victory-message": "Vous avez sauvé vos nakamas",
+      "defeat-message": "Le boss a eu le temps de fuir, renforcez votre équipage et essayez à nouveau.",
+      "new-zone-available": "Vous avez accès à une nouvelle zone",
+      "new-fleet-member": "Un nouveau membre a rejoint votre flotte !",
+      "new-ship": "Nouveau navire disponible :",
+      "next": "Suivant",
+      "back-to-seaport": "Retourner au port",
+      "try-again": "Réessayer",
+      "fight-again": "Combattre à nouveau",
+      "farm-dungeon": "Farmer le donjon"
+    },
+    "Zone": {
+      "visit-island": "Visiter l'île",
+      "save-nakamas": "Sauver vos Nakamas"
+    }
+  },
+  "Crew": {
+    "empty-slot": "Emplacement libre"
+  },
+  "Currencies": {
+    "select-amount": "Selectionner le montant d'objets à utiliser",
+    "logPose-title": "Log Pose",
+    "healFood-title": "Soin",
+    "cola-title": "Cola",
+    "demonFruit-title": "Fruit du démon",
+    "dendenmushi-title": "Den den Mushi",
+    "berryboost-title": "Berry Boost",
+    "logPose-description": "Permet d'entrer dans un donjon",
+    "healFood-description": "Soigne tous les membres de votre équipage  de $_VALUE_$ après avoir battu un adversaire",
+    "cola-description": "Augmente l'XP reçue de 20% pendant 30 secondes",
+    "demonFruit-description": "Augmente votre Crew Power et Click Power de 20% pendant 30 secondes",
+    "dendenmushi-description": "Augmente vos chances d'obtenir des vivre cards de 20% pendant 30 secondes",
+    "berryboost-description": "Gagnez 20% de berry supplémentaires après avoir battu un adversaire pendant 30 secondes"
+  },
+  "Modals": {
+    "close-button": "Close (Esc)",
+
+    "Boat": {
+      "effect-crew-power": "Crew Power",
+      "effect-click-power": "Click Power",
+      "effect-vivre-card": "Chance d'obtention de Vivre Card",
+      "effect-xp-boost": "XP gagné",
+      "effect-berries": "Berry gagnés",
+      "effect-captain-boost": "Boost de Capitaine",
+      "effect-energy-refill-speed": "Vitesse de recharge de l'énergie dans la Mine",
+      "effect-double-loot-mine": "Chance de double gemme dans la Mine",
+      "effect-rayleigh-training-speed": "Vitesse d'entraînement de Rayleigh",
+      "effect-item-duration": "Durée des objets",
+      "your-ship": "Votre navire",
+      "all-ships": "Tous vos navires",
+      "hide-filters": "Cacher les filtres",
+      "show-filters": "Afficher les filtres",
+      "search-by-name": "Chercher par nom",
+      "filter-by-effect": "Filtrer par effet...",
+      "filter-minimum-value": "Valeur Mininimum (%)"
+    },
+    "Fleet": {
+      "fleet-label": "FLOTTE",
+      "fleet-modal-subtitle": "Tous les membres que vous avez recrutés dans votre flotte. Vous pouvez les ajouter dans votre équipage quand vous le souhaitez.",
+      "show-lvl1-stats": "Afficher les stats au Lvl.1"
+    },
+    "Goals": {
+      "goal-label": "Objectifs",
+      "goal-reward": "Récompense : ",
+      "filter-by-zone": "Filtrer par zone"
+    },
+    "MapV1": {
+      "select-zone": "Sélectionner une zone"
+    },
+    "Mine": {
+      "mine-label": "Mine",
+      "upgrade-mine-label": "Améliorations",
+      "market-mine-label": "Marché",
+      "market-subtitle": "Marché : Acheter et vendre vos gemmes. Il y a un nouveau marché toutes les 6 heures.",
+      "upgrade-subtitle": "Améliorations : Miner plus efficacement"
+    },
+    "Shop": {
+      "shop-label": "Boutique",
+      "shop-subtitle": "Sélectionnez l'objet que vous voulez acheter.",
+      "buy-button": "Acheter"
+    },
+    "Training": {
+      "free-slot": "Emplacement libre",
+      "unlock-price": "Prix de déblocage :",
+      "error-unit-not-found": "Erreur : Unité introuvable",
+      "boost-button": "BOOST!",
+      "training-label": "Entraînement",
+      "xp-boost-label": "XP Boost",
+      "xp-boost-description": "Les unités dans \"XP Boost\" gagnent 50% de tous vos gains d'xp. Vous pouvez sélectionner n'importe quelle unité de votre flotte.",
+      "rayleigh-label": "Entraînement de Rayleigh",
+      "rayleigh-description": "Après qu'un membre de votre flotte atteigne le niveau 100, Rayleigh peut lui enseigner le Haki. Il reviendra au niveau 1 mais gagnera 10% de son ATK de base.",
+      "select-unit": "Sélectionner une unité :",
+      "show-crew-only": "Afficher seulement l'équipage",
+      "select-slot-first": "Sélectionner d'abord un emplacement",
+      "select-a-unit": "Sélectionner une unité",
+      "atk-minimum": "ATK Minimum",
+      "lvl-minimum": "Lvl. Minimum",
+      "sort-by": "Trier par...",
+      "base-atk": "ATK de base",
+      "current-atk": "ATK actuelle",
+      "level": "Niveau"
+    },
+    "Upgrades": {
+      "upgrades-label": "Améliorations",
+      "click-power-title": "Click Power",
+      "click-power-description": "Augmente votre click power (puissance de clic)",
+      "crew-power-title": "Crew Power",
+      "crew-power-description": "Augmente votre crew power (puissance d'équipage)",
+      "loot-chance-title": "Obtention de vivre cards",
+      "loot-chance-description": "Augmente vos chances d'obtenir des vivre cards",
+      "xp-boost-title": "XP Boost",
+      "xp-boost-description": "Gagnez davantage d'XP après avoir battu un ennemie",
+      "berry-boost-title": "Berry Boost",
+      "berry-boost-description": "Gagnez davantage de Berry après avoir battu un ennemie",
+      "heal-title": "Soin",
+      "heal-description": "Soignez davantage avec le nourriture de soin",
+      "crew-size-title": "Équipage +1",
+      "crew-size-description": "Augmente la taille maximale de votre équipage"
+    },
+    "VivreCard": {
+      "vivre-card-label": "VIVRE CARDS",
+      "vivre-card-description": "Toutes les vivre cards que vous trouvez sont ici. Vous pouvez les utiliser pour recruter de nouveaux membres dans votre flotte.",
+      "fleet-members": "membre de votre flotte",
+      "search-unit": "Chercher une unité"
+    },
+    "Zone": {
+      "show-looted-cards": "Afficher les vivre cards obtenues :"
+    }
+  },
+  "Stats": {},
+  "Tables": {
+    "table-column-name": "Nom",
+    "table-column-rarity": "Rareté",
+    "table-column-level": "Niveau",
+    "table-column-action": "Action",
+    "table-column-cost": "Puis. Capitaine",
+    "table-column-hplvlmax": "HP Lvl Max",
+    "table-column-atklvl1": "ATK Lvl 1",
+    "table-column-price": "Prix",
+    "table-action-to-crew": "Vers équipage",
+    "table-action-in-crew": "Dans l'équipage",
+    "table-action-in-fleet": "Dans la flotte",
+    "table-action-recruit-card": "Recruter",
+    "table-action-recruit": "Recruter"
+  },
+  "Goals": {
+    "KILL_ENEMIES-label": "Battre {{value}} ennemies dans {{location}}",
+    "CLEAR_DUNGEON-label": "Finir {{value}} fois le donjon de {{location}}",
+    "LOOT_VIVRECARD-label": "Obtenir toutes les vivre cards de {{location}}",
+    "MINE_ENERGY-label": "Utiliser {{value} points d'energie dans la mine",
+    "MINE_LOOT-label": "Obtenir {{value}} gemmes dans la mine",
+    "claim-reward": "Obtenir récompense",
+    "select-new-goal": "Sélectionner un nouvel objectif..."
+  }
+}

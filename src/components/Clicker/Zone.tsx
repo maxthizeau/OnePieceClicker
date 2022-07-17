@@ -7,6 +7,7 @@ import useInstance from "../../lib/hooks/useInstance"
 import useItems from "../../lib/hooks/useItems"
 import { useLogs } from "../../lib/hooks/useLogs"
 import { nFormatter } from "../../lib/utils"
+import useTranslation from "next-translate/useTranslation"
 
 const Background = styled.div<{ src: string }>`
   background-image: ${(props) => `url(${props.src})`};
@@ -100,14 +101,15 @@ interface IZoneProps {
 const Zone: FC<IZoneProps> = ({ zone }) => {
   const { instance, changeInstance } = useInstance()
   const { items, spendItem, enterDungeon } = useItems()
-  const { addLog } = useLogs()
+  // const { addLog } = useLogs()
+  const { t } = useTranslation()
 
   return (
     <StyledGame src={`images/zones/${zone.id}.jpg`}>
-      <ZoneNameStyled>{zone.location}</ZoneNameStyled>
+      <ZoneNameStyled>{t(`zones:${zone.id}-${zone.location}`)}</ZoneNameStyled>
       <ZoneButton bottom={true} left={true} onClick={() => changeInstance(EInstance.Clicker)}>
         <img src="images/icons/visitIcon.png" />
-        <ButtonTextStyled>Visit Island</ButtonTextStyled>
+        <ButtonTextStyled>{t("game:Clicker.Zone.visit-island")}</ButtonTextStyled>
       </ZoneButton>
       <ZoneButton
         bottom={true}
@@ -122,7 +124,7 @@ const Zone: FC<IZoneProps> = ({ zone }) => {
           <CostText>{nFormatter(zone.dungeonCost, 0)}</CostText> <img src="images/icons/logPoseIcon.png" />
         </CostIcon>
         <img src="images/icons/rescueIcon.png" />
-        <ButtonTextStyled>Save Nakamas</ButtonTextStyled>
+        <ButtonTextStyled>{t("game:Clicker.Zone.save-nakamas")}</ButtonTextStyled>
       </ZoneButton>
     </StyledGame>
   )

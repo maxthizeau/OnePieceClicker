@@ -7,6 +7,7 @@ import useFleet from "../../../lib/hooks/useFleet"
 import Hover from "../../Global/Hover"
 import CrewHover from "../../Global/Hover/CrewHover"
 import styled from "styled-components"
+import useTranslation from "next-translate/useTranslation"
 
 const ExtraModalStyles = styled.div`
   /* overflow: scroll;
@@ -18,7 +19,7 @@ const FleetModalContent: FC = () => {
   const [search, setSearch] = useState("")
   const [showLvl1, setShowLvl1] = useState(false)
   const { addToCrew } = useFleet().crewFunctions
-
+  const { t } = useTranslation()
   const findIndexCrewFunc = (fleetUnit: IFleetUnit) => gameState.state.crew.findIndex((crewUnit) => crewUnit.fleetId == fleetUnit.id)
 
   const fleetColumns: TColumn<IFleetUnit>[] = [
@@ -40,7 +41,7 @@ const FleetModalContent: FC = () => {
     },
 
     {
-      label: "Name",
+      label: t("game:Tables.table-column-name"),
       dataKey: "name",
       key: "name",
       render: (record, text) => record.unit.name,
@@ -48,14 +49,14 @@ const FleetModalContent: FC = () => {
     },
 
     {
-      label: "Rarity.",
+      label: t("game:Tables.table-column-rarity"),
       dataKey: "stars",
       key: "stars",
       render: (record, text) => record.unit.stars,
       sortMode: "number",
     },
     {
-      label: "Level.",
+      label: t("game:Tables.table-column-level"),
       dataKey: "level",
       key: "level",
       sortMode: "number",
@@ -86,18 +87,18 @@ const FleetModalContent: FC = () => {
       },
     },
     {
-      label: "Action",
+      label: t("game:Tables.table-column-action"),
       dataKey: "action",
       key: "action",
       render: (record, text) => {
-        if (findIndexCrewFunc(record) != -1) return <span>In crew</span>
+        if (findIndexCrewFunc(record) != -1) return <span>{t("game:Tables.table-action-in-crew")}</span>
         return (
           <ActionButton
             onClick={() => {
               const res = addToCrew(record)
             }}
           >
-            To crew
+            {t("game:Tables.table-action-to-crew")}
           </ActionButton>
         )
       },
@@ -106,12 +107,14 @@ const FleetModalContent: FC = () => {
 
   return (
     <ExtraModalStyles>
-      <h3>FLEET</h3>
-      <ModalSubtitle>All members you recruited in your fleet. You can add them to your crew whenever you want.</ModalSubtitle>
+      <h3>{t("game:Modals.Fleet.fleet-label")}</h3>
+      <ModalSubtitle>{t("game:Modals.Fleet.fleet-modal-subtitle")}</ModalSubtitle>
       <TableFilters>
         {/* <FilterButton onClick={() => filterFleetMember(!filterFleet)}>{!filterFleet ? "Hide" : "Show"} fleet members</FilterButton> */}
         <SearchInput placeholder="Search unit" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button onClick={() => setShowLvl1(!showLvl1)}>{showLvl1 ? `✅` : `🚫`} Show Lvl.1 Stats</button>
+        <button onClick={() => setShowLvl1(!showLvl1)}>
+          {showLvl1 ? `✅` : `🚫`} {t("game:Modals.Fleet.show-lvl1-stats")}
+        </button>
       </TableFilters>
       <Table
         style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}

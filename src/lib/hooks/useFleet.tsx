@@ -79,7 +79,7 @@ const useFleet = () => {
     const rngCrew = Math.floor(Math.random() * crew.length)
     if (!memberHas0HP(crew[rngCrew])) {
       gameState.dispatch({ type: ActionEnum.GainXP, payload: { gainXP: finalAmount, crew: crew[rngCrew] } })
-      console.log(`Crew member : ${crew[rngCrew].fleetId} --> + ${finalAmount} XP`)
+      // console.log(`Crew member : ${crew[rngCrew].fleetId} --> + ${finalAmount} XP`)
     }
 
     // Rayleigh Training :
@@ -94,7 +94,7 @@ const useFleet = () => {
     const changeHP = healingValue - amount
     for (let i = 0; i < crew.length; i++) {
       gameState.dispatch({ type: ActionEnum.ChangeHP, payload: { changeHP, crew: crew[i] } })
-      console.log(`Crew member : ${crew[i].fleetId} -->  ${changeHP} HP`)
+      // console.log(`Crew member : ${crew[i].fleetId} -->  ${changeHP} HP`)
     }
   }
 

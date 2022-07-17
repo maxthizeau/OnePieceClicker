@@ -1,16 +1,27 @@
 import styled, { createGlobalStyle, css } from "styled-components"
 
+function getWidthString(span: number) {
+  if (!span) return
+  let width = (span / 24) * 100
+  return `width: ${width}%;`
+}
+
 export const GlobalStyle = createGlobalStyle`
 
+* {
+  margin:0;
+padding:0;
+box-sizing: border-box;
+}
 
-  body {
+  body, html {
     margin: 0;
     padding: 0;
-    height: 100%;
-  width: 100%;
+    /* height: 100vh; */
+  width: 100vw;
     box-sizing: border-box;
     font-family: 'Press Start 2P', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    
+    font-size: 0.9em;
     background-color: #272727;
         
   }
@@ -29,11 +40,27 @@ export const GlobalStyle = createGlobalStyle`
 
 export const Container = styled.div`
   box-sizing: border-box;
-  margin: auto;
-  max-width: 1600px;
+
+  margin: 0px auto !important;
+  width: 500px;
   height: 100%;
   padding: 20px;
   background-color: #272727;
+  display: flex;
+  flex-flow: row wrap;
+
+  @media only screen and (min-width: 768px) {
+    width: 760px;
+  }
+  @media only screen and (min-width: 992px) {
+    width: 990px;
+  }
+  @media only screen and (min-width: 1200px) {
+    width: 1200px;
+  }
+  @media only screen and (min-width: 1550px) {
+    width: 1500px;
+  }
 
   & * {
     box-sizing: border-box;
@@ -41,18 +68,48 @@ export const Container = styled.div`
 `
 interface ColumnStyledProps {
   span: number
+  xs?: number
+  sm?: number
+  md?: number
+  lg?: number
+  position?: number
+  xsPosition?: number
+  smPosition?: number
+  mdPosition?: number
+  lgPosition?: number
 }
+// ${(props) => props.span && `flex-basis: calc(100vw * ${props.span}/ 24);`}
 export const Column = styled.div<ColumnStyledProps>`
   display: flex;
   flex-direction: column;
+  /* float: left; */
+  ${({ xs, span }) => (xs ? getWidthString(xs) : getWidthString(span))}
 
-  ${(props) => props.span && `flex-basis: calc(100vw * ${props.span}/ 24);`}
+  ${({ position }) => position !== undefined && `order: ${position};`} 
+  ${({ xsPosition }) => xsPosition !== undefined && `order: ${xsPosition};`} 
+
+  @media only screen and (max-width: 991px) {
+    ${({ sm, span }) => (sm ? getWidthString(sm) : getWidthString(span))}
+    ${({ smPosition }) => smPosition !== undefined && `order: ${smPosition};`}
+  }
+  @media only screen and (min-width: 992px) {
+    ${({ md, span }) => (md ? getWidthString(md) : getWidthString(span))}
+    ${({ mdPosition }) => mdPosition !== undefined && `order: ${mdPosition};`}
+  }
+  @media only screen and (min-width: 1200px) {
+    ${({ lg, span }) => (lg ? getWidthString(lg) : getWidthString(span))}
+    ${({ lgPosition }) => lgPosition !== undefined && `order: ${lgPosition};`}
+  }
+  @media only screen and (min-width: 1500px) {
+    ${({ span }) => getWidthString(span)}
+    ${({ position }) => position !== undefined && `order: ${position};`}
+  }
 
   &:first-child {
-    margin-left: 0px !important;
+    padding-left: 0px !important;
   }
   &:last-child {
-    margin-right: 0px !important;
+    padding-right: 0px !important;
   }
 `
 
@@ -63,10 +120,10 @@ export const Row = styled.div<RowStyledProps>`
   display: flex;
   flex-direction: row;
   width: 100%;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
 
   ${Column} {
-    margin: ${({ gutter }) => (gutter ? (Array.isArray(gutter) ? `${gutter[0]}px ${gutter[1]}px` : `${gutter}px`) : `0px`)};
+    padding: ${({ gutter }) => (gutter ? (Array.isArray(gutter) ? `${gutter[0]}px ${gutter[1]}px` : `${gutter}px`) : `0px`)};
   }
 `
 
@@ -75,13 +132,27 @@ export const Header = styled.header`
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  /* flex-wrap: wrap; */
+  /* justify-content: center; */
+
+  @media only screen and (min-width: 1200px) {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    /* margin-top: 20px; */
+    /* margin-bottom: 45px; */
+  }
+  @media only screen and (min-width: 1550px) {
+    margin-bottom: 0;
+  }
 `
 
 export const Logo = styled.img`
-  max-width: 270px;
-  height: 80px;
-  margin-right: 30px;
+  max-width: 180px;
+  height: 60px;
+  margin: auto;
+  @media only screen and (min-width: 992px) {
+    margin: 0 30px 0 0;
+  }
 `
 
 export const Center = styled.div`

@@ -1,0 +1,19 @@
+{
+  "changeLanguage": "Changer de langage",
+  "navigation": {
+    "guide": "Guide",
+    "saveImport": "Sauvegarder / Importer",
+    "language": "Langage"
+  },
+  "click-power": "Click Power",
+  "crew-power": "Crew Power",
+  "vivre-card": "Vivre Card",
+  "vivre-cards": "Vivre Cards",
+  "reset": "Réinitialiser",
+  "select": "Selectionner",
+  "owned": "Possédé",
+  "hide": "Cacher",
+  "show": "Voir",
+  "Yes": "Oui",
+  "No": "Non"
+}

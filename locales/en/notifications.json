@@ -1,0 +1,28 @@
+{
+  "warning": {
+    "title-not-enough-berries": "Not enough berries",
+    "warning-message-unlock-menu": "You don't have enough berries to unlock \"{{unlockedMenu}}\"",
+    "title-not-enough-gems": "Not enought gems",
+    "message-not-enough-gems": "You don't have enough gems to buy this item",
+    "message-mine-market-upgrade": "You don't have enough berries to do this upgrade",
+    "message-unlock-training-slot": "You don't have enough berries to unlock this slot",
+    "message-not-enough-berries-to-recruit": "You don't have enough berries to recruit",
+    "message-recruit-error-no-card": "You're trying to cheat ! You need the card to recruit it ",
+    "message-recruit-already-in-fleet": "This pirate is already in your fleet ! ",
+    "message-not-enough-berries-to-buy-at-shop": "Reduce the quantity or come back when you have enough berries",
+    "title-cannot-enter-dungeon": "Unable to enter the dungeon",
+    "message-cannot-enter-dungeon": "You need more Log Poses to enter, you can buy some in the shop."
+  },
+  "success": {
+    "title-unlock-menu": "[{{unlockedMenu}}] unlocked !",
+    "message-unlock-menu": "You can now access to {{unlockedMenu}}",
+    "title-fleet-new-member": "[Fleet] New member !",
+    "title-new-ship": "[New ship] !",
+    "message-new-ship": "You have a new ship : {{name}}",
+    "title-mine-market-buy": "You bought a Vivre Card",
+    "title-training-slot-unlocked": "Slot unlocked",
+    "title-vivre-card-found": "Vivre Card Found",
+    "title-recruit-successful": "Recruit successful",
+    "message-recruit-successful": "{{name}} is now in your fleet. It cost you ${price} Berries."
+  }
+}

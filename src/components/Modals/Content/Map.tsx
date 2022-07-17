@@ -9,6 +9,7 @@ import useCards from "../../../lib/hooks/useCards"
 import useUnitData from "../../../lib/hooks/useUnitData"
 import { useReactiveVar } from "@apollo/client"
 import { useGameState } from "../../../lib/hooks/GameContext"
+import useTranslation from "next-translate/useTranslation"
 
 const ModalWrapper = styled.div`
   display: flex;
@@ -24,11 +25,11 @@ const MapModalContent: FC = () => {
   const [data, dataByRarity] = useUnitData()
   const zoneId = useReactiveVar(zoneIdVar)
   const zone = zones[zoneId]
-
+  const { t } = useTranslation()
   return (
     <ModalWrapper>
       <ZonesListWrapper>
-        <h3>Select a zone</h3>
+        <h3>{t("game:Modals.MapV1.select-zone")}</h3>
         {zones
           .filter((zone) => zone.id <= gameState.maxZoneId)
           .map((x) => (
@@ -40,7 +41,7 @@ const MapModalContent: FC = () => {
                 changeInstance(EInstance.Zone)
               }}
             >
-              #{x.id} : {x.location}
+              #{x.id} : {t(`zones:${x.id}-${x.location}`)}
             </ModalButtonStyled>
           ))}
       </ZonesListWrapper>

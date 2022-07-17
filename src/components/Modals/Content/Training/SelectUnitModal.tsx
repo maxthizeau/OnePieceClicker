@@ -6,6 +6,7 @@ import { ActionEnum, IFleetUnit, useGameState } from "../../../../lib/hooks/Game
 import { TTypeTraining } from "../../../../lib/types"
 import Hover from "../../../Global/Hover"
 import CrewHover from "../../../Global/Hover/CrewHover"
+import useTranslation from "next-translate/useTranslation"
 
 const ImageWrapper = styled.div`
   /* width: 100%;
@@ -96,7 +97,7 @@ interface ISelectUnitProps {
 }
 
 const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
-  console.log(selected)
+  const { t } = useTranslation()
   const gameState = useGameState()
   const [filterShowCrewOnly, setFilterShowCrewOnly] = useState(false)
   const [filterAtkMin, setFilterAtkMin] = useState(0)
@@ -126,7 +127,7 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
   }, [filteredList, filterSortBy, filterSortDesc])
 
   useEffect(() => {
-    console.log("Use effect")
+    // console.log("Use effect")
     if (selected && selected.type == "rayleigh") {
       setFilterLvlMin(100)
     }
@@ -136,7 +137,6 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
   }, [selected])
 
   function clickAddUnit(fleetUnitId: number) {
-    console.log("click")
     if (selected) {
       gameState.dispatch({ type: ActionEnum.Training_AddUnit, payload: { training: { fleetUnitId, index: selected?.index, type: selected?.type } } })
     }
@@ -144,9 +144,13 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
 
   return (
     <SelectUnitStyled>
-      <h3>Select Unit : </h3>
+      <h3>{t("game:Modals.Training.select-unit")} </h3>
       <ErrorMessage>
-        {selected === null ? <span style={{ color: "#f3d097" }}>⬆ Select a slot first ⬆</span> : <span style={{ color: "#a1eeae" }}>⬇ Select a unit ⬇</span>}
+        {selected === null ? (
+          <span style={{ color: "#f3d097" }}>⬆ {t("game:Modals.Training.select-slot-first")} ⬆</span>
+        ) : (
+          <span style={{ color: "#a1eeae" }}>⬇ {t("game:Modals.Training.select-a-unit")} ⬇</span>
+        )}
       </ErrorMessage>
       <Filters>
         <FilterButton
@@ -155,10 +159,10 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
           }}
         >
           {" "}
-          {filterShowCrewOnly ? `✅` : `🚫`} Show Crew Only
+          {filterShowCrewOnly ? `✅` : `🚫`} {t("game:Modals.Training.show-crew-only")}
         </FilterButton>
         <FilterInput
-          placeholder="ATK Minimum"
+          placeholder={t("game:Modals.Training.atk-minimum")}
           value={filterAtkMin <= 0 ? "" : filterAtkMin}
           onChange={(e) => {
             const value = e.target.value != "" ? parseInt(e.target.value) : 0
@@ -171,7 +175,7 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
           }}
         />
         <FilterInput
-          placeholder="Lvl. Minimum"
+          placeholder={t("game:Modals.Training.lvl-minimum")}
           value={filterLvlMin <= 0 ? "" : filterLvlMin}
           onChange={(e) => {
             let value = e.target.value != "" ? parseInt(e.target.value) : 0
@@ -186,10 +190,10 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
           }}
         />
         <SelectFilter onChange={(e) => setFilterSortBy(e.target.value)}>
-          <option value={undefined}>Sort By...</option>
-          <option value={"baseAtk"}>Base ATK</option>
-          <option value={"currentAtk"}>Current ATK</option>
-          <option value={"level"}>Level</option>
+          <option value={undefined}>{t("game:Modals.Training.sort-by")}</option>
+          <option value={"baseAtk"}>{t("game:Modals.Training.base-atk")}</option>
+          <option value={"currentAtk"}>{t("game:Modals.Training.current-atk")}</option>
+          <option value={"level"}>{t("game:Modals.Training.level")}</option>
         </SelectFilter>
         <FilterButton
           onClick={() => {
@@ -208,7 +212,7 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
             setFilterSortDesc(false)
           }}
         >
-          Reset
+          {t("common:reset")}
         </FilterButton>
       </Filters>
       <UnitList>
