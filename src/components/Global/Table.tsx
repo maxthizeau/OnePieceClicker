@@ -1,4 +1,4 @@
-import { CSSProperties, PropsWithChildren, useState } from "react"
+import { CSSProperties, PropsWithChildren, useCallback, useMemo, useState } from "react"
 import { render } from "react-dom"
 import styled from "styled-components"
 
@@ -112,23 +112,26 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
     else return stringB.localeCompare(stringA)
   }
 
-  const sortData = (a: any, b: any): number => {
-    if (!sortBy) return 0
-    const columnSorted = props.columns.find((col) => col.dataKey == sortBy?.key)
-    const columnSortFunction = columnSorted?.sort
-    const columnSortMode = columnSorted?.sortMode
+  const sortData = useCallback(
+    (a: any, b: any): number => {
+      if (!sortBy) return 0
+      const columnSorted = props.columns.find((col) => col.dataKey == sortBy?.key)
+      const columnSortFunction = columnSorted?.sort
+      const columnSortMode = columnSorted?.sortMode
 
-    if (columnSortFunction) {
-      const sortResult = columnSortFunction(a, b)
-      return sortBy.order === "asc" ? sortResult : sortResult * -1
-    } else if (columnSortMode === true || columnSortMode === "number") {
-      return defaultSort(a, b)
-    } else if (columnSortMode == "string") {
-      return stringSort(a, b)
-    } else {
-      return 0
-    }
-  }
+      if (columnSortFunction) {
+        const sortResult = columnSortFunction(a, b)
+        return sortBy.order === "asc" ? sortResult : sortResult * -1
+      } else if (columnSortMode === true || columnSortMode === "number") {
+        return defaultSort(a, b)
+      } else if (columnSortMode == "string") {
+        return stringSort(a, b)
+      } else {
+        return 0
+      }
+    },
+    [sortBy]
+  )
 
   const isSortable = (column: TColumn<T>) => {
     return column.sort !== undefined || column.sortMode
@@ -143,6 +146,10 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
       return row[dataKey]
     }
   }
+
+  const sortedData = useMemo(() => {
+    return props.data.sort(sortData)
+  }, [props.data, sortBy])
 
   return (
     <>
@@ -168,7 +175,7 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
           </tr>
         </thead>
         <tbody>
-          {props.data.sort(sortData).map((row, index) => {
+          {sortedData.map((row, index) => {
             return (
               <tr key={`${index}`}>
                 {props.columns.map((column, columnIndex) => {

@@ -139,6 +139,10 @@ const Timer = styled.div`
   align-self: center;
   color: white;
   margin-top: 8px;
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
 `
 
 // export const GainText: FC<{ value: string }> = ({ value }) => {
@@ -225,26 +229,27 @@ const Currency: FC<ICurrencyProps> = ({
     >
       <CurrencyWrapper isMainCurrency={isMainCurrency}>
         {stateItem ? (
-          // <Hover
-          //   hoverContent={
-          //     <BasicHover
-          //       content={
-          //         stateItem
-          //           ? stateItem.itemKey == "healFood"
-          //             ? replaceHealDescriptionWithValue(t(`game:Currencies.${stateItem.itemKey}-description`))
-          //             : t(`game:Currencies.${stateItem.itemKey}-description`)
-          //           : ""
-          //       }
-          //     />
-          //   }
-          //   horizontal="center"
-          //   vertical="bottom"
-          //   delayOpen={200}
-          //   offset={{ y: 10 }}
-          // >
-          <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
+          <Hover
+            wrapperStyles={{ zIndex: 10 }}
+            hoverContent={
+              <BasicHover
+                content={
+                  stateItem
+                    ? stateItem.itemKey == "healFood"
+                      ? replaceHealDescriptionWithValue(t(`game:Currencies.${stateItem.itemKey}-description`))
+                      : t(`game:Currencies.${stateItem.itemKey}-description`)
+                    : ""
+                }
+              />
+            }
+            horizontal="center"
+            vertical="bottom"
+            delayOpen={200}
+            offset={{ y: 10 }}
+          >
+            <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
+          </Hover>
         ) : (
-          // </Hover>
           <SigStyled>{icon && <img className="outline-white" src={icon} />}</SigStyled>
         )}
 

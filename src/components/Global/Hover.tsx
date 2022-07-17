@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { CSSProperties, FC, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 
 type THozitontalPosition = "left" | "center" | "right"
@@ -56,9 +56,10 @@ interface IHoverProps {
   delayOpen?: number
   children?: React.ReactNode
   positionStatic?: boolean
+  wrapperStyles?: CSSProperties
 }
 
-const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, offset, delayOpen, positionStatic }) => {
+const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, offset, delayOpen, positionStatic, wrapperStyles }) => {
   const refWrapper = useRef<HTMLDivElement>(null)
   const refContent = useRef<HTMLDivElement>(null)
   const [dimensionWrapper, setDimensionWrapper] = useState([0, 0])
@@ -82,7 +83,7 @@ const Hover: FC<IHoverProps> = ({ hoverContent, children, horizontal, vertical, 
   }, [dimensionContent, dimensionWrapper])
 
   return (
-    <HoverWrapper ref={refWrapper} delayOpen={delayOpen} positionStatic={positionStatic}>
+    <HoverWrapper style={wrapperStyles} ref={refWrapper} delayOpen={delayOpen} positionStatic={positionStatic}>
       <HoverContent
         ref={refContent}
         horizontal={horizontal ?? "left"}
