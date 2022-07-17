@@ -13,6 +13,8 @@ import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
 import { IMenuUnlockPayload, IMenuUnlockState, menuUnlocksPrices } from "../../lib/data/menuUnlocks"
 import { ELogType, useLogs } from "../../lib/hooks/useLogs"
 import useTranslation from "next-translate/useTranslation"
+import Hover from "../Global/Hover"
+import BasicHover from "../Global/Hover/BasicHover"
 // import { TInstance } from "../../lib/types"
 
 const BoatStyled = styled.div`
@@ -100,15 +102,24 @@ const ShipEffect = styled.li`
   }
 `
 
+const ShipHover = styled.div`
+  width: 250px;
+  background: #fffffff7;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  padding: 10px;
+`
+
 interface IBoatProps {}
 
 const ShipEffects = ({ ship }: { ship: IShip }) => {
+  const { t } = useTranslation()
   return (
     <ShipEffectList>
       {getShipEffects(ship).map((x, index) => {
         return (
           <ShipEffect key={`effect-${ship.name}-${index}`}>
-            <span className="name-effect">{x.toString} : </span>
+            <span className="name-effect">{t(`game:Modals.Boat.effect-${x.toString}`)}</span>
             <span className="value-effect">+ {x.value} %</span>
           </ShipEffect>
         )
@@ -174,8 +185,17 @@ const Boat: FC<IBoatProps> = ({}) => {
       <BoatStyled>
         <ImageWrapper>
           <ShipName>{currentShip.name}</ShipName>
-          <img src={`images/ships/full/${currentShip.thumb}_c.png`} />
-          {/* <ShipEffects ship={currentShip} /> */}
+          <Hover
+            hoverContent={
+              <ShipHover>
+                <ShipEffects ship={currentShip} />
+              </ShipHover>
+            }
+            vertical="middle"
+            horizontal="right"
+          >
+            <img src={`images/ships/full/${currentShip.thumb}_c.png`} />
+          </Hover>
         </ImageWrapper>
         <MenuAndTitleWrapper>
           <h3 style={{ cursor: "pointer" }} onClick={() => setVisibleZoneModal(true)}>
