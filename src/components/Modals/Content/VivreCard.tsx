@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
 import { getMaximumHP, getPriceUnit, getThumbImageSrc, getUnitAttackPower, intWithSpaces } from "../../../lib/clickerFunctions"
 import Table, { TColumn } from "../../Global/Table"
@@ -10,14 +10,14 @@ import { useLogs, ELogType } from "../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../lib/utils"
 import { BerryIcon } from "../../styled/Globals"
 import useTranslation from "next-translate/useTranslation"
+import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
 
 const VivreModalContent: FC = () => {
   const { t } = useTranslation()
   const [cards, _, recruitCard] = useCards()
   const gameState = useGameState()
-  const [data, setData] = useState<ICardUnit[]>([])
-  const [filterFleet, setFilterFleet] = useState(false)
-  const [search, setSearch] = useState("")
+  const [filterFleet, setFilterFleet] = useStatePersistInCookie("filterFleet", false)
+  const [search, setSearch] = useStatePersistInCookie("searchVivreCard", "")
   const { addLog } = useLogs()
 
   const findIndexFleetFunc = (cardUnit: ICardUnit) => gameState.state.fleet.findIndex((fleetUnit) => fleetUnit.unit.id == cardUnit.id)
@@ -142,39 +142,25 @@ const VivreModalContent: FC = () => {
     },
   ]
 
-  const setBaseData = () => {
-    setData(cards)
-  }
-
   const filterFleetMember = (val: boolean) => {
-    if (val) {
-      setData(data.filter((cardUnit) => findIndexFleetFunc(cardUnit) == -1))
-    } else {
-      setBaseData()
-    }
-    setFilterFleet(val)
+    return val ? cards.filter((cardUnit) => findIndexFleetFunc(cardUnit) == -1) : cards
   }
 
-  useEffect(() => {
-    // setData(cards.sort((b, a) => a.lootOrder - b.lootOrder))
-    filterFleetMember(filterFleet)
-  }, [gameState.state.cards, gameState.state.fleet])
+  const filteredData = useMemo(() => {
+    return filterFleetMember(filterFleet).filter((x) => x.name.toLowerCase().includes(search.toLowerCase()))
+  }, [gameState.state.cards, gameState.state.fleet, filterFleet, search])
 
   return (
     <>
       <h3>{t("game:Modals.VivreCard.vivre-card-label")}</h3>
       <ModalSubtitle>{t("game:Modals.VivreCard.vivre-card-description")}</ModalSubtitle>
       <TableFilters>
-        <FilterButton onClick={() => filterFleetMember(!filterFleet)}>
+        <FilterButton onClick={() => setFilterFleet(!filterFleet)}>
           {!filterFleet ? t("common:hide") : t("common:show")} {t("game:Modals.VivreCard.fleet-members")}
         </FilterButton>
         <SearchInput placeholder={t("game:Modals.VivreCard.search-unit")} value={search} onChange={(e) => setSearch(e.target.value)} />
       </TableFilters>
-      <Table
-        style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}
-        data={data.filter((x) => x.name.toLowerCase().includes(search.toLowerCase()))}
-        columns={cardsColumns}
-      />
+      <Table style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }} data={filteredData} columns={cardsColumns} />
     </>
   )
 }

@@ -8,6 +8,7 @@ import Hover from "../../Global/Hover"
 import CrewHover from "../../Global/Hover/CrewHover"
 import styled from "styled-components"
 import useTranslation from "next-translate/useTranslation"
+import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
 
 const ExtraModalStyles = styled.div`
   /* overflow: scroll;
@@ -16,8 +17,8 @@ const ExtraModalStyles = styled.div`
 
 const FleetModalContent: FC = () => {
   const gameState = useGameState()
-  const [search, setSearch] = useState("")
-  const [showLvl1, setShowLvl1] = useState(false)
+  const [search, setSearch] = useStatePersistInCookie("fleetSearchByName", "")
+  const [showLvl1, setShowLvl1] = useStatePersistInCookie("fleetShowLvl1", false)
   const { addToCrew } = useFleet().crewFunctions
   const { t } = useTranslation()
   const findIndexCrewFunc = (fleetUnit: IFleetUnit) => gameState.state.crew.findIndex((crewUnit) => crewUnit.fleetId == fleetUnit.id)

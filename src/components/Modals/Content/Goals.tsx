@@ -7,6 +7,7 @@ import { getThumbImageSrc, idNumberToString, intWithSpaces } from "../../../lib/
 import { useGameState } from "../../../lib/hooks/GameContext"
 import { getPrintableRewardCurrency, goalToString } from "../../../lib/goalsFunctions"
 import useTranslation from "next-translate/useTranslation"
+import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
 
 const ExtraModalStyles = styled.div`
   width: 800px;
@@ -150,7 +151,7 @@ const GoalsModalContent: FC = () => {
   const { t } = useTranslation()
   const { maxZoneId } = useGameState().state
   const { getPossibleGoals, setCurrentGoal } = useGoals()
-  const [filters, setFilters] = useState(defaultFilters)
+  const [filters, setFilters] = useStatePersistInCookie("goalFilters", defaultFilters)
   return (
     <ExtraModalStyles>
       <h3>{t("game:Modals.Goals.goal-label")}</h3>

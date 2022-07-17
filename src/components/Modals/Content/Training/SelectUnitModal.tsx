@@ -7,6 +7,7 @@ import { TTypeTraining } from "../../../../lib/types"
 import Hover from "../../../Global/Hover"
 import CrewHover from "../../../Global/Hover/CrewHover"
 import useTranslation from "next-translate/useTranslation"
+import useStatePersistInCookie from "../../../../lib/hooks/useStatePersistsInCookie"
 
 const ImageWrapper = styled.div`
   /* width: 100%;
@@ -99,11 +100,11 @@ interface ISelectUnitProps {
 const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
   const { t } = useTranslation()
   const gameState = useGameState()
-  const [filterShowCrewOnly, setFilterShowCrewOnly] = useState(false)
-  const [filterAtkMin, setFilterAtkMin] = useState(0)
-  const [filterLvlMin, setFilterLvlMin] = useState(0)
-  const [filterSortBy, setFilterSortBy] = useState<string | undefined>(undefined)
-  const [filterSortDesc, setFilterSortDesc] = useState(false)
+  const [filterShowCrewOnly, setFilterShowCrewOnly] = useStatePersistInCookie("trainingFiltersShowCrewOnly", false)
+  const [filterAtkMin, setFilterAtkMin] = useStatePersistInCookie("trainingFiltersAtkMin", 0)
+  const [filterLvlMin, setFilterLvlMin] = useStatePersistInCookie("trainingFiltersLvlMin", 0)
+  const [filterSortBy, setFilterSortBy] = useStatePersistInCookie<string | undefined>("trainingFiltersSortBy", undefined)
+  const [filterSortDesc, setFilterSortDesc] = useStatePersistInCookie("trainingFiltersSortDesc", false)
   const filteredList = useMemo(() => {
     return gameState.state.fleet.filter((x) => {
       const crewCheck = (filterShowCrewOnly && gameState.state.crew.find((y) => y.fleetId == x.id)) || !filterShowCrewOnly
@@ -189,7 +190,7 @@ const SelectUnit: FC<ISelectUnitProps> = ({ selected }) => {
             }
           }}
         />
-        <SelectFilter onChange={(e) => setFilterSortBy(e.target.value)}>
+        <SelectFilter onChange={(e) => setFilterSortBy(e.target.value)} value={filterSortBy}>
           <option value={undefined}>{t("game:Modals.Training.sort-by")}</option>
           <option value={"baseAtk"}>{t("game:Modals.Training.base-atk")}</option>
           <option value={"currentAtk"}>{t("game:Modals.Training.current-atk")}</option>

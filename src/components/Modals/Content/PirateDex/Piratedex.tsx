@@ -5,6 +5,7 @@ import { zones } from "../../../../lib/data/zones"
 import PirateList from "./PirateList"
 import useTranslation from "next-translate/useTranslation"
 import { useGameState } from "../../../../lib/hooks/GameContext"
+import useStatePersistInCookie from "../../../../lib/hooks/useStatePersistsInCookie"
 
 const PiratedexWrapper = styled.div`
   padding: 10px 20px;
@@ -65,7 +66,8 @@ const Piratedex = () => {
   const zoneId = useGameState().state.currentZone
   const zone = zones[zoneId]
   const [rarity, setRarity] = useState(dataByRarity[0].stars)
-  const [showOwned, setShowOwned] = useState(true)
+  const [showOwned, setShowOwned] = useStatePersistInCookie("showOwnedUnit", true)
+
   const { t } = useTranslation()
   return (
     <PiratedexWrapper>
