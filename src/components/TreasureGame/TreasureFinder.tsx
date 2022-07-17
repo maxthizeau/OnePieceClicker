@@ -28,7 +28,7 @@ const GameContainer = styled.div<{ mode?: EGameMode }>`
   }
 `
 
-const EnergyIcon = styled.span<{ width?: number; marginTop?: number; marginBottom?: number }>`
+const EnergyIcon = styled.span<{ width?: number; marginTop?: number; marginBottom?: number; marginRight?: number }>`
   display: inline-block;
   content: "";
   width: ${(props) => (props.width ? props.width : "14")}px;
@@ -37,6 +37,20 @@ const EnergyIcon = styled.span<{ width?: number; marginTop?: number; marginBotto
   background-size: contain;
   margin-top: ${(props) => (props.marginTop ? props.marginTop : "4")}px;
   margin-bottom: ${(props) => (props.marginBottom ? props.marginBottom : "0")}px;
+  margin-right: ${(props) => (props.marginRight ? props.marginRight : "0")}px;
+
+  /* background-position: -12px -10px; */
+`
+const DiamondIcon = styled.span<{ width?: number; marginTop?: number; marginBottom?: number }>`
+  display: inline-block;
+  content: "";
+  width: ${(props) => (props.width ? props.width : "18")}px;
+  height: ${(props) => (props.width ? props.width : "18")}px;
+  background-image: url("images/icons/diamondIcon.png");
+  background-size: contain;
+  margin-top: ${(props) => (props.marginTop ? props.marginTop : "0")}px;
+  margin-bottom: ${(props) => (props.marginBottom ? props.marginBottom : "0")}px;
+  margin-right: 10px;
 
   /* background-position: -12px -10px; */
 `
@@ -73,6 +87,10 @@ const GameButton = styled.a<{ active?: boolean }>`
   & span {
     font-size: 14px;
   }
+
+  &.fullWidthButton {
+    width: 100%;
+  }
 `
 
 const ActionButtonContainer = styled.div`
@@ -108,11 +126,12 @@ const ArrowsButtonContainer = styled.div`
 `
 
 const GameText = styled.div`
-  padding: 10px;
+  padding: 5px 10px;
   border: 2px solid #b9896e;
   border-radius: 3px;
-  font-size: 18px;
-  width: 140px;
+  font-size: 14px;
+  display: flex;
+
   text-align: center;
   background-color: #896651;
   color: #ececec;
@@ -162,6 +181,9 @@ const ShowLevel: FC<IShowLevel> = ({ level, levelState, charPosition, gems, clic
         const blockIsBorder = isBorder(index, level.length)
         const state = blockIsBorder ? EBlockState.SHOW : levelState[index]
         const blockToShow = state == EBlockState.SHOW ? block : [1, 1]
+        if (blockToShow === null) {
+          return
+        }
 
         if (charPosition.x == xyBlock.x && charPosition.y == xyBlock.y) {
           return <CharSprite key={index} />
@@ -199,7 +221,8 @@ const ShowLevel: FC<IShowLevel> = ({ level, levelState, charPosition, gems, clic
 }
 
 const TreasureFinder = () => {
-  const { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config } = useTreasureGame()
+  const { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config, userResetLevel } =
+    useTreasureGame()
   const [timer, setTimer] = useState(config.timer - Math.floor((new Date().getTime() - lastEnergyUpdateTimestamp) / 1000))
   const { t } = useTranslation()
 
@@ -246,10 +269,17 @@ const TreasureFinder = () => {
     <>
       <GameTextContainer>
         <GameText>
-          {t("treasureGame:refill-in")} {timer}
+          {t("treasureGame:refill-in")}{" "}
+          {timer.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          })}
         </GameText>
         <GameText>
-          <EnergyIcon width={22} marginBottom={-5} /> {energy} / {config.maxEnergy}
+          <DiamondIcon /> {gems.filter((x) => x.collected == true).length} / {gems.length}
+        </GameText>
+        <GameText>
+          <EnergyIcon width={14} marginRight={5} marginBottom={0} /> {energy} / {config.maxEnergy}
         </GameText>
       </GameTextContainer>
       <GameContainer mode={mode}>
@@ -350,6 +380,19 @@ const TreasureFinder = () => {
             </GameButton>
           </ActionButtonContainer>
         </GameButtonContainer>
+      </GameButtonContainer>
+      <GameButtonContainer>
+        <GameButton
+          className="fullWidthButton"
+          onClick={() => {
+            userResetLevel()
+          }}
+        >
+          {t("treasureGame:new-level")}
+          <span>
+            {config.energyCosts.reset} <EnergyIcon />
+          </span>
+        </GameButton>
       </GameButtonContainer>
     </>
   )

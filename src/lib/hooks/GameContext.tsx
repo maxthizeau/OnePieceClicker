@@ -196,8 +196,8 @@ function getDefaultState(): State {
     const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
     const saveJson: State = JSON.parse(saveJsonDecrypted)
     // saveJson.maxZoneId = 25
-    saveJson.berries = 20000000000
-    saveJson.currentZone = 10
+    // saveJson.berries = 20000000000
+    // saveJson.currentZone = 10
     return saveJson
   } catch {
     return defaultState

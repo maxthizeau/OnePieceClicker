@@ -33,6 +33,7 @@ type TConfig = {
     scan: number
     pickaxe: number
     bomb: number
+    reset: number
   }
   doubleLoot: number
 }
@@ -53,6 +54,7 @@ type Dispatch = {
   setLevelState: (arg: EBlockState[]) => void
   setLastEnergyUpdateTimestamp: (arg: number) => void
   setEnergy: (arg: number) => void
+  resetLevel: () => void
 }
 
 const TreasureGameContext = createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
@@ -89,6 +91,7 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
       scan: 32 - scanCostUpgrade * 2,
       pickaxe: 7 - pickaxeCostUpgrade,
       bomb: 32 - bombCostUpgrade * 2,
+      reset: 60,
     },
   }
 
@@ -99,13 +102,20 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
   const [lastEnergyUpdateTimestamp, setLastEnergyUpdateTimestamp] = useState(new Date().getTime())
   const [energy, setEnergy] = useState(60)
 
-  useEffect(() => {
+  const resetLevel = () => {
     const generatedLevel = generateLevel()
     setCharPosition({ x: 7, y: 0 })
     setLevel(generatedLevel)
     setLevelState(new Array(generatedLevel.length).fill(EBlockState.HIDDEN))
-    setGems(generateGemsArray(generatedLevel, 10))
+    setGems(generateGemsArray(generatedLevel, config.gems))
+  }
+
+  useEffect(() => {
+    resetLevel()
   }, [])
+  useEffect(() => {
+    console.log(levelState)
+  }, [levelState])
 
   const state: State = {
     charPosition,
@@ -124,6 +134,7 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
     setLevelState,
     setLastEnergyUpdateTimestamp,
     setEnergy,
+    resetLevel,
   }
 
   const value = { state, dispatch }
@@ -146,10 +157,19 @@ const useTreasureGame = () => {
 
   const { charPosition, level, gems, levelState, lastEnergyUpdateTimestamp, energy, config } = context.state
 
-  const { setCharPosition, setLevel, setGems, setLevelState, setLastEnergyUpdateTimestamp, setEnergy } = context.dispatch
+  const { setCharPosition, setLevel, setGems, setLevelState, setLastEnergyUpdateTimestamp, setEnergy, resetLevel } = context.dispatch
 
   const [mode, setMode] = useState<EGameMode>(EGameMode.NORMAL)
   const [previousNotification, setPreviousNotification] = useState<string>("")
+
+  useEffect(() => {
+    // If all gems have been collected in this level, reset it
+    console.log(gems)
+    if (!gems.find((x) => x.collected == false)) {
+      sendNotification("all-gems-collected", "success", "New level", "You collected all gems.")
+      resetLevel()
+    }
+  }, [gems])
 
   const spendEnergy = (amount: number) => {
     if (energy - amount >= 0) {
@@ -162,8 +182,8 @@ const useTreasureGame = () => {
   }
   /* Show around char  */
   function updateStateAroundChar() {
-    // If levelState is not initialized yet, skip
-    if (levelState.length == 0) {
+    // If levelState is not initialized yet, or if all gems have been collected, skip
+    if (levelState.length == 0 || !gems.find((x) => x.collected == false)) {
       return
     }
     const newLevelState = hardCopy(levelState)
@@ -179,7 +199,7 @@ const useTreasureGame = () => {
     const index = getIndexFromXYBlock(charPosition.x, charPosition.y)
     newLevelState[index] = EBlockState.PATH
     setLevelState(newLevelState)
-    console.log(levelState)
+    // console.log(levelState)
   }
 
   // Return the index of gem array if found, or null
@@ -367,6 +387,15 @@ const useTreasureGame = () => {
     }
   }
 
+  const userResetLevel = () => {
+    const enoughtEnergy = spendEnergy(config.energyCosts.reset)
+    if (enoughtEnergy) {
+      resetLevel()
+    } else {
+      sendNotification(`energy-reset`, "warning", t("treasureGame:not-enough-energy"), t("treasureGame:not-enough-energy-message"))
+    }
+  }
+
   useEffect(() => {
     updateStateAroundChar()
   }, [charPosition])
@@ -384,7 +413,7 @@ const useTreasureGame = () => {
 
   const charFunctions = { up, down, left, right }
 
-  return { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config }
+  return { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config, userResetLevel }
   //   return [level, levelState, charPosition, charFunctions, mode, changeMode] as const
 }
 

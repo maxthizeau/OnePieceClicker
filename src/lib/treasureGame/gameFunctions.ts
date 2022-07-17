@@ -88,13 +88,15 @@ export function generateGemsArray(level: number[][], gemCount: number): IGem[] {
       if (level[j][0] == 1 && level[j][1] == 1) {
         const randomGem = possibleGems[Math.floor(Math.random() * possibleGems.length)]
         const xyBlock = [j % BLOCK_PER_ROW, Math.floor(j / BLOCK_PER_ROW)]
-        gems.push({
-          stone: randomGem,
-          x: xyBlock[0],
-          y: xyBlock[1],
-          collected: false,
-        })
-        break
+        if (gems.findIndex((x) => x.x == xyBlock[0] && x.y == xyBlock[1]) == -1) {
+          gems.push({
+            stone: randomGem,
+            x: xyBlock[0],
+            y: xyBlock[1],
+            collected: false,
+          })
+          break
+        }
       }
     }
   }

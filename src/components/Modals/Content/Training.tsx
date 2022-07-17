@@ -272,10 +272,11 @@ const TrainingModalContent: FC = () => {
               const selected = selectedSlot !== null && selectedSlot.type == "xp" && selectedSlot.index == index
               if (index > XPBoost.maxSlots - 1) {
                 const price = XPBoostUnlockPrices[index]
-                return <XPBoostSlot locked price={price} onClick={() => clickUnlock("xp", price)} />
+                return <XPBoostSlot key={index} locked price={price} onClick={() => clickUnlock("xp", price)} />
               } else if (XPBoost.fleetUnitIds[index] === null || XPBoost.fleetUnitIds[index] === undefined) {
                 return (
                   <XPBoostSlot
+                    key={index}
                     selected={selected}
                     free
                     onClick={() => {
@@ -286,6 +287,7 @@ const TrainingModalContent: FC = () => {
               } else {
                 return (
                   <XPBoostSlot
+                    key={index}
                     selected={selected}
                     onClick={() => {
                       clickSelect("xp", index)
@@ -308,10 +310,11 @@ const TrainingModalContent: FC = () => {
               const selected = selectedSlot !== null && selectedSlot.type == "rayleigh" && selectedSlot.index == index
               if (index > Rayleigh.maxSlots - 1) {
                 const price = RayleighUnlockPrices[index]
-                return <RayleighSlot locked price={price} onClick={() => clickUnlock("rayleigh", price)} />
+                return <RayleighSlot key={index} locked price={price} onClick={() => clickUnlock("rayleigh", price)} />
               } else if (Rayleigh.fleetUnitIds[index] === null || Rayleigh.fleetUnitIds[index] === undefined) {
                 return (
                   <RayleighSlot
+                    key={index}
                     selected={selected}
                     free
                     onClick={() => {
@@ -323,6 +326,7 @@ const TrainingModalContent: FC = () => {
                 console.log(state.fleet.find((x) => x.id == Rayleigh.fleetUnitIds[index]))
                 return (
                   <RayleighSlot
+                    key={index}
                     selected={selected}
                     onClick={() => {
                       clickSelect("rayleigh", index)
