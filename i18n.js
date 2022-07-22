@@ -3,7 +3,7 @@ const config = {
   defaultLocale: "en",
   localeDetection: false,
   pages: {
-    "*": ["common", "game", "languages", "notifications", "zones", "treasureGame"],
+    "*": ["common", "game", "languages", "notifications", "zones", "treasureGame", "tutorial"],
   },
 }
 

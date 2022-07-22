@@ -1,0 +1,18 @@
+{
+  "VISIT_ISLAND": "<0>Start the game by visiting the island. </0><1>You will encounter enemies in order to earn Berries and loot Vivre Cards. </1><2>Click on [Visit Island]</2>",
+  "DAMAGE_ENEMY": "<0>Click on the unit to deal \"Click Power\" damage. </0><1>Defeating an enemy will give you Berries and a chance to loot its Vivre Card.</1><2>Defeat enemies until you collect your first Vivre Card</2>",
+  "RECRUIT_MENU": "<0>Congratulation, you just found your first Vivre Card. </0><1>Vivre Cards are used to recruit member into your fleet.</1><2>Click on [Vivre Cards] menu</2>",
+  "RECRUIT_CARD": "<0>All your Vivre Cards are here.</0><1>To recruit a new member to your fleet, you need to pay its price. </1><2>If you do not have enough Berries to recruit it yet, go back to the Island to fight more enemies.</2><3>Recruit your first fleet member</3>",
+  "EXPLAIN_CREW": "<0>Here is your crew providing you \"Crew Power\". (Dealing damage automatically)</0><0>If you have a free slot in your crew, new fleet members are automatically placed in your crew. </0><1><2>Important informations :</2><3><4><5>Level : </5> A new crew member arrives at Lvl. 1. Levels give more HP and ATK power.</4><4><5>HP : </5>If a crew member reaches 0 HP, it will not give Crew Power, and will not gain XP. Heal it with \"Heal Food\" (We will comeback to this later)</4><4><5>XP : </5>Defeating unit gives XP to one of your crew member. After reaching maximum, he will level up and heal himself.</4></3></1>",
+  "EXPLAIN_FLEET": "<0>Manage your fleet and crew members here</0>",
+  "OPEN_GOAL": "<0>Earn special rewards by completing specific goals. </0><1>Watch available goals with [Select] button</1>",
+  "SELECT_GOAL": "<0>Select \"Beat 25 enemies in Shells Town\" goal, do the task and claim reward</0>",
+  "UNLOCK_SHOP": "<0>Some features are not yet available. You have to unlock them by paying the indicated price.</0><1>Gather enough Berries to unlock the shop then open it</1>",
+  "EXPLAIN_SHOP": "<0>Here is the store. You can buy different items that will be essential for your progress in the game.</0><0>The most important of them is the <1>Log Pose</1>, it will allow you to enter a dungeon.</0><0>No need to buy any right now, you have already collected some by completing the previous objective.</0>",
+  "EXPLAIN_ITEM": "<0>All your items are here. They are all consumables except the Log Poses.</0><0>To consume an item, click on it. Its effect will last for 30 seconds.</0><0>To consume several at once, click on the \"x1\" button and choose the amount you want.</0><0>Hover over objects to see their effects.</0>",
+  "GO_BACK_ZONE": "<0>Let's go fight in a dungeon!</0><1>First, go back to the seaport</1>",
+  "ENTER_DUNGEON": "<0>Click on [Save Nakamas] to enter dungeon.</0><0>You will have 30 seconds to defeat 10 units and one boss of the zone.</0><0>It will cost you some Log Poses</0><1>Enter in the dungeon and finish it</1>",
+  "CHANGE_ZONE": "<0>You unlocked a new zone !</0><1>Click on [Map] to navigate to the next island.</1>",
+  "END_TUTORIAL": "<0>This is the end of the tutorial. If you need any help, click on [Guide] in the menu (Top/Left corner).</0><0>Tip 1 : If you feel stuck at some point, try to unlock [Upgrades].</0> <0>Tip 2 : In the menu, you can import/export your save to continue playing on another device/brower.</0>",
+  "closeTutorial": "Close Tutorial"
+}

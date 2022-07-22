@@ -16,6 +16,7 @@
   "show": "Show",
   "Yes": "Yes",
   "No": "Yes",
+  "Next": "Next",
   "Saves": {
     "confirm-reset": "You are about to delete all of your progress in the game. Are you sure you want to continue ?",
     "save-imported": "Save imported",

@@ -113,6 +113,7 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
   const { t } = useTranslation()
   const tutorial = useTutorial()
   const isTutorialStepDungeon = tutorial.step && tutorial.step?.stepKey == EStepKeys.ENTER_DUNGEON
+  const isTutorialNotEnded = tutorial.step && tutorial.step?.stepKey != EStepKeys.END_TUTORIAL
   useEffect(() => {
     const newContent: TContent[] = []
     const currentZone = zones.find((x) => x.id == zoneId)
@@ -154,8 +155,8 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
       <MenuButton
         style={{ marginTop: "20px" }}
         onClick={() => {
-          if (isTutorialStepDungeon && showIndex == content.length - 1) {
-            tutorial.dispatch.nextStep()
+          if (isTutorialNotEnded && showIndex == content.length - 1) {
+            tutorial.dispatch.goToStep(EStepKeys.CHANGE_ZONE)
           }
           setShowIndex(showIndex + 1)
         }}

@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { EStepKeys } from "../../lib/data/tutorial"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
+import useTranslation from "next-translate/useTranslation"
 
 type THozitontalPosition = "left" | "center" | "right"
 type TVerticalPosition = "top" | "middle" | "bottom"
@@ -84,6 +85,7 @@ const TutorialElement: FC<ITutorialElementProps> = ({ children, horizontal, vert
   const refWrapper = useRef<HTMLDivElement>(null)
   const [reload, setReload] = useState(false)
   const { step, state, dispatch } = useTutorial()
+  const { t } = useTranslation()
 
   useEffect(() => {
     function handleResize() {
@@ -114,7 +116,7 @@ const TutorialElement: FC<ITutorialElementProps> = ({ children, horizontal, vert
       isInModal={isInModal}
     >
       {children}
-      {(step.showCloseModalButton || step.doneOnModalClose) && <NextButton onClick={() => dispatch.clickCloseModal()}>Next</NextButton>}
+      {(step.showCloseModalButton || step.doneOnModalClose) && <NextButton onClick={() => dispatch.clickCloseModal()}>{t("common:Next")}</NextButton>}
     </TutorialElementStyled>
   )
 }

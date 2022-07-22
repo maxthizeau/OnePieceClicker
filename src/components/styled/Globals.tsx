@@ -58,7 +58,7 @@ export const TutorialContainer = styled.div<{ active?: boolean; isInModal?: bool
   position: fixed;
   height: 100vh;
   width: 100vw;
-  background-color: #00000061;
+  background-color: #0000008b;
   z-index: 490;
 `
 /* z-index: ${({ isInModal }) => (isInModal ? 2 : 490)}; */

@@ -69,7 +69,7 @@ const Modal: FC<IModalProps> = (props) => {
         active={tutorial.step !== undefined && tutorial.state.showModal && tutorial.step.isInModal}
         isInModal={tutorial.step !== undefined && tutorial.step.isInModal}
       >
-        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>Close Tutorial</CloseTutorialButton>
+        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>{t("tutorial:closeTutorial")}</CloseTutorialButton>
       </TutorialContainer>
 
       {isTutorialStep && (

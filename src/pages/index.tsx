@@ -21,6 +21,7 @@ import { possibleGems } from "../lib/data/treasureGame"
 import Navigation from "../components/Global/Navigation"
 import { useTutorial } from "../lib/hooks/TutorialContext"
 import TutorialElement from "../components/Global/TutorialElement"
+import useTranslation from "next-translate/useTranslation"
 
 const AdminButton = styled.a`
   display: block;
@@ -42,6 +43,7 @@ const Home: NextPage = () => {
   const gameState = useGameState()
   const [save, reset, downloadSave] = useSave()
   const tutorial = useTutorial()
+  const { t } = useTranslation()
 
   const zoneId = gameState.state.currentZone
 
@@ -53,7 +55,7 @@ const Home: NextPage = () => {
         active={tutorial.step !== undefined && tutorial.state.showModal && !tutorial.step?.isInModal}
         isInModal={tutorial.step !== undefined && tutorial.step?.isInModal}
       >
-        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>Close Tutorial</CloseTutorialButton>
+        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>{t("tutorial:closeTutorial")}</CloseTutorialButton>
       </TutorialContainer>
 
       <Container>
