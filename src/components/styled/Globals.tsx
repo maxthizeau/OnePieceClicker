@@ -23,6 +23,8 @@ box-sizing: border-box;
     font-family: 'Press Start 2P', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     font-size: 0.9em;
     background-color: #272727;
+    white-space: pre-line;
+
         
   }
 
@@ -35,7 +37,42 @@ box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
 
+  .isTutorial {
+    outline: 3px solid #d24747;
+    z-index: 500;
+    /* position:relative; */
+  }
+  .inModal {
+    /* z-index: 3!important; */
+    position:sticky;
+  }
+  .noOutline {
+    outline:none!important;
+  }
+
   
+`
+
+export const TutorialContainer = styled.div<{ active?: boolean; isInModal?: boolean }>`
+  ${({ active }) => !active && "display:none;"}
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: #00000061;
+  z-index: 490;
+`
+/* z-index: ${({ isInModal }) => (isInModal ? 2 : 490)}; */
+
+export const CloseTutorialButton = styled.a`
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: 2px solid black;
+  background: #ffffff;
+  border-radius: 3px;
+  padding: 10px;
+  font-family: Open Sans, Verdana, Geneva, Tahoma, sans-serif;
 `
 
 export const Container = styled.div`

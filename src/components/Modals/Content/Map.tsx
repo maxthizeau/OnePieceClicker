@@ -8,6 +8,8 @@ import useCards from "../../../lib/hooks/useCards"
 import useUnitData from "../../../lib/hooks/useUnitData"
 import { ActionEnum, useGameState } from "../../../lib/hooks/GameContext"
 import useTranslation from "next-translate/useTranslation"
+import { useTutorial } from "../../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../../lib/data/tutorial"
 
 const ModalWrapper = styled.div`
   display: flex;
@@ -22,6 +24,8 @@ const MapModalContent: FC = () => {
   // const [cards] = useCards()
   // const [data, dataByRarity] = useUnitData()
   // const zone = zones[gameState.state.currentZone]
+  const tutorial = useTutorial()
+  const isTutorialStepChangeZone = tutorial.step && tutorial.step?.stepKey == EStepKeys.CHANGE_ZONE
   const { t } = useTranslation()
   return (
     <ModalWrapper>
@@ -35,6 +39,9 @@ const MapModalContent: FC = () => {
               onClick={() => {
                 gameState.dispatch({ type: ActionEnum.ChangeZone, payload: { zoneId: x.id } })
                 changeInstance(EInstance.Zone)
+                if (isTutorialStepChangeZone) {
+                  tutorial.dispatch.nextStep()
+                }
               }}
             >
               #{x.id} : {t(`zones:${x.id}-${x.location}`)}

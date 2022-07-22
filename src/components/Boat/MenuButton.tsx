@@ -5,6 +5,9 @@ import MapModal from "../Modals/Content/Map"
 import Modal from "../Modals/Modal"
 import { BerryIcon } from "../styled/Globals"
 import { nFormatter } from "../../lib/utils"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../lib/data/tutorial"
+import TutorialElement from "../Global/TutorialElement"
 
 const IconWrapper = styled.div`
   position: absolute;
@@ -44,6 +47,7 @@ const ButtonStyled = styled.a<{ locked?: boolean }>`
   display: flex;
   flex: 1 1 45%;
   align-self: flex-start;
+  position: relative;
   cursor: pointer;
   &:hover ${IconWrapper} {
     /* top: -11.5px; */
@@ -85,16 +89,36 @@ interface IMenuButtonProps {
 }
 
 const MenuButton: FC<IMenuButtonProps> = ({ label, icon, type, locked }) => {
+  const tutorial = useTutorial()
+  const isTutorialStepRecruit = type == "cards" && tutorial.step && tutorial.step?.stepKey == EStepKeys.RECRUIT_MENU
+  const isTutorialStepFleet = type == "fleet" && tutorial.step && tutorial.step?.stepKey == EStepKeys.EXPLAIN_FLEET
+  const isTutorialStepShop = type == "shop" && tutorial.step && tutorial.step?.stepKey == EStepKeys.UNLOCK_SHOP
+  const isTutorialStepMap = type == "map" && tutorial.step && tutorial.step?.stepKey == EStepKeys.CHANGE_ZONE
+
+  const isTutorialStep = isTutorialStepRecruit || isTutorialStepFleet || isTutorialStepShop || isTutorialStepMap
   const [visible, setVisible] = useState(false)
 
   return (
     <>
+      {isTutorialStep && (
+        <TutorialElement stepKey={tutorial.step.stepKey} vertical="top" horizontal="center" offset={{ x: 0, y: -100 }}>
+          {tutorial.step.content}
+        </TutorialElement>
+      )}
       <ButtonStyled
         onClick={() => {
-          locked !== null ? locked.unlockFunc() : setVisible(true)
+          if (locked !== null) {
+            locked.unlockFunc()
+          } else {
+            if (isTutorialStep) {
+              tutorial.dispatch.nextStep()
+            }
+            setVisible(true)
+          }
         }}
+        className={isTutorialStep && "isTutorial"}
       >
-        <IconWrapper>
+        <IconWrapper className={isTutorialStep && "isTutorial"}>
           <img src={icon} />
         </IconWrapper>
         <LabelStyled>{label}</LabelStyled>

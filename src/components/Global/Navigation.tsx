@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { FC, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { locales } from "../../../i18n"
+import Modal from "../Modals/Modal"
 
 const NavContainer = styled.div<{ show: boolean }>`
   width: 230px;
@@ -11,7 +12,7 @@ const NavContainer = styled.div<{ show: boolean }>`
   height: 100%;
   background: #ad6a54;
   padding: 20px;
-  z-index: 100;
+  z-index: 1000;
   /* overflow: scroll; */
 
   /* box-shadow: 2px 0px 5px #ad6a54; */
@@ -87,6 +88,7 @@ const Navigation: FC = () => {
   const [show, setShow] = useState(false)
   const wrapperRef = useRef(null)
   const { t, lang } = useTranslation()
+  const [visibleSavesModal, setVisibleSavesModal] = useState(false)
   usePersistLocaleCookie()
 
   useEffect(() => {
@@ -105,34 +107,38 @@ const Navigation: FC = () => {
   }, [wrapperRef, show])
 
   return (
-    <NavContainer show={show} ref={wrapperRef}>
-      <Nav>
-        <NavTitle>Menu</NavTitle>
-        <ul>
-          <li>
-            <a>{t(`common:navigation.guide`)}</a>
-          </li>
-          <li>
-            <a>{t(`common:navigation.saveImport`)}</a>
-          </li>
-        </ul>
-      </Nav>
-      <Nav>
-        <NavTitle>{t(`common:navigation.language`)}</NavTitle>
-        <ul>
-          {locales.map((lng) => {
-            return (
-              <li key={lng}>
-                <Link href="#" locale={lng}>
-                  {`${lng === lang ? "➡" : ""} ${t(`languages:${lng}`)}`}
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </Nav>
-      <MenuButton onClick={() => setShow(!show)} />
-    </NavContainer>
+    <>
+      <NavContainer show={show} ref={wrapperRef}>
+        <Nav>
+          <NavTitle>Menu</NavTitle>
+          <ul>
+            <li>
+              <a>{t(`common:navigation.guide`)}</a>
+            </li>
+            <li>
+              <a onClick={() => setVisibleSavesModal(true)}> {t(`common:navigation.saveImport`)}</a>
+            </li>
+          </ul>
+        </Nav>
+        <Nav>
+          <NavTitle>{t(`common:navigation.language`)}</NavTitle>
+          <ul>
+            {locales.map((lng) => {
+              return (
+                <li key={lng}>
+                  <Link href="#" locale={lng}>
+                    {`${lng === lang ? "➡" : ""} ${t(`languages:${lng}`)}`}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </Nav>
+        <MenuButton onClick={() => setShow(!show)} />
+      </NavContainer>
+
+      <Modal type="saves" visible={visibleSavesModal} setVisible={setVisibleSavesModal} />
+    </>
   )
 }
 

@@ -54,6 +54,7 @@ export function getNextUnitByRarity(units: TUnit[]): TUnit {
       arrayWithRarity.push(...arr)
     }
   }
+  // console.log(units)
 
   return units[arrayWithRarity[getRandomInt(arrayWithRarity.length)]]
 }
@@ -150,7 +151,12 @@ export function getXPGainFromUnit(currentUnit: TCurrentUnit): number {
 export function getHPLossFromUnit(currentUnit: TCurrentUnit): number {
   // const divide = 30 - currentUnit.unit.zone <= 1 ? 1 : 30 - currentUnit.unit.zone
   // return Math.round(currentUnit.unit.ATKLvlMax / divide)
+
   const { ATKLvlMax, maxLvl, zone } = currentUnit.unit
+  // Zone 0 is tutorial -> No Atk
+  if (zone == 0) {
+    return 0
+  }
   return Math.round(ATKLvlMax * (maxLvl / 100)) + zone
 }
 

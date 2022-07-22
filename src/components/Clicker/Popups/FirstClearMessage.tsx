@@ -7,6 +7,9 @@ import useUnitData from "../../../lib/hooks/useUnitData"
 import { IDungeonState, IShip, TUnit } from "../../../lib/types"
 import { MenuButton } from "../ClickerStyles"
 import useTranslation from "next-translate/useTranslation"
+import TutorialElement from "../../Global/TutorialElement"
+import { EStepKeys } from "../../../lib/data/tutorial"
+import { useTutorial } from "../../../lib/hooks/TutorialContext"
 
 const PopupStyled = styled.div`
   position: absolute;
@@ -108,6 +111,8 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
   const [showIndex, setShowIndex] = useState(0)
   const [units] = useUnitData()
   const { t } = useTranslation()
+  const tutorial = useTutorial()
+  const isTutorialStepDungeon = tutorial.step && tutorial.step?.stepKey == EStepKeys.ENTER_DUNGEON
   useEffect(() => {
     const newContent: TContent[] = []
     const currentZone = zones.find((x) => x.id == zoneId)
@@ -146,7 +151,15 @@ const FirstClearMessage: FC<IFirstClearMessageProps> = ({ dungeon, zoneId }) => 
       {content[showIndex] && content[showIndex].type == EContentType.ZONE && <ShowZone content={content[showIndex]} />}
       {content[showIndex] && content[showIndex].type == EContentType.FLEET && <ShowFleetMember content={content[showIndex]} />}
       {content[showIndex] && content[showIndex].type == EContentType.BOAT && <ShowBoat content={content[showIndex]} />}
-      <MenuButton style={{ marginTop: "20px" }} onClick={() => setShowIndex(showIndex + 1)}>
+      <MenuButton
+        style={{ marginTop: "20px" }}
+        onClick={() => {
+          if (isTutorialStepDungeon && showIndex == content.length - 1) {
+            tutorial.dispatch.nextStep()
+          }
+          setShowIndex(showIndex + 1)
+        }}
+      >
         {t("game:Clicker.Popups.next")}
       </MenuButton>
     </PopupStyled>

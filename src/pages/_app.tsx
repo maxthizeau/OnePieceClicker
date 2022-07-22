@@ -7,6 +7,7 @@ import "react-notifications-component/dist/theme.css"
 import { ReactNotifications } from "react-notifications-component"
 import { TreasureGameProvider } from "../lib/hooks/TreasureGameContext"
 import { LogsProvider } from "../lib/hooks/useLogs"
+import { TutorialProvider } from "../lib/hooks/TutorialContext"
 
 interface ThemeInterface {
   colors: {
@@ -37,8 +38,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         <GameProvider>
           <TreasureGameProvider>
             <LogsProvider>
-              <ReactNotifications className="notifications" />
-              <Component {...pageProps} />
+              <TutorialProvider>
+                <ReactNotifications className="notifications" />
+                <Component {...pageProps} />
+              </TutorialProvider>
             </LogsProvider>
           </TreasureGameProvider>
         </GameProvider>

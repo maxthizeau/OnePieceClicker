@@ -8,6 +8,9 @@ import useItems from "../../lib/hooks/useItems"
 import { useLogs } from "../../lib/hooks/useLogs"
 import { nFormatter } from "../../lib/utils"
 import useTranslation from "next-translate/useTranslation"
+import TutorialElement from "../Global/TutorialElement"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../lib/data/tutorial"
 
 const Background = styled.div<{ src: string }>`
   background-image: ${(props) => `url(${props.src})`};
@@ -103,28 +106,47 @@ const Zone: FC<IZoneProps> = ({ zone }) => {
   const { items, spendItem, enterDungeon } = useItems()
   // const { addLog } = useLogs()
   const { t } = useTranslation()
+  const tutorial = useTutorial()
+  // const isTutorialStepGoBack = tutorial.step && tutorial.step?.stepKey == EStepKeys.GO_BACK_ZONE
+  const isTutorialStepVisitIsland = tutorial.step && tutorial.step?.stepKey == EStepKeys.VISIT_ISLAND
+  const isTutorialStepEnterDungeon = tutorial.step && tutorial.step?.stepKey == EStepKeys.ENTER_DUNGEON
+  const isTutorialStepEndTutorial = tutorial.step && tutorial.step?.stepKey == EStepKeys.END_TUTORIAL
 
   return (
     <StyledGame src={`images/zones/${zone.id}.jpg`}>
       <ZoneNameStyled>{t(`zones:${zone.id}-${zone.location}`)}</ZoneNameStyled>
-      <ZoneButton bottom={true} left={true} onClick={() => changeInstance(EInstance.Clicker)}>
+
+      <ZoneButton bottom={true} left={true} onClick={() => changeInstance(EInstance.Clicker)} className={isTutorialStepVisitIsland && "isTutorial"}>
         <img src="images/icons/visitIcon.png" />
-        <ButtonTextStyled>{t("game:Clicker.Zone.visit-island")}</ButtonTextStyled>
+        <ButtonTextStyled className={isTutorialStepVisitIsland && "isTutorial"}>{t("game:Clicker.Zone.visit-island")}</ButtonTextStyled>
       </ZoneButton>
+
+      <TutorialElement stepKey={EStepKeys.VISIT_ISLAND} vertical="top" horizontal="center" offset={{ x: 0, y: 20 }}>
+        {tutorial.step.content}
+      </TutorialElement>
+      <TutorialElement stepKey={EStepKeys.ENTER_DUNGEON} vertical="top" horizontal="left" offset={{ x: 20, y: 20 }}>
+        {tutorial.step.content}
+      </TutorialElement>
+      <TutorialElement stepKey={EStepKeys.END_TUTORIAL} vertical="top" horizontal="left" offset={{ x: 20, y: 20 }}>
+        {tutorial.step.content}
+      </TutorialElement>
+
       <ZoneButton
         bottom={true}
         right={true}
-        onClick={() =>
+        onClick={() => {
+          tutorial.dispatch.clickCloseModal()
           enterDungeon(zone.id, () => {
             changeInstance(EInstance.Dungeon)
           })
-        }
+        }}
+        className={isTutorialStepEnterDungeon && "isTutorial"}
       >
         <CostIcon>
           <CostText>{nFormatter(zone.dungeonCost, 0)}</CostText> <img src="images/icons/logPoseIcon.png" />
         </CostIcon>
         <img src="images/icons/rescueIcon.png" />
-        <ButtonTextStyled>{t("game:Clicker.Zone.save-nakamas")}</ButtonTextStyled>
+        <ButtonTextStyled className={isTutorialStepEnterDungeon && "isTutorial"}>{t("game:Clicker.Zone.save-nakamas")}</ButtonTextStyled>
       </ZoneButton>
     </StyledGame>
   )

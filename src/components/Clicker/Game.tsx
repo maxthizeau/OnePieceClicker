@@ -31,6 +31,9 @@ import { zones } from "../../lib/data/zones"
 import { ships } from "../../lib/data/ships"
 import FirstClearMessage from "./Popups/FirstClearMessage"
 import useTranslation from "next-translate/useTranslation"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../lib/data/tutorial"
+import TutorialElement from "../Global/TutorialElement"
 const data: TUnit[] = require("../../lib/data/units.json")
 
 interface IGameProps {
@@ -62,6 +65,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const { addLog } = useLogs()
   const gameState = useGameState()
   const { t } = useTranslation()
+  const tutorial = useTutorial()
+  const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
 
   function setHP(newHP: number) {
     if (!currentUnit) return
@@ -90,7 +95,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     }
 
     // Prepare current unit (if dungeon --> dungeonUnits[0])
-    const randomUnit = !dungeon ? zoneUnits[Math.floor(Math.random() * zoneUnits.length)] : dungeon.dungeonUnits[dungeon.currentUnitIndex]
+    // const randomUnit = !dungeon ? zoneUnits[Math.floor(Math.random() * zoneUnits.length)] : dungeon.dungeonUnits[dungeon.currentUnitIndex]
+    const randomUnit = !dungeon ? getNextUnitByRarity(zoneUnits) : dungeon.dungeonUnits[dungeon.currentUnitIndex]
     setUnits(data)
     setDungeon(dungeon)
     setCurrentUnit({ unit: randomUnit, hp: randomUnit.clickerMaxHP })
@@ -222,13 +228,14 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
           logTypes: [ELogType.VivreCard, ELogType.Clicker],
           notification: true,
           type: "success",
-          title: t("title-new-ship"),
-          message: t("message-new-ship", { name: freeBoatFull.name }),
+          title: t("notifications:success.title-new-ship"),
+          message: t("notifications:success.message-new-ship", { name: freeBoatFull.name }),
         })
       }
     }
 
     gameState.dispatch({ type: ActionEnum.DungeonDone, payload: { zoneId: props.zoneId } })
+
     if (dungeon?.farmMode) {
       resetDungeon()
     }
@@ -289,7 +296,13 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
   return (
     <>
-      <StyledGame>
+      <StyledGame className={isTutorialStepDamageEnemy && "isTutorial"}>
+        {isTutorialStepDamageEnemy && tutorial.state.showModal && (
+          <TutorialElement stepKey={EStepKeys.DAMAGE_ENEMY} vertical="bottom" horizontal="center" offset={{ x: 0, y: -150 }} width={500}>
+            {tutorial.step.content}
+          </TutorialElement>
+        )}
+
         <Debug debug={debug} unit={unit} dungeon={dungeon} instance={instance} />
 
         <ClickerMenu

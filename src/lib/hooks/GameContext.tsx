@@ -11,7 +11,7 @@ import { ships } from "../data/ships"
 import { defaultUpgrades, TUpgrade } from "../data/upgrades"
 import { goalsList } from "../data/goals"
 import { zones } from "../data/zones"
-import save from "../data/save"
+// import save from "../data/save"
 import { ELogType, useLogs } from "./useLogs"
 import UnitNotification from "../../components/Global/notifications/UnitNotification"
 import { defaultMenuUnlockState, IMenuUnlockState, menuUnlocksPrices, IMenuUnlockPayload, XPBoostUnlockPrices, RayleighUnlockPrices } from "../data/menuUnlocks"
@@ -51,6 +51,7 @@ export enum ActionEnum {
   DungeonDone,
   Save,
   Import,
+  ResetState,
 }
 
 export interface ITrainingPayload {
@@ -138,6 +139,7 @@ interface Payload {
   treasureGameEnergyUsed?: number
   unlockMenu?: IMenuUnlockPayload
   training?: ITrainingPayload
+  import?: string
 }
 
 type Action = { type: ActionEnum; payload?: Payload }
@@ -173,37 +175,27 @@ const defaultState: State = {
   },
 }
 
-function getDefaultState(): State {
-  // if (typeof window !== "undefined") {
-  //   if (sessionStorage) {
-  //     if (sessionStorage.getItem("opsave")) {
-  //       try {
-  //         const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
-  //         const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
-  //         const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
-  //         const saveJson = JSON.parse(saveJsonDecrypted)
-  //         return saveJson
-  //       } catch {
-  //         return defaultState
-  //       }
-  //     }
-  //   }
-  // }
-
+export function stringToJsonState(save: string): State | null {
   try {
-    // const save = sessionStorage.getItem("opsave") ?? JSON.stringify(defaultState)
     const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
     const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
     const saveJson: State = JSON.parse(saveJsonDecrypted)
-    // saveJson.maxZoneId = 25
-    // saveJson.berries = 20000000000
-    // saveJson.currentZone = 10
+    return saveJson
+  } catch (e) {
+    return null
+  }
+}
+function getDefaultState(): State {
+  try {
+    const save = localStorage.getItem("opsave") ?? JSON.stringify(defaultState)
+    const saveJson = stringToJsonState(save)
+    if (!saveJson) {
+      return defaultState
+    }
     return saveJson
   } catch {
     return defaultState
   }
-
-  return defaultState
 }
 
 const baseState = getDefaultState()
@@ -1030,16 +1022,20 @@ function gameReducer(state: State, action: Action): State {
       return { ...state, currentGoal }
     }
     case ActionEnum.Import: {
-      if (!action.payload) throw new Error(`Need valid state : ${action.type}`)
+      // if (!action.payload.import) throw new Error(`Need valid state : ${action.type}`)
 
-      // const newState: State = {
-      //   instance: EInstance.Zone,
-      //   berries: action.payload.berriesChange ?? 0,
-      //   cards: [],
-      //   fleet: [],
-      //   crew: [],
-      // }
-      return state
+      try {
+        const newState = stringToJsonState(action.payload.import)
+        newState.maxZoneId = 15
+        return newState
+      } catch (e) {
+        return state
+      }
+    }
+    case ActionEnum.ResetState: {
+      // if (!action.payload) throw new Error(`Need valid state : ${action.type}`)
+
+      return defaultState
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`)

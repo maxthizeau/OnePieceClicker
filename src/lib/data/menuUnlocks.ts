@@ -13,8 +13,8 @@ export interface IMenuUnlockPayload {
 
 export const menuUnlocksPrices = {
   Shop: 2500,
-  Upgrades: 50000,
-  Mine: 5000000,
+  Upgrades: 7500000,
+  Mine: 15000000,
   Training: 200000000,
 }
 

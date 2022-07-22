@@ -14,7 +14,7 @@ import Hover from "../Global/Hover"
 
 const BoatStyled = styled.div`
   padding: 20px;
-
+  position: relative;
   border-radius: 3px;
   border: 3px solid #b9896e;
   outline: 2px solid black;

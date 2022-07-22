@@ -1,4 +1,5 @@
 import { getThumbImageSrc, idNumberToString, intWithSpaces } from "./clickerFunctions"
+import { ships } from "./data/ships"
 import { zones } from "./data/zones"
 import { EGoalRewardCurrency, EGoalType, TGoal } from "./types"
 
@@ -71,7 +72,7 @@ export function getPrintableRewardCurrency(goal: TGoal) {
       printableResult.logo = "images/icons/demonFruitIcon.png"
       break
     case EGoalRewardCurrency.DendenMushi:
-      printableResult.logo = "images/icons/dendenmushi.png"
+      printableResult.logo = "images/icons/dendenmushiIcon.png"
       break
     case EGoalRewardCurrency.VivreCard:
       printableResult.amount = "[Vivre Card]"
@@ -83,7 +84,8 @@ export function getPrintableRewardCurrency(goal: TGoal) {
       break
     case EGoalRewardCurrency.Boat:
       printableResult.amount = "[New Ship]"
-      printableResult.logo = `images/ships/icon/ship_${idNumberToString(goal.rewardAmount)}_t2.png`
+      const ship = ships.find((x) => x.id == goal.rewardAmount) ?? ships[0]
+      printableResult.logo = `images/ships/icon/${ship.thumb}_t2.png`
       break
     default:
       break

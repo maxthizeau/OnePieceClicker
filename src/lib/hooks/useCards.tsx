@@ -8,6 +8,8 @@ import useShip from "./useShip"
 import useItems from "./useItems"
 import { useLogs, ELogType } from "./useLogs"
 import useTranslation from "next-translate/useTranslation"
+import { useTutorial } from "./TutorialContext"
+import { EStepKeys } from "../data/tutorial"
 
 type TResponse = {
   success: boolean
@@ -41,6 +43,9 @@ const useCards = () => {
   const { isItemActive } = useItems()
   const { addLog } = useLogs()
   const { t } = useTranslation("notifications")
+  const tutorial = useTutorial()
+  const isTutorialStepLootCard = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
+  const isTutorialStepRecruitCard = tutorial.step && tutorial.step?.stepKey == EStepKeys.RECRUIT_CARD
 
   const cards = gameState.state.cards
 
@@ -63,7 +68,8 @@ const useCards = () => {
     // console.log("lootPercent : ", lootPercent)
     // console.log("If Lootpercent >= 100 --> Loot forced")
 
-    const lootIt = rand <= lootPercent
+    // const lootIt = rand <= lootPercent
+    const lootIt = true
     if (lootIt) {
       gameState.dispatch({
         type: ActionEnum.LootCard,
@@ -79,6 +85,12 @@ const useCards = () => {
         type: "success",
         content: <CardLootNotification label={t("notifications:success.title-vivre-card-found")} unit={card} />,
       })
+
+      // If is tutorial where you need to loot your first Vivre Card, nextStep the tutorial
+      if (isTutorialStepLootCard) {
+        tutorial.dispatch.nextStep()
+      }
+
       return true
     }
 
@@ -117,6 +129,10 @@ const useCards = () => {
         berriesChange: unitPrice,
       },
     })
+
+    if (isTutorialStepRecruitCard) {
+      tutorial.dispatch.nextStep()
+    }
 
     return {
       success: true,

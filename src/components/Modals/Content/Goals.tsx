@@ -8,6 +8,9 @@ import { useGameState } from "../../../lib/hooks/GameContext"
 import { getPrintableRewardCurrency, goalToString } from "../../../lib/goalsFunctions"
 import useTranslation from "next-translate/useTranslation"
 import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
+import { useTutorial } from "../../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../../lib/data/tutorial"
+import TutorialElement from "../../Global/TutorialElement"
 
 const ExtraModalStyles = styled.div`
   width: 800px;
@@ -89,6 +92,7 @@ const GoalButton = styled.button`
 interface IGoalBoxProps {
   goal: TGoal
   select: () => void
+  nextTutorialStep?: boolean
 }
 
 interface IGoalFilters {
@@ -109,12 +113,13 @@ const defaultFilters: IGoalFilters = {
   zone: -1,
 }
 
-const GoalBox: FC<IGoalBoxProps> = ({ goal, select }) => {
+const GoalBox: FC<IGoalBoxProps> = ({ goal, select, nextTutorialStep }) => {
   const { t } = useTranslation()
   const { logo, goalKey, location, value } = goalToString(goal)
   const { amount, logo: rewardLogo } = getPrintableRewardCurrency(goal)
+
   return (
-    <GoalBoxStyled>
+    <GoalBoxStyled className={nextTutorialStep && "isTutorial"}>
       <img src={`images/icons/${logo}.png`} />
       <GoalText>
         <div>{t(`game:Goals.${goalKey}-label`, { value: value, location: t(`zones:${goal.zoneId}-${location}`) })}</div>
@@ -152,6 +157,9 @@ const GoalsModalContent: FC = () => {
   const { maxZoneId } = useGameState().state
   const { getPossibleGoals, setCurrentGoal } = useGoals()
   const [filters, setFilters] = useStatePersistInCookie("goalFilters", defaultFilters)
+  const tutorial = useTutorial()
+  const isTutorialSelectGoal = tutorial.step && tutorial.step?.stepKey == EStepKeys.SELECT_GOAL
+
   return (
     <ExtraModalStyles>
       <h3>{t("game:Modals.Goals.goal-label")}</h3>
@@ -196,7 +204,7 @@ const GoalsModalContent: FC = () => {
         >
           <img src={`images/icons/diamondIcon.png`} />
         </GoalButton>
-        <SelectZone onChange={(e) => setFilters({ ...filters, zone: parseInt(e.target.value) })}>
+        <SelectZone onChange={(e) => setFilters({ ...filters, zone: parseInt(e.target.value) })} value={filters.zone}>
           <option value={-1}>{t("game:Modals.Goals.filter-by-zone")}</option>
           {zones.map((x) => {
             if (x.id > maxZoneId) {
@@ -212,7 +220,21 @@ const GoalsModalContent: FC = () => {
         <GoalButton onClick={() => setFilters(defaultFilters)}>{t("common:reset")}</GoalButton>
       </Filters>
       {getPossibleGoals({ hideTypes: formatFilters(filters), zone: filters.zone }).map((x) => {
-        return <GoalBox key={x.id} goal={x} select={() => setCurrentGoal(x.id)} />
+        const nextTutorialStep = isTutorialSelectGoal && x.id == 29
+        return (
+          <div key={x.id} className={nextTutorialStep && "isTutorial inModal"}>
+            <GoalBox
+              goal={x}
+              select={() => {
+                setCurrentGoal(x.id)
+                if (nextTutorialStep) {
+                  tutorial.dispatch.clickCloseModal()
+                }
+              }}
+              nextTutorialStep={nextTutorialStep}
+            />
+          </div>
+        )
       })}
     </ExtraModalStyles>
   )

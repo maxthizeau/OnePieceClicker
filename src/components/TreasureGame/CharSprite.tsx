@@ -5,9 +5,9 @@ const CharSpriteImage = styled.div<{ width: number }>`
   background-image: url("images/treasure-game/character.png");
   background-size: ${(props) => props.width}px ${(props) => props.width}px;
   display: inline-block;
+  background-color: rgb(59, 40, 58);
   height: ${(props) => props.width}px;
   width: ${(props) => props.width}px;
-
   margin: 0;
   padding: 0;
   border: none;

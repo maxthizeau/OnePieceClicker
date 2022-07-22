@@ -1,6 +1,9 @@
 import { FC } from "react"
 import styled, { css } from "styled-components"
+import { EStepKeys } from "../../lib/data/tutorial"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
 import { IDungeonState } from "../../lib/types"
+import TutorialElement from "../Global/TutorialElement"
 
 import DungeonIndicator from "./DungeonIndicator"
 
@@ -49,10 +52,15 @@ interface IClickerMenu {
 }
 
 const ClickerMenu: FC<IClickerMenu> = ({ buttonLabel1, buttonFunction1, buttonLabel2, buttonFunction2, dungeon }) => {
+  const tutorial = useTutorial()
+  const isTutorialStepGoBack = tutorial.step && tutorial.step?.stepKey == EStepKeys.GO_BACK_ZONE
   return (
     <>
       <ClickerMenuWrapper>
-        <ClickerButton top={true} left={true} onClick={buttonFunction1}>
+        <TutorialElement stepKey={EStepKeys.GO_BACK_ZONE} vertical="bottom" horizontal="center" offset={{ x: 0, y: -150 }}>
+          {tutorial.step.content}
+        </TutorialElement>
+        <ClickerButton top={true} left={true} onClick={buttonFunction1} className={isTutorialStepGoBack && "isTutorial"}>
           {buttonLabel1}
         </ClickerButton>
         <DungeonIndicator dungeon={dungeon} />

@@ -7,6 +7,9 @@ import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
 import { TItemKey } from "../../lib/data/items"
 import useTranslation from "next-translate/useTranslation"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../lib/data/tutorial"
+import TutorialElement from "../Global/TutorialElement"
 
 const CurrenciesWrapper = styled.div`
   display: flex;
@@ -15,6 +18,7 @@ const CurrenciesWrapper = styled.div`
   flex-wrap: wrap;
   /* margin-bottom: 50px; */
   align-self: center;
+  position: relative;
   @media only screen and (min-width: 992px) {
     margin-bottom: 0px;
   }
@@ -73,6 +77,10 @@ const CurrenciesList: FC = () => {
   const { items, spendItem } = useItems()
   const [qtySelected, setQtySelected] = useState(0)
   const { t } = useTranslation()
+
+  const tutorial = useTutorial()
+  const isTutorialStep = tutorial.step && tutorial.step?.stepKey == EStepKeys.EXPLAIN_ITEM
+
   const itemsToShow: TItemToShowAsCurrency[] = [
     {
       key: "logPose",
@@ -102,7 +110,10 @@ const CurrenciesList: FC = () => {
   return (
     <CurrenciesWrapper>
       <Currency valueMonitored={gameState.state.berries} icon="images/icons/berry.png" isMainCurrency={true} />
-      <CurrenciesListStyled>
+      <CurrenciesListStyled className={isTutorialStep && "isTutorial noOutline"}>
+        <TutorialElement stepKey={EStepKeys.EXPLAIN_ITEM} vertical="bottom" horizontal="right" offset={{ x: -20, y: -180 }}>
+          {tutorial.step.content}
+        </TutorialElement>
         {itemsToShow.map((item, index) => {
           const stateItem = items.find((x) => x.itemKey == item.key)
           return (

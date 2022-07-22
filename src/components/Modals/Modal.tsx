@@ -12,12 +12,22 @@ import MineModalContent from "./Content/Mine"
 import TrainingModalContent from "./Content/Training"
 import GoalsModalContent from "./Content/Goals"
 import useTranslation from "next-translate/useTranslation"
+import ImportExportModalContent from "./Content/ImportExport"
+import TutorialModalContent from "./Content/_Tutorial"
+import { EStepKeys } from "../../lib/data/tutorial"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import TutorialElement from "../Global/TutorialElement"
+import { CloseTutorialButton, TutorialContainer } from "../styled/Globals"
 
 const Modal: FC<IModalProps> = (props) => {
   const { visible, setVisible, type } = props
   const { t } = useTranslation()
   const [hoverModal, setHoverModal] = useState(false)
-
+  const tutorial = useTutorial()
+  const isTutorialStepRecruit = props.type == "cards" && tutorial.step && tutorial.step?.stepKey == EStepKeys.RECRUIT_CARD
+  const isTutorialSelectGoal = props.type == "goals" && tutorial.step && tutorial.step?.stepKey == EStepKeys.SELECT_GOAL
+  const isTutorialExplainShop = props.type == "shop" && tutorial.step && tutorial.step?.stepKey == EStepKeys.EXPLAIN_SHOP
+  const isTutorialStep = isTutorialStepRecruit || isTutorialSelectGoal || isTutorialExplainShop
   // Function called when user press Escape
   const escFunction = useCallback((event: any) => {
     if (event.key === "Escape") {
@@ -49,11 +59,27 @@ const Modal: FC<IModalProps> = (props) => {
   return (
     <ModalContainer
       onClick={() => {
-        !hoverModal && setVisible(false)
+        if (!hoverModal) {
+          isTutorialStep && tutorial.dispatch.clickCloseModal()
+          setVisible(false)
+        }
       }}
     >
+      <TutorialContainer
+        active={tutorial.step !== undefined && tutorial.state.showModal && tutorial.step.isInModal}
+        isInModal={tutorial.step !== undefined && tutorial.step.isInModal}
+      >
+        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>Close Tutorial</CloseTutorialButton>
+      </TutorialContainer>
+
+      {isTutorialStep && (
+        <TutorialElement stepKey={tutorial.step.stepKey} vertical="top" horizontal="center" offset={{ x: 0, y: 50 }} isInModal={true}>
+          {tutorial.step.content}
+        </TutorialElement>
+      )}
+
       <CloseModalIcon onClick={() => setVisible(false)}>{t("game:Modals.close-button")}</CloseModalIcon>
-      <ModalStyled onMouseEnter={() => setHoverModal(true)} onMouseLeave={() => setHoverModal(false)}>
+      <ModalStyled className={isTutorialExplainShop && "isTutorial"} onMouseEnter={() => setHoverModal(true)} onMouseLeave={() => setHoverModal(false)}>
         {type == "map" && <MapModalContent />}
         {type == "cards" && <VivreModalContent />}
         {type == "fleet" && <FleetModalContent />}
@@ -64,6 +90,8 @@ const Modal: FC<IModalProps> = (props) => {
         {type == "mine" && <MineModalContent />}
         {type == "training" && <TrainingModalContent />}
         {type == "goals" && <GoalsModalContent />}
+        {type == "saves" && <ImportExportModalContent />}
+        {type == "tutorial" && <TutorialModalContent />}
       </ModalStyled>
     </ModalContainer>
   )

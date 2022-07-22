@@ -1,4 +1,3 @@
-import { t } from "i18next"
 import { FC } from "react"
 import styled from "styled-components"
 import { intWithSpaces } from "../../../lib/clickerFunctions"

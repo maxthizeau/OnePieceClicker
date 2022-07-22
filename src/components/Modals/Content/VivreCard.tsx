@@ -11,6 +11,9 @@ import { nFormatter } from "../../../lib/utils"
 import { BerryIcon } from "../../styled/Globals"
 import useTranslation from "next-translate/useTranslation"
 import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
+import { useTutorial } from "../../../lib/hooks/TutorialContext"
+import { EStepKeys } from "../../../lib/data/tutorial"
+import TutorialElement from "../../Global/TutorialElement"
 
 const VivreModalContent: FC = () => {
   const { t } = useTranslation()

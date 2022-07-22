@@ -54,7 +54,7 @@ export const zones: TZone[] = [
     id: 4,
     location: "Arlong Park",
     bosses: ["0065", "0066"], // Arlong
-    freeMembers: ["0011"], // Nami
+    freeMembers: ["0009"], // Nami
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 3700,
@@ -84,7 +84,7 @@ export const zones: TZone[] = [
     id: 7,
     location: "Whiskey Peak",
     bosses: ["0199", "0200", "0201", "0202"], // Mr. 5 & Miss Valentine
-    freeMembers: ["0073"], // Vivi
+    freeMembers: ["0072"], // Vivi
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 150000,
@@ -114,7 +114,7 @@ export const zones: TZone[] = [
     id: 10,
     location: "Arabasta",
     bosses: ["0383", "0384"], // Crocodile
-    freeMembers: ["0210"], // Robin
+    freeMembers: ["0209"], // Robin
     freeBoat: [],
     poneglyphDungeon: true,
     maxHP: 780000,
@@ -154,7 +154,7 @@ export const zones: TZone[] = [
     id: 14,
     location: "Enies Lobby",
     bosses: ["0321", "0632", "0323", "0630", "0317", "0728"], //Lucci / Kaku / Kalifa
-    freeMembers: ["0016", "1339"], // Sniper King + Big Chopper
+    freeMembers: ["0016", "0527"], // Sniper King + Big Chopper
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 2200000,
@@ -164,7 +164,7 @@ export const zones: TZone[] = [
     id: 15,
     location: "Thriller Bark",
     bosses: ["0411", "0413", "2754"], // Kuma / Moria / Oars
-    freeMembers: ["2887", "0423"], // Nightmare Luffy / Brook
+    freeMembers: ["0423", "3453"], // Brook / Perona
     freeBoat: [17],
     poneglyphDungeon: false,
     maxHP: 3000000,

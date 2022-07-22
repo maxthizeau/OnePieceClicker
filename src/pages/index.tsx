@@ -1,7 +1,7 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Clicker from "../components/Clicker/Game"
-import { Column, Container, Header, Row, Logo } from "../components/styled/Globals"
+import { Column, Container, Header, Row, Logo, TutorialContainer, CloseTutorialButton } from "../components/styled/Globals"
 import CurrenciesList from "../components/Currencies/CurrenciesList"
 import StatsList from "../components/Stats/StatsList"
 import Goals from "../components/Goals/Goals"
@@ -19,6 +19,8 @@ import useSave from "../lib/hooks/useSave"
 import styled from "styled-components"
 import { possibleGems } from "../lib/data/treasureGame"
 import Navigation from "../components/Global/Navigation"
+import { useTutorial } from "../lib/hooks/TutorialContext"
+import TutorialElement from "../components/Global/TutorialElement"
 
 const AdminButton = styled.a`
   display: block;
@@ -39,11 +41,21 @@ const Home: NextPage = () => {
   const [paused, setPaused] = useState(false)
   const gameState = useGameState()
   const [save, reset, downloadSave] = useSave()
+  const tutorial = useTutorial()
+
   const zoneId = gameState.state.currentZone
 
   return (
     <>
       <Navigation />
+      {/* <TutorialModal /> */}
+      <TutorialContainer
+        active={tutorial.step !== undefined && tutorial.state.showModal && !tutorial.step?.isInModal}
+        isInModal={tutorial.step !== undefined && tutorial.step?.isInModal}
+      >
+        <CloseTutorialButton onClick={() => tutorial.dispatch.setHideTutorial(true)}>Close Tutorial</CloseTutorialButton>
+      </TutorialContainer>
+
       <Container>
         <Head>
           <title>One Piece Clicker</title>
@@ -109,6 +121,7 @@ const Home: NextPage = () => {
               </AdminButton>
 
               <AdminButton onClick={() => downloadSave()}>Download Save</AdminButton>
+              <AdminButton onClick={() => tutorial.dispatch.setHideTutorial(false)}>Show Tutorial</AdminButton>
 
               {/* <>
               <AdminButton

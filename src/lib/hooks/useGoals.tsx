@@ -1,10 +1,14 @@
 import { goalsList } from "../data/goals"
+import { EStepKeys } from "../data/tutorial"
 import { zones } from "../data/zones"
 import { EGoalType, TGoal } from "../types"
 import { ActionEnum, useGameState } from "./GameContext"
+import { useTutorial } from "./TutorialContext"
 
 const useGoals = () => {
   const { state, dispatch } = useGameState()
+  const tutorial = useTutorial()
+  const isTutorialSelectGoal = tutorial.step && tutorial.step?.stepKey == EStepKeys.SELECT_GOAL
 
   const getPossibleGoals = ({ hideTypes, zone }: { hideTypes: EGoalType[]; zone?: number }) => {
     let zoneExists = zones.find((x) => x.id == zone)
@@ -27,6 +31,9 @@ const useGoals = () => {
   }
 
   const claimCurrentGoal = () => {
+    // if (isTutorialSelectGoal && currentGoal.id == 29) {
+    //   tutorial.dispatch.nextStep()
+    // }
     dispatch({ type: ActionEnum.Goal_Claim })
   }
 

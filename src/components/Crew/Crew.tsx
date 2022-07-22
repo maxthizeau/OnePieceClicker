@@ -1,6 +1,9 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import styled from "styled-components"
+import { EStepKeys } from "../../lib/data/tutorial"
 import { useGameState, ICrewUnit } from "../../lib/hooks/GameContext"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import TutorialElement from "../Global/TutorialElement"
 import CrewMember from "./Member/CrewMember"
 import EmptyCrewMember from "./Member/EmptyCrewMember"
 
@@ -11,6 +14,7 @@ const CrewWrapperStyled = styled.div`
   background: #f4f4f4;
   padding: 10px;
   font-size: 0.8em;
+  position: relative;
 `
 
 const CrewName = styled.h3`
@@ -19,28 +23,15 @@ const CrewName = styled.h3`
 
 const Crew: FC = () => {
   const gameState = useGameState()
-
-  const [crew, setCrew] = useState<(ICrewUnit | null)[]>([])
-
-  // const updateCrewRender = useMemo(() => {
-  //   const crewToAdd: (ICrewUnit | null)[] = []
-  //   for (let i = 0; i < 3 + gameState.state.upgrades.CrewMembers.level; i++) {
-  //     if (gameState.state.crew[i]) {
-  //       crewToAdd.push(gameState.state.crew[i])
-  //     } else {
-  //       crewToAdd.push(null)
-  //     }
-  //   }
-  //   return crewToAdd
-  // }, [gameState.state])
-
-  // useEffect(() => {
-  //   console.log("Render")
-  //   setCrew(updateCrewRender)
-  // }, [gameState])
+  const tutorial = useTutorial()
+  const isTutorialStep = tutorial.step && tutorial.step?.stepKey == EStepKeys.EXPLAIN_CREW
 
   return (
-    <CrewWrapperStyled>
+    <CrewWrapperStyled className={isTutorialStep && "isTutorial"}>
+      <TutorialElement stepKey={EStepKeys.EXPLAIN_CREW} vertical="middle" horizontal="left" width={300} offset={{ x: -330, y: 0 }}>
+        {tutorial.step.content}
+      </TutorialElement>
+
       <CrewName>Straw Hat Pirates</CrewName>
 
       {[...Array(2 + gameState.state.upgrades.CrewMembers.level)].map((_, index) => {

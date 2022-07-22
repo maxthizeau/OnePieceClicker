@@ -15,5 +15,21 @@
   "hide": "Hide",
   "show": "Show",
   "Yes": "Yes",
-  "No": "Yes"
+  "No": "Yes",
+  "Saves": {
+    "confirm-reset": "You are about to delete all of your progress in the game. Are you sure you want to continue ?",
+    "save-imported": "Save imported",
+    "unknown-save": "Unknown save",
+    "export-your-save": "Export your save",
+    "download-save": "Click to download your save",
+    "import-a-save": "Import a save",
+    "import-file": "Import file :",
+    "or": "OR",
+    "paste-your-save": "Paste your save",
+    "import": "Import",
+    "warning-import": "WARNING : It will remove your current save. Be sure to export it if you want to continue later.",
+    "erase-current-save": "Erase current save",
+    "start-over": "Start from scratch",
+    "warning-reset": "WARNING : This action cannot be undone. \nIt will delete all your data. Be sure you export your save first."
+  }
 }
