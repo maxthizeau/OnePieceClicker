@@ -1,14 +1,12 @@
-import { FC, useState } from "react"
-import { ActionButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
-import { getThumbImageSrc, getUnitAttackPower, getMaximumHP } from "../../../lib/clickerFunctions"
-import Table, { TColumn } from "../../Global/Table"
+import useTranslation from "next-translate/useTranslation"
+import { FC } from "react"
+import styled from "styled-components"
+import { getMaximumHP, getThumbImageSrc, getUnitAttackPower } from "../../../lib/clickerFunctions"
 import { IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
 import useFleet from "../../../lib/hooks/useFleet"
-import Hover from "../../Global/Hover"
-import CrewHover from "../../Global/Hover/CrewHover"
-import styled from "styled-components"
-import useTranslation from "next-translate/useTranslation"
 import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
+import Table, { TColumn } from "../../Global/Table"
+import { ActionButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
 
 const ExtraModalStyles = styled.div`
   /* overflow: scroll;
@@ -67,9 +65,14 @@ const FleetModalContent: FC = () => {
       label: "Max. HP",
       dataKey: "hp",
       key: "hp",
-      sort: (a, b) => getMaximumHP(a.unit, a.level) - getMaximumHP(b.unit, b.level),
+      sort: (a, b) => {
+        const maxA = showLvl1 ? getMaximumHP(a.unit, 1) : getMaximumHP(a.unit, a.level)
+        const maxB = showLvl1 ? getMaximumHP(b.unit, 1) : getMaximumHP(b.unit, b.level)
+        return maxA - maxB
+      },
       render: (record, _) => {
-        return getMaximumHP(record.unit, record.level)
+        const hp = showLvl1 ? getMaximumHP(record.unit, 1) : getMaximumHP(record.unit, record.level)
+        return hp
       },
     },
     {
@@ -118,9 +121,13 @@ const FleetModalContent: FC = () => {
         </button>
       </TableFilters>
       <Table
+        tableKey="fleetCardTable"
         style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}
-        data={gameState.state.fleet.sort((b, a) => a.id - b.id).filter((x) => x.unit.name.toLowerCase().includes(search.toLowerCase()))}
+        data={gameState.state.fleet
+          .sort((b, a) => a.id - b.id)
+          .filter((x) => x.unit.name.toLowerCase().includes(search !== undefined ? search.toLowerCase() : ""))}
         columns={fleetColumns}
+        pagination={{ itemPerPage: 9 }}
       />
     </ExtraModalStyles>
   )

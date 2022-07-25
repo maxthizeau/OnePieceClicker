@@ -1,6 +1,6 @@
-import { ECaptainEffect, EShipEffect, IShip, TCaptainBoost, TCurrentUnit, TUnit } from "./types"
-import { TZone, zones } from "./data/zones"
+import { zones } from "./data/zones"
 import { ICrewUnit, IFleetUnit } from "./hooks/GameContext"
+import { ECaptainEffect, EShipEffect, IShip, TCaptainBoost, TCurrentUnit, TUnit } from "./types"
 import { hardCopy } from "./utils"
 
 function getRandomInt(max: number) {
@@ -65,7 +65,7 @@ export function getDungeonUnits(allUnits: TUnit[], zoneId: number): TUnit[] {
   // Make a hard copy, not only reference (since we modify hp)
   const zoneUnitsCopy: TUnit[] = JSON.parse(JSON.stringify(zoneUnits))
   const zone = zones[zoneId]
-  console.log(zone)
+
   const dungeonUnits: TUnit[] = []
   let totalATKLvlMax = 0
   let totalMaxLvl = 0
@@ -76,29 +76,34 @@ export function getDungeonUnits(allUnits: TUnit[], zoneId: number): TUnit[] {
     totalMaxLvl += nextUnit.maxLvl
     dungeonUnits.push(nextUnit)
   }
-  console.log("DUNGEON UNITS : ")
-  console.log(dungeonUnits)
 
   const randomBoss = getRandomInt(zone.bosses.length)
-  console.log("randomBoss", zone.bosses.length, randomBoss)
+  // console.log("randomBoss", zone.bosses.length, randomBoss)
   const boss = allUnits.find((u) => u.id == zone.bosses[randomBoss])
   if (boss) {
-    console.log("BOSS FOUND : ", boss.id)
+    // console.log("BOSS FOUND : ", boss.id)
     const bossCopy = hardCopy(boss)
     bossCopy.clickerMaxHP = Math.round(boss.clickerMaxHP * 3)
     bossCopy.ATKLvlMax = Math.round((totalATKLvlMax / unitsPerDungeon) * 1.5)
     bossCopy.maxLvl = Math.round((totalMaxLvl / unitsPerDungeon) * 1.5)
     dungeonUnits.push(bossCopy)
   } else {
-    console.log("BOSS NOT FOUND")
+    // console.log("BOSS NOT FOUND")
   }
 
   return dungeonUnits
 }
 
 export function getPriceUnit(unit: TUnit) {
-  const { HPLvlMax, ATKLvl1, cost, stars, maxLvl } = unit
-  return (ATKLvl1 + HPLvlMax) * maxLvl * cost * stars * 10
+  const { HPLvlMax, ATKLvl1, ATKLvlMax, cost, stars, maxLvl, zone } = unit
+  // return Math.round((ATKLvl1 * 10 + HPLvlMax) * 5 * maxLvl * (cost / 10) * stars * 20)
+
+  const starsMultiplier = stars / 6 + 1
+  const price = Math.round((ATKLvlMax + HPLvlMax + cost * 100) * (maxLvl / 100) * (zone + 1) * 100 * starsMultiplier) * 30
+  if (zone == 0) {
+    return Math.round(price / 10)
+  }
+  return price
 }
 export function getBerryRewardFromUnit(unit: TUnit) {
   const { HPLvlMax, ATKLvlMax, ATKLvl1, cost, stars, maxLvl, zone } = unit

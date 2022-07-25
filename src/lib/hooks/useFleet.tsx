@@ -1,10 +1,9 @@
-import { ECaptainEffect, EShipEffect, TUnit } from "../types"
-import { ActionEnum, useGameState, ICardUnit, ICrewUnit, IFleetUnit } from "./GameContext"
-import { Store } from "react-notifications-component"
-import CardLootNotification from "../../components/Global/notifications/UnitNotification"
-import { getCrewCaptain, getPriceUnit } from "../clickerFunctions"
-import useShip from "./useShip"
+import { getCrewCaptain } from "../clickerFunctions"
+import { defaultUpgrades } from "../data/upgrades"
+import { ECaptainEffect, EShipEffect } from "../types"
+import { ActionEnum, ICrewUnit, IFleetUnit, useGameState } from "./GameContext"
 import useItems from "./useItems"
+import useShip from "./useShip"
 import useUpgrades from "./useUpgrades"
 
 type TResponse = {
@@ -19,6 +18,7 @@ const useFleet = () => {
   const { cards, fleet, crew, training } = gameState.state
   const { getShipBoost } = useShip()
   const { isItemActive } = useItems()
+  const [upgrades] = useUpgrades()
 
   const gainXP = (crewUnit: ICrewUnit, xpAmount: number) => {
     // if (!crewUnit) return null
@@ -64,7 +64,9 @@ const useFleet = () => {
     const shipBoost = getShipBoost(EShipEffect.XP_GAIN)
     const captainBoost = getCaptainBoost(ECaptainEffect.XP)
     const itemBoost = isItemActive("cola") ? 1.2 : 1
-    const finalAmount = amount * shipBoost * captainBoost * itemBoost
+    const upgradeBoost = Math.pow(upgrades.XP.valuePerLevel, upgrades.XP.level)
+
+    const finalAmount = amount * shipBoost * captainBoost * itemBoost * upgradeBoost
     for (let i = 0; i < training.XPBoost.fleetUnitIds.length; i++) {
       if (training.XPBoost.fleetUnitIds[i] === null || training.XPBoost.fleetUnitIds[i] === undefined) {
         continue
@@ -88,8 +90,8 @@ const useFleet = () => {
 
   const crewLooseHP = (amount: number) => {
     // const healingValue = 0
-    const upgradeBoost = Math.pow(gameState.state.upgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
-    const healingValue = isItemActive("healFood") ? Math.floor(500 * upgradeBoost) : 0
+    const upgradeBoost = Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
+    const healingValue = isItemActive("healFood") ? Math.floor(100 * upgradeBoost) : 0
 
     const changeHP = healingValue - amount
     for (let i = 0; i < crew.length; i++) {

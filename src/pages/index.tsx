@@ -1,27 +1,26 @@
 import type { NextPage } from "next"
+import useTranslation from "next-translate/useTranslation"
 import Head from "next/head"
-import Clicker from "../components/Clicker/Game"
-import { Column, Container, Header, Row, Logo, TutorialContainer, CloseTutorialButton } from "../components/styled/Globals"
-import CurrenciesList from "../components/Currencies/CurrenciesList"
-import StatsList from "../components/Stats/StatsList"
-import Goals from "../components/Goals/Goals"
-import Crew from "../components/Crew/Crew"
-import Boat from "../components/Boat/Boat"
-import ClientOnly from "../components/ClientOnly"
-import Zone from "../components/Clicker/Zone"
 import { useState } from "react"
+import styled from "styled-components"
+import Boat from "../components/Boat/Boat"
+import Clicker from "../components/Clicker/Game"
+import Zone from "../components/Clicker/Zone"
+import ClientOnly from "../components/ClientOnly"
+import Crew from "../components/Crew/Crew"
+import CurrenciesList from "../components/Currencies/CurrenciesList"
+import Navigation from "../components/Global/Navigation"
+import Goals from "../components/Goals/Goals"
+import StatsList from "../components/Stats/StatsList"
+import { CloseTutorialButton, Column, Container, Header, Logo, Row, TutorialContainer } from "../components/styled/Globals"
+import { possibleGems } from "../lib/data/treasureGame"
 import { zones } from "../lib/data/zones"
 import { EInstance } from "../lib/enums"
-import useInstance from "../lib/hooks/useInstance"
 import { ActionEnum, useGameState } from "../lib/hooks/GameContext"
-import useCards from "../lib/hooks/useCards"
-import useSave from "../lib/hooks/useSave"
-import styled from "styled-components"
-import { possibleGems } from "../lib/data/treasureGame"
-import Navigation from "../components/Global/Navigation"
 import { useTutorial } from "../lib/hooks/TutorialContext"
-import TutorialElement from "../components/Global/TutorialElement"
-import useTranslation from "next-translate/useTranslation"
+import useCards from "../lib/hooks/useCards"
+import useInstance from "../lib/hooks/useInstance"
+import useSave from "../lib/hooks/useSave"
 
 const AdminButton = styled.a`
   display: block;
@@ -38,10 +37,9 @@ const AdminButton = styled.a`
 
 const Home: NextPage = () => {
   const { instance, changeInstance } = useInstance()
-  const [cards, lootCard] = useCards()
-  const [paused, setPaused] = useState(false)
+  // const [paused, setPaused] = useState(false)
   const gameState = useGameState()
-  const [save, reset, downloadSave] = useSave()
+  const [save] = useSave()
   const tutorial = useTutorial()
   const { t } = useTranslation()
 
@@ -90,17 +88,7 @@ const Home: NextPage = () => {
                 </Column>
                 <Column span={16} sm={24} md={24} lg={24}>
                   {instance == EInstance.Zone && <Zone zone={zones[zoneId]} />}
-                  {(instance == EInstance.Clicker || instance == EInstance.Dungeon) && (
-                    <Clicker
-                      zoneId={zoneId}
-                      paused={paused}
-                      debug={true}
-                      // instance={instance}
-                      // changeInstance={changeInstance}
-                      // gameState={gameState}
-                      // lootCard={lootCard}
-                    />
-                  )}
+                  {(instance == EInstance.Clicker || instance == EInstance.Dungeon) && <Clicker zoneId={zoneId} paused={false} debug={false} />}
                 </Column>
               </Row>
               <Row gutter={[16, 16]}>
@@ -113,100 +101,8 @@ const Home: NextPage = () => {
               {/* <ItemList /> */}
 
               <Crew />
-              <AdminButton
-                onClick={() => {
-                  console.log("Pause/Resume")
-                  setPaused(!paused)
-                }}
-              >
-                {paused ? "Resume" : "Pause"}
-              </AdminButton>
-
-              <AdminButton onClick={() => downloadSave()}>Download Save</AdminButton>
-              <AdminButton onClick={() => tutorial.dispatch.setHideTutorial(false)}>Show Tutorial</AdminButton>
-
-              {/* <>
-              <AdminButton
-                onClick={() => {
-                  save()
-                }}
-              >
-                Force SAVE
-              </AdminButton>
-              <AdminButton
-                onClick={() => {
-                  reset()
-                }}
-              >
-                Reset
-              </AdminButton>
-              <AdminButton
-                onClick={() => {
-                  gameState.dispatch({ type: ActionEnum.AddBerries, payload: { berriesChange: 1000000000000 } })
-                }}
-              >
-                Berries
-              </AdminButton>
-            */}
-              <AdminButton
-                onClick={() => {
-                  for (let i = 0; i < 1000; i++) {
-                    console.log("Lootgem")
-                    const rng = Math.floor(Math.random() * possibleGems.length)
-                    gameState.dispatch({
-                      type: ActionEnum.TreasureGame_LootGem,
-                      payload: { treasureGameGem: { id: possibleGems[rng] } },
-                    })
-                  }
-                }}
-              >
-                Gems
-              </AdminButton>
-              {/* 
-              </> 
-              <a
-              
-              onClick={() => {
-                console.log("Clear Cache")
-                sessionStorage.clear()
-                client.cache.evict({ fieldName: "zoneId" })
-                client.cache.evict({ fieldName: "instance" })
-                client.cache.gc()
-              }}
-            >
-              Clear cache
-            </a> */}
-              <AdminButton
-                onClick={() => {
-                  gameState.dispatch({ type: ActionEnum.AddBerries, payload: { berriesChange: 1000000 } })
-                }}
-              >
-                Berries
-              </AdminButton>
-              <AdminButton
-                onClick={() => {
-                  gameState.dispatch({ type: ActionEnum.AddBerries, payload: { berriesChange: 100000000 } })
-                }}
-              >
-                Berries ++
-              </AdminButton>
-              <AdminButton
-                onClick={() => {
-                  gameState.dispatch({ type: ActionEnum.AddBerries, payload: { berriesChange: 10000000000 } })
-                }}
-              >
-                Berries ++++
-              </AdminButton>
-              <AdminButton
-                onClick={() => {
-                  gameState.dispatch({ type: ActionEnum.AddBerries, payload: { berriesChange: 10000000000000000 } })
-                }}
-              >
-                Berries ++++++++
-              </AdminButton>
             </Column>
           </Row>
-          {/* <MapModal /> */}
         </ClientOnly>
       </Container>
     </>

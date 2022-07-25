@@ -1,6 +1,6 @@
-import { CSSProperties, PropsWithChildren, useCallback, useMemo, useState } from "react"
-import { render } from "react-dom"
+import { CSSProperties, useCallback, useMemo, useState } from "react"
 import styled from "styled-components"
+import useStatePersistInCookie from "../../lib/hooks/useStatePersistsInCookie"
 
 const TableStyled = styled.table`
   border: 1px solid black;
@@ -48,13 +48,34 @@ const TableStyled = styled.table`
   }
 `
 
-// enum Key {
-//   id = "id",
-//   name = "name",
-//   lvl = "cost",
-//   hp = "HPLvlMax",
-//   atk = "ATKLvlMax",
-// }
+const Pagination = styled.ul`
+  margin: 30px auto;
+  text-align: center;
+  font-family: Open Sans, Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 16px;
+
+  & li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 5px;
+
+    & input {
+      width: 30px;
+      text-align: center;
+      margin-right: 3px;
+      padding: 3px 0px;
+      /* padding: 1px 0px; */
+    }
+  }
+  & .pagination-button {
+    cursor: pointer;
+  }
+`
 
 type TSortBy = {
   key: string
@@ -75,13 +96,18 @@ export type TColumn<T> = {
 // If "sort" func is not specified but sortMode is (and is not false), sort with the sortMode (by number, by string, or by defaultSort Function)
 
 interface ITableProps<T extends object> {
+  tableKey: string
   columns: TColumn<T>[]
   data: any[]
   style?: CSSProperties
+  pagination?: {
+    itemPerPage?: number
+  }
 }
 
 const Table = <T extends Object>(props: ITableProps<T>) => {
-  const [sortBy, setSortBy] = useState<TSortBy | null>(null)
+  const [sortBy, setSortBy] = useStatePersistInCookie<TSortBy | null>(props.tableKey, null)
+  const [page, setPage] = useState(1)
 
   const sort = (key: string | null) => {
     if (!key) {
@@ -147,9 +173,26 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
     }
   }
 
+  const maxPage = useMemo(() => {
+    return props.pagination !== undefined ? Math.ceil(props.data.length / props.pagination.itemPerPage) : 1
+  }, [props.data, props.pagination])
+
   const sortedData = useMemo(() => {
-    return props.data.sort(sortData)
-  }, [props.data, sortBy])
+    const data = props.data.sort(sortData)
+    if (props.pagination === undefined) {
+      return data
+    } else {
+      const pageSize = props.pagination.itemPerPage
+      const currentPage = page < 1 ? 1 : page > pageSize ? pageSize : page
+      return data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    }
+  }, [props.data, sortBy, page])
+
+  const changePage = (newPage) => {
+    // if (newPage >= 1 && newPage <= maxPage) {
+    setPage(newPage)
+    // }
+  }
 
   return (
     <>
@@ -190,6 +233,31 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
           })}
         </tbody>
       </TableStyled>
+      {props.pagination !== undefined && (
+        <Pagination>
+          <li className="pagination-button" onClick={() => changePage(page - 1)}>
+            ←
+          </li>
+          <li>
+            <input
+              value={page}
+              onChange={(e) => {
+                const value = e.target.value != "" ? parseInt(e.target.value) : 0
+                changePage(value)
+              }}
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault()
+                }
+              }}
+            />{" "}
+            / {maxPage}
+          </li>
+          <li className="pagination-button" onClick={() => changePage(page + 1)}>
+            →
+          </li>
+        </Pagination>
+      )}
     </>
   )
 }

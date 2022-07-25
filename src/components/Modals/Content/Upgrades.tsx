@@ -1,10 +1,10 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC } from "react"
 import styled from "styled-components"
-import { intWithSpaces } from "../../../lib/clickerFunctions"
 import { defaultUpgrades } from "../../../lib/data/upgrades"
 import useUpgrades from "../../../lib/hooks/useUpgrades"
+import { intWithSpacesOrFormatIfGreaterThan } from "../../../lib/utils"
 import { BerryIcon } from "../../styled/Globals"
-import useTranslation from "next-translate/useTranslation"
 
 const UpgradeBoxStyled = styled.div`
   padding: 20px;
@@ -90,7 +90,7 @@ const UpgradeBox: FC<IUpgradeBoxProps> = ({ icon, title, subtitle, level, maximu
           "MAX"
         ) : (
           <>
-            <BerryIcon /> {intWithSpaces(price)}
+            <BerryIcon /> {intWithSpacesOrFormatIfGreaterThan(price, 10)}
           </>
         )}
       </UpgradeButtonStyled>
@@ -154,7 +154,7 @@ const UpgradesModalContent: FC = () => {
       <UpgradeBox
         icon="images/icons/foodIcon.png"
         title={t("game:Modals.Upgrades.heal-title")}
-        subtitle={`${t("game:Modals.Upgrades.heal-description")} (+20%)`}
+        subtitle={`${t("game:Modals.Upgrades.heal-description")} (+65%)`}
         level={upgrades.Heal.level}
         maximumLevel={defaultUpgrades.Heal.prices.length}
         price={defaultUpgrades.Heal.prices[upgrades.Heal.level] * 1000}

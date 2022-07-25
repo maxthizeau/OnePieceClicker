@@ -6,10 +6,9 @@ import {
   getFullImageSrc,
   getHPLossFromUnit,
   getNextUnitByRarity,
-  getPriceUnit,
   getXPGainFromUnit,
 } from "../../lib/clickerFunctions"
-import { ECaptainEffect, IDungeonState, TCurrentUnit, TUnit } from "../../lib/types"
+import { ECaptainEffect, EShipEffect, IDungeonState, TCurrentUnit, TUnit } from "../../lib/types"
 import { Center } from "../styled/Globals"
 import { CharacterImage, CharacterName, StyledGame } from "./ClickerStyles"
 import HealthBar from "./HealthBar"
@@ -18,7 +17,7 @@ import EndDungeonMessage from "./Popups/EndDungeonMessage"
 import ClickerMenu from "./ClickerMenu"
 import Debug from "./Debug"
 import DungeonTimer from "./DungeonTimer"
-import { ActionEnum, IContext, useGameState } from "../../lib/hooks/GameContext"
+import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
 import useInterval from "../../lib/hooks/useInterval"
 import useInstance from "../../lib/hooks/useInstance"
 import useCards from "../../lib/hooks/useCards"
@@ -34,7 +33,22 @@ import useTranslation from "next-translate/useTranslation"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
 import { EStepKeys } from "../../lib/data/tutorial"
 import TutorialElement from "../Global/TutorialElement"
+import styled from "styled-components"
+import useShip from "../../lib/hooks/useShip"
+import { defaultUpgrades } from "../../lib/data/upgrades"
 const data: TUnit[] = require("../../lib/data/units.json")
+
+const TimeInfo = styled.div`
+  padding: 5px;
+  text-align: center;
+  width: 100%;
+  font-family: "Courier New", Courier, monospace;
+  color: white;
+
+  & button {
+    margin-right: 5px;
+  }
+`
 
 interface IGameProps {
   zoneId: number
@@ -42,12 +56,6 @@ interface IGameProps {
   debug?: boolean
 }
 
-// type GameState = {
-//   zoneId: number
-//   units: TUnit[]
-//   dungeon: IDungeonState | null
-//   currentUnit: TCurrentUnit
-// }
 const baseDungeonTime = 30
 
 const Game: FC<IGameProps> = (props: IGameProps) => {
@@ -58,7 +66,6 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const [enableHit, setEnableHit] = useState(true)
   const { instance, changeInstance } = useInstance()
   const [crewPower, clickPower] = usePower()
-  // const [crewPower, clickPower] = [10000000000, 100000000]
   const [_, lootCard] = useCards()
   const { getCaptainBoost, rngCrewMemberGainXP, crewLooseHP } = useFleet().crewFunctions
   const { enterDungeon, isItemActive } = useItems()
@@ -66,6 +73,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const gameState = useGameState()
   const { t } = useTranslation()
   const tutorial = useTutorial()
+  const { getShipBoost } = useShip()
+  const [speed, setSpeed] = useState(1)
   const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
 
   function setHP(newHP: number) {
@@ -107,19 +116,19 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     const { state, currentUnitIndex, dungeonUnits, isDungeon } = dungeon
 
     let newDungeonState: IDungeonState | null = null
-    console.log(dungeon.dungeonUnits.length, dungeon.currentUnitIndex + 1)
+
     if (state !== "inprogress") {
       return null
     }
 
     if (dungeon.dungeonUnits.length <= dungeon.currentUnitIndex + 1) {
-      console.log("Last enemy defeated")
+      // console.log("Last enemy defeated")
       newDungeonState = { ...dungeon, state: "victory" }
       setDungeon(newDungeonState)
       currentUnit && setCurrentUnit({ ...currentUnit, hp: 0 })
       dungeonVictory()
     } else {
-      console.log("Another enemy is coming")
+      // console.log("Another enemy is coming")
       const nextDungeonUnit: TUnit = dungeon.dungeonUnits[dungeon.currentUnitIndex + 1]
       setDungeon({ ...dungeon, currentUnitIndex: dungeon.currentUnitIndex + 1 })
       setCurrentUnit({ hp: nextDungeonUnit.clickerMaxHP, unit: nextDungeonUnit })
@@ -127,7 +136,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   }
 
   function nextUnit() {
-    console.log("nextUnit")
+    // console.log("nextUnit")
 
     const zoneUnits = filterUnitsByZone(units, props.zoneId)
 
@@ -142,22 +151,22 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   }
 
   function currentUnitDies() {
-    console.log("[Current Unit Dies]")
-    console.log("Current unit :  ", currentUnit)
     setHP(0)
     setEnableHit(false)
     currentUnit && lootCard(currentUnit?.unit)
     const captainEffect = getCaptainBoost(ECaptainEffect.BERRY)
     const itemBoost = isItemActive("berryboost") ? 1.2 : 1
-    const berryWon = currentUnit ? Math.round(getBerryRewardFromUnit(currentUnit.unit) * captainEffect * itemBoost) : 0
-    console.log("Berries : ", berryWon)
+    const shipBoost = getShipBoost(EShipEffect.BERRY)
+    const berryUpgradeBoost = Math.pow(defaultUpgrades.Berry.valuePerLevel, gameState.state.upgrades.Berry.level)
+    const berryWon = currentUnit ? Math.round(getBerryRewardFromUnit(currentUnit.unit) * captainEffect * itemBoost * berryUpgradeBoost * shipBoost) : 0
+
     gameState.dispatch({
       type: ActionEnum.AddBerries,
       payload: {
         berriesChange: berryWon,
       },
     })
-    console.log("Berries : ", berryWon)
+
     currentUnit && rngCrewMemberGainXP(getXPGainFromUnit(currentUnit))
     currentUnit && crewLooseHP(getHPLossFromUnit(currentUnit))
     gameState.dispatch({ type: ActionEnum.KilledEnemy, payload: { zoneId: props.zoneId } })
@@ -262,13 +271,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   }
 
   const tick = () => {
-    // Handle Auto Hit
-    // console.log("PAUSED : ", props.paused)
-    // console.log("--TICK--")
     if (!props.paused) {
       if (!dungeon || dungeon.state == "inprogress") {
-        // hit() updates state, wont work if endDungeonTimer() runs too since it also modify the state
-        // console.log("HIT !")
         hit(crewPower)
       }
     }
@@ -288,7 +292,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
   useInterval(() => {
     tick()
-  }, 1000)
+  }, Math.floor(1000 / speed))
 
   if (!currentUnit) return null
   const { hp, unit } = currentUnit
@@ -296,7 +300,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
   return (
     <>
-      <StyledGame className={isTutorialStepDamageEnemy && "isTutorial"}>
+      <StyledGame className={isTutorialStepDamageEnemy ? "isTutorial" : ""}>
         {isTutorialStepDamageEnemy && tutorial.state.showModal && (
           <TutorialElement stepKey={EStepKeys.DAMAGE_ENEMY} vertical="bottom" horizontal="center" offset={{ x: 0, y: -150 }} width={500}>
             {tutorial.step.content}
@@ -338,6 +342,16 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
         {/* <div>ATK : 255</div> */}
       </StyledGame>
+      <TimeInfo>
+        <div>Speed : x{speed} </div>
+        <div>
+          <button onClick={() => setSpeed(1)}>x1</button>
+          <button onClick={() => setSpeed(2)}>x2</button>
+          <button onClick={() => setSpeed(3)}>x3</button>
+          <button onClick={() => setSpeed(5)}>x5</button>
+          <button onClick={() => setSpeed(10)}>x10</button>
+        </div>
+      </TimeInfo>
     </>
   )
 }

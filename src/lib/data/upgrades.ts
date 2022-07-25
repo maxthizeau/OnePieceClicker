@@ -19,15 +19,15 @@ export type TUpgrade = {
 export const defaultUpgrades: TUpgrade = {
   ClickPower: {
     level: 0,
-    maxLevel: 8,
+    maxLevel: 7,
     valuePerLevel: 2,
-    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 100000000, 1000000000],
+    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 500000000],
   },
   CrewPower: {
     level: 0,
-    maxLevel: 8,
+    maxLevel: 7,
     valuePerLevel: 2,
-    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 100000000, 1000000000],
+    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 500000000],
   },
   LootChance: {
     level: 0,
@@ -50,7 +50,7 @@ export const defaultUpgrades: TUpgrade = {
   Heal: {
     level: 0,
     maxLevel: 8,
-    valuePerLevel: 1.5,
+    valuePerLevel: 1.65,
     prices: [500, 5000, 25000, 100000, 1000000, 10000000, 100000000, 1000000000],
   },
   //     AutoHeal: {
@@ -70,6 +70,6 @@ export const defaultUpgrades: TUpgrade = {
     level: 0,
     maxLevel: 5,
     valuePerLevel: 1,
-    prices: [1000, 10000, 100000, 1000000, 5000000],
+    prices: [1000, 10000, 100000, 1000000, 500000000],
   },
 }

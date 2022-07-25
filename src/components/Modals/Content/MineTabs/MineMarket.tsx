@@ -1,15 +1,14 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC } from "react"
-import { Store } from "react-notifications-component"
 import styled from "styled-components"
-import { getThumbImageSrc, idNumberToString, intWithSpaces, numberTo3DigitString } from "../../../../lib/clickerFunctions"
+import CardLootNotification from "../../../../components/Global/notifications/UnitNotification"
+import { getThumbImageSrc, idNumberToString } from "../../../../lib/clickerFunctions"
 import { possibleGems } from "../../../../lib/data/treasureGame"
 import { ActionEnum, useGameState } from "../../../../lib/hooks/GameContext"
+import { ELogType, useLogs } from "../../../../lib/hooks/useLogs"
 import useUnitData from "../../../../lib/hooks/useUnitData"
-import CardLootNotification from "../../../../components/Global/notifications/UnitNotification"
 import { getMarketList } from "../../../../lib/treasureGame/marketFunctions"
 import { TUnit } from "../../../../lib/types"
-import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
-import useTranslation from "next-translate/useTranslation"
 const MarketBoxStyled = styled.div<{ owned?: boolean }>`
   padding: 5px 10px;
   border-radius: 3px;

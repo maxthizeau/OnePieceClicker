@@ -1,7 +1,11 @@
-import { off, title } from "process"
 import { createContext, useContext, useState } from "react"
 import { NotificationContent, Store } from "react-notifications-component"
-import useInterval from "./useInterval"
+
+/* 
+ This context is ready to store logs and provide an history to the user, 
+ but not implemented yet.
+ Actually, it only push corner notifications when a new log occurs
+*/
 
 export enum ELogType {
   Clicker,
@@ -57,10 +61,6 @@ const useLogs = () => {
   }
 
   function addLog(log: ILog) {
-    console.log("addLog")
-    // const sendNotif = context?.addInLog(log)
-    // console.log("NEW LOG : ")
-    // console.log(sendNotif, log.notification)
     if (log.notification) {
       Store.addNotification({
         title: log.title,
@@ -75,7 +75,6 @@ const useLogs = () => {
         },
       })
     }
-    // setLogs([...logs, log])
   }
 
   const logs = context.logs

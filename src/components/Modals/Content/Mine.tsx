@@ -1,9 +1,9 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
 import TreasureFinder from "../../TreasureGame/TreasureFinder"
 import MineMarket from "./MineTabs/MineMarket"
 import MineUpgrade from "./MineTabs/MineUpgrade"
-import useTranslation from "next-translate/useTranslation"
 
 const ModalContainerStyled = styled.div`
   width: 645px;
@@ -34,8 +34,6 @@ const MineModalContent: FC = () => {
 
   return (
     <ModalContainerStyled>
-      {/* <ModalSubtitle>All members you recruited in your fleet. You can add them to your crew whenever you want.</ModalSubtitle> */}
-
       <TabButtonsContainer>
         <TabButton active={tab == "mine"} onClick={() => setTab("mine")}>
           {t("game:Modals.Mine.mine-label")}

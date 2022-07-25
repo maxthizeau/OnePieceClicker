@@ -13,6 +13,6 @@
   "GO_BACK_ZONE": "<0>Let's go fight in a dungeon!</0><1>First, go back to the seaport</1>",
   "ENTER_DUNGEON": "<0>Click on [Save Nakamas] to enter dungeon.</0><0>You will have 30 seconds to defeat 10 units and one boss of the zone.</0><0>It will cost you some Log Poses</0><1>Enter in the dungeon and finish it</1>",
   "CHANGE_ZONE": "<0>You unlocked a new zone !</0><1>Click on [Map] to navigate to the next island.</1>",
-  "END_TUTORIAL": "<0>This is the end of the tutorial. If you need any help, click on [Guide] in the menu (Top/Left corner).</0><0>Tip 1 : If you feel stuck at some point, try to unlock [Upgrades].</0> <0>Tip 2 : In the menu, you can import/export your save to continue playing on another device/brower.</0>",
+  "END_TUTORIAL": "<0>This is the end of the tutorial. If you need any help, click on [Guide] in the menu (Top/Left corner).</0><0>Tip 1 : If you feel stuck at some point, try to unlock [Upgrades].</0> <0>Tip 2 : In the menu, you can import/export your save to continue playing on another device/browser.</0>",
   "closeTutorial": "Close Tutorial"
 }

@@ -1,8 +1,7 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
 import useSave from "../../../lib/hooks/useSave"
-import useTranslation from "next-translate/useTranslation"
-import Trans from "next-translate/Trans"
 
 const ModalExtraStyles = styled.div`
   & *:not(h3) {

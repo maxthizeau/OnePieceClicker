@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useState, createContext, useContext } from "react"
-import { Store } from "react-notifications-component"
+import useTranslation from "next-translate/useTranslation"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import TreasureGameNotification from "../../components/Global/notifications/TreasureGameNotification"
 import { ETreasureGameUpgrades } from "../data/treasureGame"
 import { EBlockState, EGameMode, IGem } from "../treasureGame/gameConfig"
 import { generateGemsArray, generateLevel, getIndexFromXYBlock, getXYBlockFromIndex, isBorder } from "../treasureGame/gameFunctions"
 import { EShipEffect } from "../types"
-import { hardCopy } from "../utils"
+import { hardCopy, stringToJsonState } from "../utils"
 import { ActionEnum, useGameState } from "./GameContext"
 import useInterval from "./useInterval"
-import { useLogs, ELogType } from "./useLogs"
+import { ELogType, useLogs } from "./useLogs"
 import useShip from "./useShip"
-import useTranslation from "next-translate/useTranslation"
 
 type TNotification = {
   type: "error" | "gem" | "success" | "warning"
@@ -55,9 +54,10 @@ type Dispatch = {
   setLastEnergyUpdateTimestamp: (arg: number) => void
   setEnergy: (arg: number) => void
   resetLevel: () => void
+  importFunc: (arg: State) => void
 }
 
-const TreasureGameContext = createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
+export const TreasureGameContext = createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
 
 function TreasureGameProvider({ children }: { children: React.ReactNode }) {
   const gameState = useGameState()
@@ -95,6 +95,18 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
     },
   }
 
+  function getDefaultState(): State | null {
+    try {
+      const save = localStorage.getItem("opsave") ?? null
+      if (!save) return null
+      const saveJson = stringToJsonState(save).treasureGame
+      if (!saveJson) return null
+      return saveJson
+    } catch {
+      return null
+    }
+  }
+
   const [charPosition, setCharPosition] = useState<{ x: number; y: number }>({ x: 6, y: 0 })
   const [level, setLevel] = useState<number[][]>([])
   const [gems, setGems] = useState<IGem[]>([])
@@ -110,12 +122,23 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
     setGems(generateGemsArray(generatedLevel, config.gems))
   }
 
+  const importFunc = (importState: State) => {
+    setCharPosition(importState.charPosition)
+    setLevel(importState.level)
+    setGems(importState.gems)
+    setLevelState(importState.levelState)
+    setLastEnergyUpdateTimestamp(importState.lastEnergyUpdateTimestamp)
+    setEnergy(importState.energy)
+  }
+
   useEffect(() => {
-    resetLevel()
+    const previousState = getDefaultState()
+    if (previousState !== null) {
+      importFunc(previousState)
+    } else {
+      resetLevel()
+    }
   }, [])
-  useEffect(() => {
-    console.log(levelState)
-  }, [levelState])
 
   const state: State = {
     charPosition,
@@ -135,6 +158,7 @@ function TreasureGameProvider({ children }: { children: React.ReactNode }) {
     setLastEnergyUpdateTimestamp,
     setEnergy,
     resetLevel,
+    importFunc,
   }
 
   const value = { state, dispatch }
@@ -164,7 +188,7 @@ const useTreasureGame = () => {
 
   useEffect(() => {
     // If all gems have been collected in this level, reset it
-    console.log(gems)
+
     if (!gems.find((x) => x.collected == false)) {
       sendNotification("all-gems-collected", "success", "New level", "You collected all gems.")
       resetLevel()
@@ -199,7 +223,6 @@ const useTreasureGame = () => {
     const index = getIndexFromXYBlock(charPosition.x, charPosition.y)
     newLevelState[index] = EBlockState.PATH
     setLevelState(newLevelState)
-    // console.log(levelState)
   }
 
   // Return the index of gem array if found, or null
@@ -214,7 +237,6 @@ const useTreasureGame = () => {
   }
 
   const gemFound = (index: number) => {
-    // console.log("GEM FOUND !", gems[index])
     const gemName = gems[index].stone.replaceAll("-", " ").toUpperCase()
     const notifId = `gem-${gemName}-${index}`
     const gemsCopy = hardCopy(gems)
@@ -239,8 +261,10 @@ const useTreasureGame = () => {
   const move = useCallback(
     ({ x, y }: { x: number; y: number }) => {
       const index = getIndexFromXYBlock(x, y)
-      console.log(index)
-      console.log(level[index])
+      // Prevent error when reset level
+      if (level[index][0] === undefined || level[index][1] === undefined) {
+        return
+      }
       if (level[index][0] != 1 || level[index][1] != 1) {
         sendNotification(`move-${x}-${y}`, "error", t("treasureGame:impossible-to-move"), t("treasureGame:impossible-to-move-message"))
       } else {
@@ -260,29 +284,23 @@ const useTreasureGame = () => {
   )
 
   const up = () => {
-    console.log(charPosition)
     move({ x: charPosition.x, y: charPosition.y - 1 })
   }
   const down = () => {
-    console.log(charPosition)
     const newCharPos = { x: charPosition.x, y: charPosition.y + 1 }
     // levelStateAroundChar(charPosition)
     move(newCharPos)
   }
   const left = () => {
-    console.log(charPosition)
     move({ y: charPosition.y, x: charPosition.x - 1 })
   }
   const right = () => {
-    console.log(charPosition)
     move({ y: charPosition.y, x: charPosition.x + 1 })
   }
 
   const sendNotification = (notifId: string, type: "error" | "gem" | "success" | "warning", label: string, message: string, gem?: string) => {
     // const notification: TNotification = { type, label, message, gem }
     if (notifId != previousNotification) {
-      console.log(notifId, previousNotification)
-
       addLog({
         id: notifId,
         logTypes: [ELogType.Mine],
@@ -295,10 +313,7 @@ const useTreasureGame = () => {
   }
 
   const click = (index: number) => {
-    console.log("Click on ", index)
     if (mode == EGameMode.SCAN) {
-      console.log("Scan Click")
-
       const enoughtEnergy = spendEnergy(config.energyCosts.scan)
       if (enoughtEnergy) {
         const levelStateTmp = hardCopy(levelState)
@@ -343,12 +358,9 @@ const useTreasureGame = () => {
       }
     }
     if (mode == EGameMode.DIG) {
-      console.log("DIG Click")
       if (levelState[index] != EBlockState.SHOW || isBorder(index, level.length)) {
-        // console.log("WARNING : You cannot pickaxe this block")
         sendNotification(`dig-error-noborder-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-cannot-pickaxe-this-block"))
       } else if (level[index][0] == 1 && level[index][1] == 1) {
-        // console.log("WARNING : You can only pickaxe walls")
         sendNotification(`dig-error-onlywall-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-can-only-pickaxe-walls"))
       } else {
         const enoughtEnergy = spendEnergy(config.energyCosts.pickaxe)
@@ -362,7 +374,6 @@ const useTreasureGame = () => {
       }
     }
     if (mode == EGameMode.BOMB) {
-      console.log("Nuke Click")
       if (levelState[index] != EBlockState.SHOW || isBorder(index, level.length)) {
         sendNotification(`bomb-error-${index}`, "error", t("treasureGame:impossible-action"), t("treasureGame:you-cannot-bomb-this-block"))
       } else {
@@ -396,6 +407,10 @@ const useTreasureGame = () => {
     }
   }
 
+  const reset = () => {
+    resetLevel()
+  }
+
   useEffect(() => {
     updateStateAroundChar()
   }, [charPosition])
@@ -413,7 +428,7 @@ const useTreasureGame = () => {
 
   const charFunctions = { up, down, left, right }
 
-  return { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config, userResetLevel }
+  return { level, levelState, gems, charPosition, charFunctions, mode, setMode, click, energy, lastEnergyUpdateTimestamp, config, userResetLevel, reset }
   //   return [level, levelState, charPosition, charFunctions, mode, changeMode] as const
 }
 

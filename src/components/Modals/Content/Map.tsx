@@ -1,54 +1,71 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC } from "react"
 import styled from "styled-components"
-import { zones } from "../../../lib/data/zones"
-import { EInstance } from "../../../lib/enums"
-import useInstance from "../../../lib/hooks/useInstance"
-import { ModalButtonStyled } from "../ModalStyles"
-import useCards from "../../../lib/hooks/useCards"
-import useUnitData from "../../../lib/hooks/useUnitData"
-import { ActionEnum, useGameState } from "../../../lib/hooks/GameContext"
-import useTranslation from "next-translate/useTranslation"
-import { useTutorial } from "../../../lib/hooks/TutorialContext"
-import { EStepKeys } from "../../../lib/data/tutorial"
+import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
+import Hover from "../../Global/Hover"
+import BasicHover from "../../Global/Hover/BasicHover"
+import MapV1ModalContent from "./MapV1"
+import MapV2ModalContent from "./MapV2"
 
 const ModalWrapper = styled.div`
   display: flex;
+  width: 988px;
+  height: 650px;
 `
 const ZonesListWrapper = styled.div`
   padding: 10px;
 `
 
+const ChooseMapTypeButton = styled.div`
+  display: inline-block;
+  padding: 5px 10px;
+  background: white;
+  border-radius: 5px;
+  border: 3px solid #d3af85;
+  outline: 1px solid #2c2c2c;
+  margin: 0px 20px;
+  cursor: pointer;
+`
+
+const TextStyled = styled.span`
+  font-family: "Press Start 2P", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+    sans-serif;
+  font-size: 0.9em;
+`
+
 const MapModalContent: FC = () => {
-  const gameState = useGameState()
-  const { instance, changeInstance } = useInstance()
-  // const [cards] = useCards()
-  // const [data, dataByRarity] = useUnitData()
-  // const zone = zones[gameState.state.currentZone]
-  const tutorial = useTutorial()
-  const isTutorialStepChangeZone = tutorial.step && tutorial.step?.stepKey == EStepKeys.CHANGE_ZONE
+  const [mapV2, setMapV2] = useStatePersistInCookie("mapType", false)
   const { t } = useTranslation()
+
   return (
-    <ModalWrapper>
-      <ZonesListWrapper>
-        <h3>{t("game:Modals.MapV1.select-zone")}</h3>
-        {zones
-          .filter((zone) => zone.id <= gameState.state.maxZoneId)
-          .map((x) => (
-            <ModalButtonStyled
-              key={x.id}
-              onClick={() => {
-                gameState.dispatch({ type: ActionEnum.ChangeZone, payload: { zoneId: x.id } })
-                changeInstance(EInstance.Zone)
-                if (isTutorialStepChangeZone) {
-                  tutorial.dispatch.nextStep()
-                }
-              }}
-            >
-              #{x.id} : {t(`zones:${x.id}-${x.location}`)}
-            </ModalButtonStyled>
-          ))}
-      </ZonesListWrapper>
-    </ModalWrapper>
+    <>
+      <h3>
+        <ChooseMapTypeButton onClick={() => setMapV2(true)}>
+          <Hover
+            vertical="bottom"
+            horizontal="center"
+            offset={{ x: 0, y: 20 }}
+            delayOpen={200}
+            hoverContent={<BasicHover content={t("common:Map.map-view")} />}
+          >
+            <TextStyled>{t("common:Map.Map")}</TextStyled>
+          </Hover>
+        </ChooseMapTypeButton>
+        <ChooseMapTypeButton onClick={() => setMapV2(false)}>
+          {" "}
+          <Hover
+            vertical="bottom"
+            horizontal="center"
+            offset={{ x: 0, y: 20 }}
+            delayOpen={200}
+            hoverContent={<BasicHover content={t("common:Map.list-view")} />}
+          >
+            <TextStyled>{t("common:Map.List")}</TextStyled>
+          </Hover>
+        </ChooseMapTypeButton>
+      </h3>
+      <ModalWrapper>{mapV2 ? <MapV2ModalContent /> : <MapV1ModalContent />}</ModalWrapper>
+    </>
   )
 }
 

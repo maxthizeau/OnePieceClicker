@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { TUnit } from "../types"
 import { useGameState } from "./GameContext"
-import useInterval from "./useInterval"
 
 const baseData: TUnit[] = require("../../lib/data/units.json")
 

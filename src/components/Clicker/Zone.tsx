@@ -1,16 +1,15 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC } from "react"
 import styled, { css } from "styled-components"
+import { EStepKeys } from "../../lib/data/tutorial"
 import { TZone } from "../../lib/data/zones"
-import { StyledGame } from "./ClickerStyles"
 import { EInstance } from "../../lib/enums"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
 import useInstance from "../../lib/hooks/useInstance"
 import useItems from "../../lib/hooks/useItems"
-import { useLogs } from "../../lib/hooks/useLogs"
 import { nFormatter } from "../../lib/utils"
-import useTranslation from "next-translate/useTranslation"
 import TutorialElement from "../Global/TutorialElement"
-import { useTutorial } from "../../lib/hooks/TutorialContext"
-import { EStepKeys } from "../../lib/data/tutorial"
+import { StyledGame } from "./ClickerStyles"
 
 const Background = styled.div<{ src: string }>`
   background-image: ${(props) => `url(${props.src})`};
@@ -116,9 +115,9 @@ const Zone: FC<IZoneProps> = ({ zone }) => {
     <StyledGame src={`images/zones/${zone.id}.jpg`}>
       <ZoneNameStyled>{t(`zones:${zone.id}-${zone.location}`)}</ZoneNameStyled>
 
-      <ZoneButton bottom={true} left={true} onClick={() => changeInstance(EInstance.Clicker)} className={isTutorialStepVisitIsland && "isTutorial"}>
+      <ZoneButton bottom={true} left={true} onClick={() => changeInstance(EInstance.Clicker)} className={isTutorialStepVisitIsland ? "isTutorial" : ""}>
         <img src="images/icons/visitIcon.png" />
-        <ButtonTextStyled className={isTutorialStepVisitIsland && "isTutorial"}>{t("game:Clicker.Zone.visit-island")}</ButtonTextStyled>
+        <ButtonTextStyled className={isTutorialStepVisitIsland ? "isTutorial" : ""}>{t("game:Clicker.Zone.visit-island")}</ButtonTextStyled>
       </ZoneButton>
 
       <TutorialElement stepKey={EStepKeys.VISIT_ISLAND} vertical="top" horizontal="center" offset={{ x: 0, y: 20 }}>
@@ -140,13 +139,13 @@ const Zone: FC<IZoneProps> = ({ zone }) => {
             changeInstance(EInstance.Dungeon)
           })
         }}
-        className={isTutorialStepEnterDungeon && "isTutorial"}
+        className={isTutorialStepEnterDungeon ? "isTutorial" : ""}
       >
         <CostIcon>
           <CostText>{nFormatter(zone.dungeonCost, 0)}</CostText> <img src="images/icons/logPoseIcon.png" />
         </CostIcon>
         <img src="images/icons/rescueIcon.png" />
-        <ButtonTextStyled className={isTutorialStepEnterDungeon && "isTutorial"}>{t("game:Clicker.Zone.save-nakamas")}</ButtonTextStyled>
+        <ButtonTextStyled className={isTutorialStepEnterDungeon ? "isTutorial" : ""}>{t("game:Clicker.Zone.save-nakamas")}</ButtonTextStyled>
       </ZoneButton>
     </StyledGame>
   )

@@ -1,13 +1,11 @@
 import { getUnitAttackPower } from "../clickerFunctions"
 import { ECaptainEffect, EShipEffect } from "../types"
-import { useGameState } from "./GameContext"
 import useFleet from "./useFleet"
 import useItems from "./useItems"
 import useShip from "./useShip"
 import useUpgrades from "./useUpgrades"
 
 const usePower = () => {
-  // const { crew, fleet } = useGameState().state
   const { fleet, crew, crewFunctions } = useFleet()
   const { getCaptainBoost } = crewFunctions
   const { getShipBoost } = useShip()

@@ -1,7 +1,5 @@
 import { FC } from "react"
 import styled from "styled-components"
-import { getThumbImageSrc } from "../../../lib/clickerFunctions"
-import { TUnit } from "../../../lib/types"
 
 const NotificationWrapper = styled.div`
   display: flex;

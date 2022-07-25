@@ -1,15 +1,15 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
-import Currency from "./Currency"
 import styled from "styled-components"
+import { TItemKey } from "../../lib/data/items"
+import { EStepKeys } from "../../lib/data/tutorial"
 import { useGameState } from "../../lib/hooks/GameContext"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
 import useItems from "../../lib/hooks/useItems"
 import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
-import { TItemKey } from "../../lib/data/items"
-import useTranslation from "next-translate/useTranslation"
-import { useTutorial } from "../../lib/hooks/TutorialContext"
-import { EStepKeys } from "../../lib/data/tutorial"
 import TutorialElement from "../Global/TutorialElement"
+import Currency from "./Currency"
 
 const CurrenciesWrapper = styled.div`
   display: flex;
@@ -110,7 +110,7 @@ const CurrenciesList: FC = () => {
   return (
     <CurrenciesWrapper>
       <Currency valueMonitored={gameState.state.berries} icon="images/icons/berry.png" isMainCurrency={true} />
-      <CurrenciesListStyled className={isTutorialStep && "isTutorial noOutline"}>
+      <CurrenciesListStyled className={isTutorialStep ? "isTutorial noOutline" : ""}>
         <TutorialElement stepKey={EStepKeys.EXPLAIN_ITEM} vertical="bottom" horizontal="right" offset={{ x: -20, y: -180 }}>
           {tutorial.step.content}
         </TutorialElement>

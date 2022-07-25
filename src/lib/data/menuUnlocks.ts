@@ -25,5 +25,5 @@ export const defaultMenuUnlockState: IMenuUnlockState = {
   Training: false,
 }
 
-export const XPBoostUnlockPrices = [0, 500, 1000]
-export const RayleighUnlockPrices = [0, 5000, 10000]
+export const XPBoostUnlockPrices = [0, 2000000000, 50000000000]
+export const RayleighUnlockPrices = [0, 10000000000, 200000000000]

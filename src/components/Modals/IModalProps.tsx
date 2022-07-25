@@ -4,4 +4,4 @@ export interface IModalProps {
   type: TModalType
 }
 
-export type TModalType = "map" | "cards" | "fleet" | "upgrades" | "shop" | "boat" | "zone" | "mine" | "training" | "goals" | "saves" | "tutorial"
+export type TModalType = "map" | "cards" | "fleet" | "upgrades" | "shop" | "boat" | "zone" | "mine" | "training" | "goals" | "saves"

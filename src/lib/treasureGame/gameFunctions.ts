@@ -1,6 +1,6 @@
 import { possibleGems } from "../data/treasureGame"
 import { hardCopy } from "../utils"
-import { BLOCK_PER_ROW, EBlockState, IGem, InitLevel, IPattern } from "./gameConfig"
+import { BLOCK_PER_ROW, IGem, InitLevel, IPattern } from "./gameConfig"
 import patternList from "./patterns"
 
 /**

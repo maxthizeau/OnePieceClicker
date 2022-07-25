@@ -1,13 +1,12 @@
-import { Component, FC, useState } from "react"
-import styled, { css } from "styled-components"
+import { FC, useState } from "react"
+import styled from "styled-components"
+import { EStepKeys } from "../../lib/data/tutorial"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import { nFormatter } from "../../lib/utils"
+import TutorialElement from "../Global/TutorialElement"
 import { TModalType } from "../Modals/IModalProps"
-import MapModal from "../Modals/Content/Map"
 import Modal from "../Modals/Modal"
 import { BerryIcon } from "../styled/Globals"
-import { nFormatter } from "../../lib/utils"
-import { useTutorial } from "../../lib/hooks/TutorialContext"
-import { EStepKeys } from "../../lib/data/tutorial"
-import TutorialElement from "../Global/TutorialElement"
 
 const IconWrapper = styled.div`
   position: absolute;
@@ -62,6 +61,22 @@ const ButtonStyled = styled.a<{ locked?: boolean }>`
   @media only screen and (min-width: 1200px) {
     flex-basis: 30%;
   }
+
+  // notif
+  /* &::after {
+    content: "!";
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #d30606;
+    top: -10px;
+    right: -10px;
+    border-radius: 99px;
+    border: 3px solid #d30606;
+    height: 20px;
+    width: 20px;
+  } */
 `
 
 const LockedDiv = styled.div<{ locked?: boolean }>`
@@ -116,9 +131,9 @@ const MenuButton: FC<IMenuButtonProps> = ({ label, icon, type, locked }) => {
             setVisible(true)
           }
         }}
-        className={isTutorialStep && "isTutorial"}
+        className={isTutorialStep ? "isTutorial" : ""}
       >
-        <IconWrapper className={isTutorialStep && "isTutorial"}>
+        <IconWrapper className={isTutorialStep ? "isTutorial" : ""}>
           <img src={icon} />
         </IconWrapper>
         <LabelStyled>{label}</LabelStyled>

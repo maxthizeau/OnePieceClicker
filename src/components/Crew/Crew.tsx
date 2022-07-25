@@ -1,7 +1,7 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { FC } from "react"
 import styled from "styled-components"
 import { EStepKeys } from "../../lib/data/tutorial"
-import { useGameState, ICrewUnit } from "../../lib/hooks/GameContext"
+import { useGameState } from "../../lib/hooks/GameContext"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
 import TutorialElement from "../Global/TutorialElement"
 import CrewMember from "./Member/CrewMember"
@@ -27,7 +27,7 @@ const Crew: FC = () => {
   const isTutorialStep = tutorial.step && tutorial.step?.stepKey == EStepKeys.EXPLAIN_CREW
 
   return (
-    <CrewWrapperStyled className={isTutorialStep && "isTutorial"}>
+    <CrewWrapperStyled className={isTutorialStep ? "isTutorial" : ""}>
       <TutorialElement stepKey={EStepKeys.EXPLAIN_CREW} vertical="middle" horizontal="left" width={300} offset={{ x: -330, y: 0 }}>
         {tutorial.step.content}
       </TutorialElement>

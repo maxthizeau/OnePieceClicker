@@ -11,12 +11,14 @@
   "vivre-cards": "Vivre Cards",
   "reset": "Reset",
   "select": "Select",
+  "selected": "Selected",
   "owned": "Owned",
   "hide": "Hide",
   "show": "Show",
   "Yes": "Yes",
   "No": "Yes",
   "Next": "Next",
+  "current-zone": "Current Zone",
   "Saves": {
     "confirm-reset": "You are about to delete all of your progress in the game. Are you sure you want to continue ?",
     "save-imported": "Save imported",
@@ -32,5 +34,13 @@
     "erase-current-save": "Erase current save",
     "start-over": "Start from scratch",
     "warning-reset": "WARNING : This action cannot be undone. \nIt will delete all your data. Be sure you export your save first."
+  },
+  "Map": {
+    "Map": "Map",
+    "List": "List",
+    "map-view": "Map View - Travel in the world of One Piece using the real Map.",
+    "list-view": "List View - Change zone easier using the List View",
+    "you-are-here": "You are here",
+    "Navigate": "Navigate"
   }
 }

@@ -1,13 +1,11 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import useShip from "../../../lib/hooks/useShip"
-import Hover from "../../Global/Hover"
-import BasicHover from "../../Global/Hover/BasicHover"
-import Map from "../../Map/MapFunctionnal"
-import { ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
-import { EShipEffect, IShip } from "../../../lib/types"
 import { getShipEffects } from "../../../lib/clickerFunctions"
-import useTranslation from "next-translate/useTranslation"
+import useShip from "../../../lib/hooks/useShip"
+import { EShipEffect, IShip } from "../../../lib/types"
+import Hover from "../../Global/Hover"
+import { SearchInput } from "../ModalStyles"
 
 const ModalWrapper = styled.div`
   /* min-height: 700px !important; */

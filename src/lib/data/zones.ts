@@ -7,6 +7,7 @@ export type TZone = {
   poneglyphDungeon: boolean
   maxHP: number
   dungeonCost: number
+  mapCoordonates: { x: number; y: number }
 }
 
 export const zones: TZone[] = [
@@ -19,6 +20,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 10,
     dungeonCost: 1,
+    mapCoordonates: { x: 2830, y: 50 },
   },
   {
     id: 1,
@@ -29,6 +31,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 50,
     dungeonCost: 1,
+    mapCoordonates: { x: 2590, y: 270 },
   },
   {
     id: 2,
@@ -39,6 +42,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 300,
     dungeonCost: 2,
+    mapCoordonates: { x: 2337, y: 400 },
   },
   {
     id: 3,
@@ -49,6 +53,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 1000,
     dungeonCost: 3,
+    mapCoordonates: { x: 1973, y: 730 },
   },
   {
     id: 4,
@@ -59,6 +64,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 3700,
     dungeonCost: 5,
+    mapCoordonates: { x: 1795, y: 550 },
   },
   {
     id: 5,
@@ -69,6 +75,7 @@ export const zones: TZone[] = [
     poneglyphDungeon: false,
     maxHP: 13000,
     dungeonCost: 6,
+    mapCoordonates: { x: 1612, y: 930 },
   },
   {
     id: 6,
@@ -78,7 +85,8 @@ export const zones: TZone[] = [
     freeBoat: [6],
     poneglyphDungeon: false,
     maxHP: 46000,
-    dungeonCost: 7,
+    dungeonCost: 8,
+    mapCoordonates: { x: 1353, y: 1107 },
   },
   {
     id: 7,
@@ -88,7 +96,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 150000,
-    dungeonCost: 8,
+    dungeonCost: 10,
+    mapCoordonates: { x: 1580, y: 1144 },
   },
   {
     id: 8,
@@ -98,7 +107,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 260000,
-    dungeonCost: 9,
+    dungeonCost: 15,
+    mapCoordonates: { x: 1740, y: 1124 },
   },
   {
     id: 9,
@@ -108,7 +118,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 420000,
-    dungeonCost: 10,
+    dungeonCost: 20,
+    mapCoordonates: { x: 1914, y: 1091 },
   },
   {
     id: 10,
@@ -118,7 +129,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: true,
     maxHP: 780000,
-    dungeonCost: 12,
+    dungeonCost: 30,
+    mapCoordonates: { x: 2078, y: 1114 },
   },
   {
     id: 11,
@@ -128,7 +140,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 1200000,
-    dungeonCost: 15,
+    dungeonCost: 40,
+    mapCoordonates: { x: 2323, y: 1151 },
   },
   {
     id: 12,
@@ -138,7 +151,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 1600000,
-    dungeonCost: 17,
+    dungeonCost: 50,
+    mapCoordonates: { x: 2483, y: 1107 },
   },
   {
     id: 13,
@@ -148,7 +162,8 @@ export const zones: TZone[] = [
     freeBoat: [13], // Thousand Sunny
     poneglyphDungeon: false,
     maxHP: 1800000,
-    dungeonCost: 20,
+    dungeonCost: 65,
+    mapCoordonates: { x: 2722, y: 1121 },
   },
   {
     id: 14,
@@ -158,7 +173,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 2200000,
-    dungeonCost: 25,
+    dungeonCost: 80,
+    mapCoordonates: { x: 2997, y: 1167 },
   },
   {
     id: 15,
@@ -168,7 +184,8 @@ export const zones: TZone[] = [
     freeBoat: [17],
     poneglyphDungeon: false,
     maxHP: 3000000,
-    dungeonCost: 30,
+    dungeonCost: 100,
+    mapCoordonates: { x: 2934, y: 1041 },
   },
   {
     id: 16,
@@ -178,7 +195,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 3800000,
-    dungeonCost: 35,
+    dungeonCost: 130,
+    mapCoordonates: { x: 3137, y: 1144 },
   },
   {
     id: 17,
@@ -188,7 +206,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 7500000,
-    dungeonCost: 40,
+    dungeonCost: 160,
+    mapCoordonates: { x: 2870, y: 1267 },
   },
   {
     id: 18,
@@ -198,7 +217,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 10000000,
-    dungeonCost: 48,
+    dungeonCost: 200,
+    mapCoordonates: { x: 3007, y: 1267 },
   },
   {
     id: 19,
@@ -208,7 +228,8 @@ export const zones: TZone[] = [
     freeBoat: [32],
     poneglyphDungeon: false,
     maxHP: 12500000,
-    dungeonCost: 56,
+    dungeonCost: 250,
+    mapCoordonates: { x: 30, y: 1094 },
   },
   {
     id: 20,
@@ -218,7 +239,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: true,
     maxHP: 20000000,
-    dungeonCost: 62,
+    dungeonCost: 300,
+    mapCoordonates: { x: 61, y: 1244 },
   },
   {
     id: 21,
@@ -228,7 +250,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 27500000,
-    dungeonCost: 70,
+    dungeonCost: 350,
+    mapCoordonates: { x: 131, y: 1087 },
   },
   {
     id: 22,
@@ -238,7 +261,8 @@ export const zones: TZone[] = [
     freeBoat: [30],
     poneglyphDungeon: false,
     maxHP: 35000000,
-    dungeonCost: 80,
+    dungeonCost: 425,
+    mapCoordonates: { x: 320, y: 1095 },
   },
   {
     id: 23,
@@ -248,7 +272,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: true,
     maxHP: 42500000,
-    dungeonCost: 90,
+    dungeonCost: 500,
+    mapCoordonates: { x: 497, y: 1124 },
   },
   {
     id: 24,
@@ -258,7 +283,8 @@ export const zones: TZone[] = [
     freeBoat: [39],
     poneglyphDungeon: false,
     maxHP: 49500000,
-    dungeonCost: 100,
+    dungeonCost: 600,
+    mapCoordonates: { x: 610, y: 1068 },
   },
   {
     id: 25,
@@ -268,7 +294,8 @@ export const zones: TZone[] = [
     freeBoat: [48],
     poneglyphDungeon: true,
     maxHP: 55500000,
-    dungeonCost: 125,
+    dungeonCost: 700,
+    mapCoordonates: { x: 792, y: 1068 },
   },
   {
     id: 26,
@@ -278,7 +305,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 60500000,
-    dungeonCost: 150,
+    dungeonCost: 800,
+    mapCoordonates: { x: 875, y: 1347 },
   },
   {
     id: 27,
@@ -288,7 +316,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 70500000,
-    dungeonCost: 200,
+    dungeonCost: 950,
+    mapCoordonates: { x: 958, y: 1104 },
   },
   {
     id: 28,
@@ -298,7 +327,8 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 80500000,
-    dungeonCost: 250,
+    dungeonCost: 1100,
+    mapCoordonates: { x: 1051, y: 1151 },
   },
   {
     id: 29,
@@ -308,6 +338,7 @@ export const zones: TZone[] = [
     freeBoat: [],
     poneglyphDungeon: false,
     maxHP: 100500000,
-    dungeonCost: 500,
+    dungeonCost: 1300,
+    mapCoordonates: { x: 1237, y: 1656 },
   },
 ]

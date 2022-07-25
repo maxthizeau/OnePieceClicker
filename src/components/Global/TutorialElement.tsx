@@ -1,8 +1,8 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import { EStepKeys } from "../../lib/data/tutorial"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
-import useTranslation from "next-translate/useTranslation"
 
 type THozitontalPosition = "left" | "center" | "right"
 type TVerticalPosition = "top" | "middle" | "bottom"

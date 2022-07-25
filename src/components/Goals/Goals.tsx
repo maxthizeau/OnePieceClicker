@@ -1,13 +1,12 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import { goalToString } from "../../lib/goalsFunctions"
-import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
-import useGoals from "../../lib/hooks/useGoals"
-import Modal from "../Modals/Modal"
-import useTranslation from "next-translate/useTranslation"
-import { useTutorial } from "../../lib/hooks/TutorialContext"
 import { EStepKeys } from "../../lib/data/tutorial"
+import { getPrintableRewardCurrency, goalToString } from "../../lib/goalsFunctions"
+import { useTutorial } from "../../lib/hooks/TutorialContext"
+import useGoals from "../../lib/hooks/useGoals"
 import TutorialElement from "../Global/TutorialElement"
+import Modal from "../Modals/Modal"
 
 const GoalsBoxStyled = styled.div`
   border-radius: 3px;
@@ -22,6 +21,7 @@ const GoalsBoxStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100%;
+  margin-top: -20px;
 
   position: relative;
   & h3 {
@@ -44,13 +44,39 @@ const CurrentGoalLabel = styled.p`
   margin: 10px 0px;
 `
 const CurrentGoalStatus = styled.p`
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 5px;
   text-align: center;
 `
 
 const GoalButton = styled.button`
   margin: auto;
   padding: 5px 10px;
+`
+
+const GoalRewardText = styled.div`
+  font-family: Open Sans, Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  margin-top: 10px;
+  color: #1c1c17;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  background: #ffffff38;
+`
+
+const RewardLogo = styled.span<{ src: string }>`
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-image: url(${(props) => props.src});
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-left: 10px;
+  }
 `
 
 const Goals: FC = () => {
@@ -61,10 +87,10 @@ const Goals: FC = () => {
   const isTutorialOpenModal = tutorial.step && tutorial.step?.stepKey == EStepKeys.OPEN_GOAL
   const isTutorialSelectGoal = tutorial.step && tutorial.step?.stepKey == EStepKeys.SELECT_GOAL
   const goalLocation = currentGoal && currentGoal?.zoneId !== undefined ? t(`zones:${currentGoal.zoneId}-${goalToString(currentGoal).location}`) : ""
-
+  const { amount, logo: rewardLogo } = currentGoal ? getPrintableRewardCurrency(currentGoal) : { amount: null, logo: null }
   return (
     <>
-      <GoalsBoxStyled className={isTutorialOpenModal && "isTutorial"}>
+      <GoalsBoxStyled className={isTutorialOpenModal ? "isTutorial" : ""}>
         <TutorialElement stepKey={EStepKeys.OPEN_GOAL} vertical="middle" horizontal="right" width={300} offset={{ x: -320, y: 0 }}>
           {tutorial.step.content}
         </TutorialElement>
@@ -75,6 +101,7 @@ const Goals: FC = () => {
             <CurrentGoalLabel>
               {t(`game:Goals.${goalToString(currentGoal).goalKey}-label`, { value: currentGoal.value, location: goalLocation })}
             </CurrentGoalLabel>
+
             <CurrentGoalStatus>
               {currentGoal.progressValue < currentGoal.value ? (
                 <>
@@ -93,6 +120,10 @@ const Goals: FC = () => {
                 </GoalButton>
               )}
             </CurrentGoalStatus>
+
+            <GoalRewardText>
+              {t("game:Modals.Goals.goal-reward")} {amount} <RewardLogo src={rewardLogo} />
+            </GoalRewardText>
           </>
         ) : (
           <>

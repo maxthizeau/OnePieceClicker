@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { EBlockState } from "../../lib/treasureGame/gameConfig"
 
 const CharSpriteImage = styled.div<{ width: number }>`
   background-image: url("images/treasure-game/character.png");

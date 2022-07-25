@@ -18,7 +18,7 @@
     "Popups": {
       "victory": "VICTORY",
       "defeat": "DEFEAT",
-      "victory-message": "You saved your nakamas !",
+      "victory-message": "You  saved your nakamas !",
       "defeat-message": "The boss had time to flee, strengthen your crew and try again.",
       "new-zone-available": "You have access to a new zone",
       "new-fleet-member": "A new member has joined your fleet !",
@@ -167,7 +167,7 @@
     "KILL_ENEMIES-label": "Beat {{value}} enemies in {{location}}",
     "CLEAR_DUNGEON-label": "Finish {{value}} times the dungeon of {{location}}",
     "LOOT_VIVRECARD-label": "Loot all vivre cards of {{location}}",
-    "MINE_ENERGY-label": "Use {{value} energy in the mine",
+    "MINE_ENERGY-label": "Use {{value}} energy in the mine",
     "MINE_LOOT-label": "Loot {{value}} gems in the mine",
     "claim-reward": "Claim Reward",
     "select-new-goal": "Select a new goal..."

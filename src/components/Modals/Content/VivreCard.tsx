@@ -1,19 +1,20 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
-import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
-import { getMaximumHP, getPriceUnit, getThumbImageSrc, getUnitAttackPower, intWithSpaces } from "../../../lib/clickerFunctions"
-import Table, { TColumn } from "../../Global/Table"
-import useCards from "../../../lib/hooks/useCards"
-import { ICardUnit, useGameState } from "../../../lib/hooks/GameContext"
-import { Store } from "react-notifications-component"
-import UnitNotification from "../../Global/notifications/UnitNotification"
-import { useLogs, ELogType } from "../../../lib/hooks/useLogs"
-import { nFormatter } from "../../../lib/utils"
-import { BerryIcon } from "../../styled/Globals"
 import useTranslation from "next-translate/useTranslation"
+import { FC, useMemo } from "react"
+import styled from "styled-components"
+import { getMaximumHP, getPriceUnit, getThumbImageSrc, getUnitAttackPower } from "../../../lib/clickerFunctions"
+import { ICardUnit, useGameState } from "../../../lib/hooks/GameContext"
+import useCards from "../../../lib/hooks/useCards"
+import { ELogType, useLogs } from "../../../lib/hooks/useLogs"
 import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
-import { useTutorial } from "../../../lib/hooks/TutorialContext"
-import { EStepKeys } from "../../../lib/data/tutorial"
-import TutorialElement from "../../Global/TutorialElement"
+import { nFormatter } from "../../../lib/utils"
+import UnitNotification from "../../Global/notifications/UnitNotification"
+import Table, { TColumn } from "../../Global/Table"
+import { BerryIcon } from "../../styled/Globals"
+import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
+
+const ExtraModalStyles = styled.div`
+  width: 1100px;
+`
 
 const VivreModalContent: FC = () => {
   const { t } = useTranslation()
@@ -150,11 +151,11 @@ const VivreModalContent: FC = () => {
   }
 
   const filteredData = useMemo(() => {
-    return filterFleetMember(filterFleet).filter((x) => x.name.toLowerCase().includes(search.toLowerCase()))
+    return filterFleetMember(filterFleet).filter((x) => x.name.toLowerCase().includes(search !== undefined ? search.toLowerCase() : ""))
   }, [gameState.state.cards, gameState.state.fleet, filterFleet, search])
 
   return (
-    <>
+    <ExtraModalStyles>
       <h3>{t("game:Modals.VivreCard.vivre-card-label")}</h3>
       <ModalSubtitle>{t("game:Modals.VivreCard.vivre-card-description")}</ModalSubtitle>
       <TableFilters>
@@ -163,8 +164,14 @@ const VivreModalContent: FC = () => {
         </FilterButton>
         <SearchInput placeholder={t("game:Modals.VivreCard.search-unit")} value={search} onChange={(e) => setSearch(e.target.value)} />
       </TableFilters>
-      <Table style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }} data={filteredData} columns={cardsColumns} />
-    </>
+      <Table
+        tableKey="vivreCardTable"
+        style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}
+        data={filteredData}
+        columns={cardsColumns}
+        pagination={{ itemPerPage: 9 }}
+      />
+    </ExtraModalStyles>
   )
 }
 

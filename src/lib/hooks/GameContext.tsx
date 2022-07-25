@@ -1,20 +1,17 @@
-import { createContext, useContext, useMemo, useReducer } from "react"
-import { getMaximumHP, getMaximumXP, getShipEffects, idNumberToString, getMaximumTrainingXP } from "../clickerFunctions"
-import { defaultItemsList, TItem } from "../data/items"
-import { EInstance } from "../enums"
-import { EGoalRewardCurrency, EGoalType, EShipEffect, ICurrentGoal, TUnit } from "../types"
 import CryptoJS from "crypto-js"
-import { ETreasureGameUpgrades, defaultTreasureGameUpgradeState, mineUpgradesList, getDefaultTreasureGameGemsState } from "../data/treasureGame"
-import { hardCopy } from "../utils"
-import { getMarketList } from "../treasureGame/marketFunctions"
-import { ships } from "../data/ships"
-import { defaultUpgrades, TUpgrade } from "../data/upgrades"
+import { createContext, useContext, useReducer } from "react"
+import { getMaximumHP, getMaximumTrainingXP, getMaximumXP, getShipEffects, idNumberToString } from "../clickerFunctions"
 import { goalsList } from "../data/goals"
+import { defaultItemsList, TItem } from "../data/items"
+import { ships } from "../data/ships"
+import { defaultTreasureGameUpgradeState, ETreasureGameUpgrades, getDefaultTreasureGameGemsState, mineUpgradesList } from "../data/treasureGame"
+import { defaultUpgrades, TUpgrade } from "../data/upgrades"
 import { zones } from "../data/zones"
-// import save from "../data/save"
-import { ELogType, useLogs } from "./useLogs"
-import UnitNotification from "../../components/Global/notifications/UnitNotification"
-import { defaultMenuUnlockState, IMenuUnlockState, menuUnlocksPrices, IMenuUnlockPayload, XPBoostUnlockPrices, RayleighUnlockPrices } from "../data/menuUnlocks"
+import { EInstance } from "../enums"
+import { getMarketList } from "../treasureGame/marketFunctions"
+import { EGoalRewardCurrency, EGoalType, EShipEffect, ICurrentGoal, TUnit } from "../types"
+import { hardCopy } from "../utils"
+import { defaultMenuUnlockState, IMenuUnlockPayload, IMenuUnlockState, menuUnlocksPrices, RayleighUnlockPrices, XPBoostUnlockPrices } from "../data/menuUnlocks"
 
 const allUnits: TUnit[] = require("../../lib/data/units.json")
 
@@ -175,11 +172,11 @@ const defaultState: State = {
   },
 }
 
-export function stringToJsonState(save: string): State | null {
+export function stringToJsonState(save: string) {
   try {
     const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
     const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
-    const saveJson: State = JSON.parse(saveJsonDecrypted)
+    const saveJson = JSON.parse(saveJsonDecrypted)
     return saveJson
   } catch (e) {
     return null
@@ -188,7 +185,7 @@ export function stringToJsonState(save: string): State | null {
 function getDefaultState(): State {
   try {
     const save = localStorage.getItem("opsave") ?? JSON.stringify(defaultState)
-    const saveJson = stringToJsonState(save)
+    const saveJson = stringToJsonState(save).game
     if (!saveJson) {
       return defaultState
     }
@@ -349,7 +346,6 @@ function gameReducer(state: State, action: Action): State {
 
       const gainXP = action.payload.gainXP ?? 0
       const crewMember = action.payload.crew
-      console.log("Gain XP", gainXP, crewMember)
 
       // Get fleet Member from crewUnit arg
       const fleetMemberIndex = state.fleet.findIndex((x) => x.id === crewMember.fleetId)
@@ -577,16 +573,15 @@ function gameReducer(state: State, action: Action): State {
       const { id, currency, price, unit } = action.payload.treasureGameMarket
       const marketItemIndex = marketList.findIndex((x) => x.id == id && x.currency == currency && x.price == price)
       if (marketItemIndex == -1 || marketList[marketItemIndex].id != parseInt(unit.id)) {
-        console.log("Impossible : Market item does not match ")
+        // console.log("Impossible : Market item does not match ")
         return state
       }
       const finalPrice = price * (unit.stars + 1)
       if (state.treasureGameGems[currency].count < finalPrice) {
-        console.log("Impossible : Not enought gems ")
+        // console.log("Impossible : Not enought gems ")
         return state
       }
 
-      console.log("BUYING FOR", finalPrice)
       // Check if user already own this card
       const owned = state.cards.find((x) => x.id == unit.id)
       // If he does, return the same state
@@ -618,10 +613,14 @@ function gameReducer(state: State, action: Action): State {
       if (!found) {
         return state
       }
-      const goalHasBeenUnlocked = goalsList.find((x) => state.clearedGoals.includes(x.id) && x.unlockGoals.includes(goal))
+      // const goalHasBeenUnlocked = goalsList.find((x) => state.clearedGoals.includes(x.id) && x.unlockGoals.includes(goal))
+
+      const goalHasBeenUnlocked = found.unlockedBy === undefined || (found.unlockedBy !== undefined && state.clearedGoals.includes(found.unlockedBy))
+
       const notAlreadyDone = !state.clearedGoals.includes(goal)
-      if ((notAlreadyDone && found.zoneId !== undefined && found.zoneId <= state.maxZoneId) || goalHasBeenUnlocked) {
-        console.log("Goal is ok, set it as current")
+      if (notAlreadyDone && (found.zoneId === undefined || (found.zoneId !== undefined && found.zoneId <= state.maxZoneId)) && goalHasBeenUnlocked) {
+        // console.log("Goal is ok, set it as current")
+
         const progressValue = found.type == EGoalType.LOOT_VIVRECARD ? state.cards.filter((x) => x.zone == found.zoneId).length : 0
         const fillValue = found.type == EGoalType.LOOT_VIVRECARD ? allUnits.filter((x) => x.zone == found.zoneId).length : found.value
         return { ...state, currentGoal: { ...found, progressValue, value: fillValue } }
@@ -825,7 +824,7 @@ function gameReducer(state: State, action: Action): State {
         }
 
         const { maxSlots, fleetUnitIds } = state.training.XPBoost
-        console.log(maxSlots, fleetUnitIds.length, maxSlots, XPBoostUnlockPrices.length)
+        // console.log(maxSlots, fleetUnitIds.length, maxSlots, XPBoostUnlockPrices.length)
         // if there is a free slot
         if (fleetUnitIds.length <= maxSlots && maxSlots <= XPBoostUnlockPrices.length) {
           const newFleetIds = hardCopy(fleetUnitIds)
@@ -981,6 +980,25 @@ function gameReducer(state: State, action: Action): State {
                   currentGoal.progressValue = state.currentGoal.progressValue + 1
                 }
                 cardAddedCount += 1
+              } else {
+                // If own card but not in fleet
+                const ownedFleet = state.fleet.find((x) => x.unit.id == newCard.id)
+                if (!ownedFleet) {
+                  fleetToAdd.push({
+                    id: state.fleet.length + cardAddedCount,
+                    unit: newCard,
+                    level: 1,
+                    xp: 0,
+                    hp: getMaximumHP(newCard, 1),
+                    trainingCount: 0,
+                    trainingXP: 0,
+                  })
+                  // Add to crew if possible
+                  if (state.crew.length + cardAddedCount < maximumCrewMember) {
+                    crewToAdd.push({ fleetId: state.fleet.length + cardAddedCount, isCaptain: false })
+                  }
+                  cardAddedCount += 1
+                }
               }
             }
           } // End for
@@ -995,7 +1013,7 @@ function gameReducer(state: State, action: Action): State {
             }
           } // End for
         } // End if zone
-        console.log(cardsToAdd, fleetToAdd, crewToAdd, boatToAdd)
+
         return {
           ...state,
           maxZoneId: newMaxZone,
@@ -1022,11 +1040,8 @@ function gameReducer(state: State, action: Action): State {
       return { ...state, currentGoal }
     }
     case ActionEnum.Import: {
-      // if (!action.payload.import) throw new Error(`Need valid state : ${action.type}`)
-
       try {
-        const newState = stringToJsonState(action.payload.import)
-        newState.maxZoneId = 15
+        const newState = stringToJsonState(action.payload.import).game
         return newState
       } catch (e) {
         return state

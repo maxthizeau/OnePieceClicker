@@ -11,12 +11,14 @@
   "vivre-cards": "Vivre Cards",
   "reset": "Réinitialiser",
   "select": "Selectionner",
+  "selected": "Selectionné",
   "owned": "Possédé",
   "hide": "Cacher",
   "show": "Voir",
   "Yes": "Oui",
   "No": "Non",
   "Next": "Suivant",
+  "current-zone": "Zone actuelle",
   "Saves": {
     "confirm-reset": "Vous êtes sur le point de supprimer toute votre avancée dans le jeu. Êtes-vous sûr de vouloir continuer ? ",
     "save-imported": "Sauvegarde importée",
@@ -32,5 +34,13 @@
     "erase-current-save": "Supprimer sauvergarde actuelle",
     "start-over": "Recommencer de zéro",
     "warning-reset": "ATTENTION : Cette action est irréversible. \nCela va supprimer votre avancée dans le jeu. Exportez votre sauvegarde avant !."
+  },
+  "Map": {
+    "Map": "Carte",
+    "List": "Liste",
+    "map-view": "Carte - Voyagez dans le monde de One Piece en utilisant la carte.",
+    "list-view": "Liste - Changez de zone plus facilement en utilisant la vue sous forme de liste.",
+    "you-are-here": "Vous êtes ici",
+    "Navigate": "Naviguer"
   }
 }

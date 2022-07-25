@@ -1,14 +1,6 @@
-import { FC } from "react"
-import styled, { css } from "styled-components"
-import { getCaptainEffect, getCrewCaptain, getMaximumXP, getThumbImageSrc, getUnitAttackPower, getMaximumHP } from "../../../lib/clickerFunctions"
-import { ActionEnum, ICrewUnit, useGameState } from "../../../lib/hooks/GameContext"
-import useFleet from "../../../lib/hooks/useFleet"
-import Hover from "../../Global/Hover"
-import BasicHover from "../../Global/Hover/BasicHover"
-import CrewHover from "../../Global/Hover/CrewHover"
-import CrewHealthBar from "./CrewHealthBar"
-import CrewXPBar from "./CrewXPBar"
 import useTranslation from "next-translate/useTranslation"
+import { FC } from "react"
+import styled from "styled-components"
 
 const CrewMemberWrapperStyled = styled.div<{ isCaptain?: boolean }>`
   width: 100%;

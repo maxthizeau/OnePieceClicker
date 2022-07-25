@@ -1,8 +1,16 @@
-import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
+import { useState } from "react"
 
 export default function useStatePersistInCookie<T>(key: string, value: T): [T, (arg: T) => void] {
-  const [data, setData] = useState<T>(Cookies.get(`OPC_${key}`) !== undefined ? JSON.parse(Cookies.get(`OPC_${key}`)) : value)
+  const getCookieValue = () => {
+    try {
+      const val = Cookies.get(`OPC_${key}`) !== undefined ? JSON.parse(Cookies.get(`OPC_${key}`)) : value
+      return val
+    } catch {
+      return value
+    }
+  }
+  const [data, setData] = useState<T>(getCookieValue())
   //   useEffect(() => {
   //     const cookieValue = Cookies.get(`OPC_${key}`)
   //     if (cookieValue === undefined) {

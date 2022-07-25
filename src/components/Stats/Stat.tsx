@@ -1,8 +1,5 @@
 import { FC } from "react"
 import styled from "styled-components"
-import { intWithSpaces } from "../../lib/clickerFunctions"
-import Hover from "../Global/Hover"
-import BasicHover from "../Global/Hover/BasicHover"
 
 const StatStyled = styled.div`
   color: white;

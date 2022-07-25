@@ -1,11 +1,11 @@
-import { Fragment, useState } from "react"
-import styled from "styled-components"
-import useUnitData from "../../../../lib/hooks/useUnitData"
-import { zones } from "../../../../lib/data/zones"
-import PirateList from "./PirateList"
 import useTranslation from "next-translate/useTranslation"
+import { Fragment } from "react"
+import styled from "styled-components"
+import { zones } from "../../../../lib/data/zones"
 import { useGameState } from "../../../../lib/hooks/GameContext"
 import useStatePersistInCookie from "../../../../lib/hooks/useStatePersistsInCookie"
+import useUnitData from "../../../../lib/hooks/useUnitData"
+import PirateList from "./PirateList"
 
 const PiratedexWrapper = styled.div`
   padding: 10px 20px;
@@ -65,7 +65,6 @@ const Piratedex = () => {
   const [data, dataByRarity] = useUnitData()
   const zoneId = useGameState().state.currentZone
   const zone = zones[zoneId]
-  const [rarity, setRarity] = useState(dataByRarity[0].stars)
   const [showOwned, setShowOwned] = useStatePersistInCookie("showOwnedUnit", true)
 
   const { t } = useTranslation()
@@ -94,7 +93,6 @@ const Piratedex = () => {
         </InputField>
       </Filters>
       {dataByRarity.reverse().map((rarity) => {
-        console.log(rarity)
         let rarityStars = ""
         for (let i = 1; i <= rarity.stars; i++) {
           rarityStars += `⭐`

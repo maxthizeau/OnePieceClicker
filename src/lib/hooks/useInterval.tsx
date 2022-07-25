@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useReducer } from "react"
+import { useEffect, useRef } from "react"
 /* Thanks Dan Abramov  for useInterval hook
  https://overreacted.io/making-setinterval-declarative-with-react-hooks/
 */

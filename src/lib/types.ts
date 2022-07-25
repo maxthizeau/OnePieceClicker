@@ -96,7 +96,7 @@ export type TGoal = {
   rewardAmount: number
   rewardCurrency: EGoalRewardCurrency
   zoneId?: number // Zone where GoalType takes place
-  unlockGoals: number[]
+  unlockedBy?: number
 }
 
 export interface ICurrentGoal extends TGoal {

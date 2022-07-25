@@ -1,4 +1,4 @@
-import { DragEvent, FC, useEffect, useRef, useState, WheelEvent } from "react"
+import { DragEvent, FC, MouseEvent, useEffect, useRef, useState, WheelEvent } from "react"
 import styled from "styled-components"
 import ClickableMapElement from "./ClickableMapElement"
 
@@ -29,6 +29,7 @@ const MapButtonsWrapper = styled.div`
   display: flex;
   flex-direction: row;
   z-index: 99;
+  font-family: "Courier New", Courier, monospace;
 `
 const BasicButton = styled.a`
   display: flex;
@@ -43,6 +44,8 @@ const BasicButton = styled.a`
   transition: 0.3s;
   font-weight: bold;
   font-size: 1.2em;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     opacity: 1;
@@ -99,13 +102,17 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
+  const onClick = (e: MouseEvent<HTMLImageElement, MouseEvent>) => {
+    console.log(e)
+  }
+
   const newX = (value: number, newScale?: number): number => {
     const scale = newScale ? newScale : pos.scale
     const valueWithScale = value * scale
-    const windowWidth = window.innerWidth
+    const windowWidth = 988
     let newX = scale <= 1 ? 0 : pos.x + valueWithScale
     const imageFullWidth = windowWidth * scale
-    const maximumMove = (imageFullWidth - windowWidth) / 2
+    const maximumMove = (imageFullWidth - windowWidth) / 2 + 40
     newX = Math.abs(newX) > maximumMove ? setSignDependingOnEntryNumber(newX, maximumMove) : newX
 
     return newX
@@ -113,8 +120,9 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
 
   const newY = (value: number, newScale?: number): number => {
     const scale = newScale ? newScale : pos.scale
+    // console.log(scale)
     const valueWithScale = value * scale
-    const mapHeight = 400
+    const mapHeight = 650
     let newY = scale <= 1 ? 0 : pos.y + valueWithScale
     const imageFullHeight = mapHeight * scale
     const maximumMove = (imageFullHeight - mapHeight) / 2
@@ -164,6 +172,14 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
     e.preventDefault()
   }
   const onDragStart = (e: DragEvent) => {
+    const { offsetX, offsetY } = e.nativeEvent
+    console.log("X :", ((offsetX + pos.x) / pos.scale) * (3282 / 988) - 35)
+    console.log("Y :", ((offsetY + pos.y) / pos.scale) * (2160 / 650) - 105)
+    // console.log("Offset X : ", offsetX)
+    // console.log("Offset X : ", offsetX)
+    // console.log("posX", pos.x)
+    // console.log("scale : ", pos.scale)
+    // console.log("ratio", 3282 / 988)
     e.dataTransfer.setDragImage(new Image(), 0, 0)
 
     setDragState({ dragging: true, x: e.clientX, y: e.clientY })

@@ -21,7 +21,7 @@ export function getMarketList() {
   for (let i = 1; i <= marketItemCount; i++) {
     const id = (decimalHash / Math.pow(10, i)) % unitCount
     let currency = Math.floor(decimalHash / id / Math.pow(9, 60 + i)) % currencyCount
-    const price = (Math.floor(getDecimalHash(id.toString()) / Math.pow(10, i * 2)) % 13) + 3
+    const price = Math.round(((getDecimalHash(id.toString()) / Math.pow(10, i * 2)) % 13) / 4) + 3
     unitsList.push({ id: id, currency: currency, price: price })
   }
   //   console.log(unitsList)

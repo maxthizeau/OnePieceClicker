@@ -1,4 +1,3 @@
-import { getUnitAttackPower } from "../clickerFunctions"
 import { TUpgrade } from "../data/upgrades"
 import { ActionEnum, useGameState } from "./GameContext"
 

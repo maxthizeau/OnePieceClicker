@@ -1,13 +1,13 @@
-import styled from "styled-components"
 import { FC, useCallback, useEffect, useState } from "react"
+import styled from "styled-components"
 import BlockSprite from "./BlockSprite"
 
-import { generateLevel, getXYBlockFromIndex, isBorder } from "../../lib/treasureGame/gameFunctions"
-import { BLOCK_PER_ROW, EBlockState, EGameMode, IGem } from "../../lib/treasureGame/gameConfig"
-import CharSprite from "./CharSprite"
+import useTranslation from "next-translate/useTranslation"
 import { useTreasureGame } from "../../lib/hooks/TreasureGameContext"
 import useInterval from "../../lib/hooks/useInterval"
-import useTranslation from "next-translate/useTranslation"
+import { BLOCK_PER_ROW, EBlockState, EGameMode, IGem } from "../../lib/treasureGame/gameConfig"
+import { getXYBlockFromIndex, isBorder } from "../../lib/treasureGame/gameFunctions"
+import CharSprite from "./CharSprite"
 
 const GameContainer = styled.div<{ mode?: EGameMode }>`
   display: grid;

@@ -1,10 +1,9 @@
-import { useEffect } from "react"
+import useTranslation from "next-translate/useTranslation"
 import { defaultItemsList, TItemKey } from "../data/items"
-import { TZone, zones } from "../data/zones"
+import { defaultUpgrades } from "../data/upgrades"
+import { zones } from "../data/zones"
 import { ActionEnum, useGameState } from "./GameContext"
 import { ELogType, useLogs } from "./useLogs"
-import useTranslation from "next-translate/useTranslation"
-import { defaultUpgrades } from "../data/upgrades"
 
 const useItems = () => {
   const gameState = useGameState()
@@ -95,7 +94,7 @@ const useItems = () => {
   }
 
   const replaceHealDescriptionWithValue = (desc: string): string => {
-    const baseHealValue = 500
+    const baseHealValue = 100
     const upgradeBoost = Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
     const healingValue = Math.floor(baseHealValue * upgradeBoost)
 

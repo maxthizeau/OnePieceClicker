@@ -1,16 +1,14 @@
-import { FC, useState } from "react"
-import styled from "styled-components"
-import { zones } from "../../../lib/data/zones"
-import useGoals from "../../../lib/hooks/useGoals"
-import { EGoalRewardCurrency, EGoalType, TGoal } from "../../../lib/types"
-import { getThumbImageSrc, idNumberToString, intWithSpaces } from "../../../lib/clickerFunctions"
-import { useGameState } from "../../../lib/hooks/GameContext"
-import { getPrintableRewardCurrency, goalToString } from "../../../lib/goalsFunctions"
 import useTranslation from "next-translate/useTranslation"
-import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
-import { useTutorial } from "../../../lib/hooks/TutorialContext"
+import { FC } from "react"
+import styled from "styled-components"
 import { EStepKeys } from "../../../lib/data/tutorial"
-import TutorialElement from "../../Global/TutorialElement"
+import { zones } from "../../../lib/data/zones"
+import { getPrintableRewardCurrency, goalToString } from "../../../lib/goalsFunctions"
+import { useGameState } from "../../../lib/hooks/GameContext"
+import { useTutorial } from "../../../lib/hooks/TutorialContext"
+import useGoals from "../../../lib/hooks/useGoals"
+import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
+import { EGoalType, TGoal } from "../../../lib/types"
 
 const ExtraModalStyles = styled.div`
   width: 800px;
@@ -21,13 +19,13 @@ const ExtraModalStyles = styled.div`
   }
 `
 
-const GoalBoxStyled = styled.div`
+const GoalBoxStyled = styled.div<{ isCurrentGoal?: boolean }>`
   padding: 20px;
 
   border-radius: 3px;
   border: 3px solid #b9896e;
   outline: 2px solid black;
-  background: #eee2ba;
+  background: ${({ isCurrentGoal }) => (isCurrentGoal ? "#f1e569" : "#eee2ba")};
   display: flex;
   /* justify-content: center; */
   align-items: center;
@@ -93,6 +91,7 @@ interface IGoalBoxProps {
   goal: TGoal
   select: () => void
   nextTutorialStep?: boolean
+  isCurrentGoal?: boolean
 }
 
 interface IGoalFilters {
@@ -113,21 +112,23 @@ const defaultFilters: IGoalFilters = {
   zone: -1,
 }
 
-const GoalBox: FC<IGoalBoxProps> = ({ goal, select, nextTutorialStep }) => {
+const GoalBox: FC<IGoalBoxProps> = ({ goal, select, nextTutorialStep, isCurrentGoal }) => {
   const { t } = useTranslation()
   const { logo, goalKey, location, value } = goalToString(goal)
   const { amount, logo: rewardLogo } = getPrintableRewardCurrency(goal)
-
+  console.log(goal, goalKey, value)
   return (
-    <GoalBoxStyled className={nextTutorialStep && "isTutorial"}>
+    <GoalBoxStyled isCurrentGoal={isCurrentGoal} className={nextTutorialStep ? "isTutorial" : ""}>
       <img src={`images/icons/${logo}.png`} />
       <GoalText>
-        <div>{t(`game:Goals.${goalKey}-label`, { value: value, location: t(`zones:${goal.zoneId}-${location}`) })}</div>
+        <div>{t(`game:Goals.${goalKey}-label`, { value: value, location: goal.zoneId !== undefined ? t(`zones:${goal.zoneId}-${location}`) : "" })}</div>
         <GoalRewardText>
           {t("game:Modals.Goals.goal-reward")} {amount} <RewardLogo src={rewardLogo} />
         </GoalRewardText>
       </GoalText>
-      <GoalButton onClick={select}>{t("common:select")}</GoalButton>
+      <GoalButton disabled={isCurrentGoal} onClick={select}>
+        {isCurrentGoal ? t("common:selected") : t("common:select")}
+      </GoalButton>
     </GoalBoxStyled>
   )
 }
@@ -154,8 +155,8 @@ function formatFilters(filters: IGoalFilters): EGoalType[] {
 
 const GoalsModalContent: FC = () => {
   const { t } = useTranslation()
-  const { maxZoneId } = useGameState().state
-  const { getPossibleGoals, setCurrentGoal } = useGoals()
+  const { maxZoneId, currentZone } = useGameState().state
+  const { currentGoal, getPossibleGoals, setCurrentGoal } = useGoals()
   const [filters, setFilters] = useStatePersistInCookie("goalFilters", defaultFilters)
   const tutorial = useTutorial()
   const isTutorialSelectGoal = tutorial.step && tutorial.step?.stepKey == EStepKeys.SELECT_GOAL
@@ -217,12 +218,14 @@ const GoalsModalContent: FC = () => {
             )
           })}
         </SelectZone>
+        <GoalButton onClick={() => setFilters({ ...filters, zone: currentZone })}>{t("common:current-zone")}</GoalButton>
         <GoalButton onClick={() => setFilters(defaultFilters)}>{t("common:reset")}</GoalButton>
       </Filters>
       {getPossibleGoals({ hideTypes: formatFilters(filters), zone: filters.zone }).map((x) => {
         const nextTutorialStep = isTutorialSelectGoal && x.id == 29
+        const isCurrentGoal = currentGoal?.id == x.id
         return (
-          <div key={x.id} className={nextTutorialStep && "isTutorial inModal"}>
+          <div key={x.id} className={nextTutorialStep ? "isTutorial inModal" : ""}>
             <GoalBox
               goal={x}
               select={() => {
@@ -231,6 +234,7 @@ const GoalsModalContent: FC = () => {
                   tutorial.dispatch.clickCloseModal()
                 }
               }}
+              isCurrentGoal={isCurrentGoal}
               nextTutorialStep={nextTutorialStep}
             />
           </div>

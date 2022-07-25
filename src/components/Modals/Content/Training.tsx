@@ -1,15 +1,15 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import { BerryIcon, Column, Row } from "../../styled/Globals"
-import { ModalSubtitle, SmallModalSubtitle } from "../ModalStyles"
 import { getMaximumTrainingXP, getThumbImageSrc } from "../../../lib/clickerFunctions"
-import SelectUnit from "./Training/SelectUnitModal"
-import { ActionEnum, IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
 import { RayleighUnlockPrices, XPBoostUnlockPrices } from "../../../lib/data/menuUnlocks"
-import { nFormatter } from "../../../lib/utils"
+import { ActionEnum, IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
 import { ELogType, useLogs } from "../../../lib/hooks/useLogs"
 import { TTypeTraining } from "../../../lib/types"
-import useTranslation from "next-translate/useTranslation"
+import { nFormatter } from "../../../lib/utils"
+import { BerryIcon, Column, Row } from "../../styled/Globals"
+import { SmallModalSubtitle } from "../ModalStyles"
+import SelectUnit from "./Training/SelectUnitModal"
 
 const ExtraModalStyles = styled.div`
   min-height: 800px;
@@ -323,7 +323,6 @@ const TrainingModalContent: FC = () => {
                   />
                 )
               } else {
-                console.log(state.fleet.find((x) => x.id == Rayleigh.fleetUnitIds[index]))
                 return (
                   <RayleighSlot
                     key={index}

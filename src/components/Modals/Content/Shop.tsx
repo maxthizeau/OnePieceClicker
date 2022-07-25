@@ -1,12 +1,12 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC, useState } from "react"
 import styled from "styled-components"
-import { ModalSubtitle } from "../ModalStyles"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
-import useItems from "../../../lib/hooks/useItems"
 import { defaultItemsList, TItemKey } from "../../../lib/data/items"
-import useTranslation from "next-translate/useTranslation"
+import useItems from "../../../lib/hooks/useItems"
 import Hover from "../../Global/Hover"
 import BasicHover from "../../Global/Hover/BasicHover"
+import { ModalSubtitle } from "../ModalStyles"
 
 const ShopWrapper = styled.div`
   display: flex;

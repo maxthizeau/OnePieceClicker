@@ -1,17 +1,13 @@
-import Image from "next/image"
-import { CSSProperties, FC, useEffect, useState } from "react"
-import styled, { css } from "styled-components"
-import BerryIcon from "../../../public/images/icons/berry.png"
-import { ActionEnum, useGameState } from "../../lib/hooks/GameContext"
-import useCards from "../../lib/hooks/useCards"
+import useTranslation from "next-translate/useTranslation"
+import { CSSProperties, FC, useState } from "react"
+import styled from "styled-components"
 import { intWithSpaces, timestampToString } from "../../lib/clickerFunctions"
-import useItems from "../../lib/hooks/useItems"
 import { TItem } from "../../lib/data/items"
 import useInterval from "../../lib/hooks/useInterval"
+import useItems from "../../lib/hooks/useItems"
+import { nFormatter } from "../../lib/utils"
 import Hover from "../Global/Hover"
 import BasicHover from "../Global/Hover/BasicHover"
-import { nFormatter } from "../../lib/utils"
-import useTranslation from "next-translate/useTranslation"
 
 const GainTextStyled = styled.div<{ showGain: boolean; negative?: boolean; x?: number }>`
   @keyframes slideOutToTop {
@@ -93,9 +89,9 @@ export const CurrencyStyled = styled.div<{ clickable: boolean; classicFont?: boo
     animation: anime 2s ease-out 1s infinite;
   }
 
-  ${({ isMainCurrency }) => (isMainCurrency ? "  width:340px!important;margin:10px auto;" : "")}
+  ${({ isMainCurrency }) => (isMainCurrency ? "  width:320px!important;margin:10px auto;" : "")}
   @media only screen and (min-width: 1550px) {
-    ${({ isMainCurrency }) => isMainCurrency && "  width:340px!important;"}
+    ${({ isMainCurrency }) => isMainCurrency && "  width:320px!important;"}
   }
   @media only screen and (min-width: 992px) {
     ${({ isMainCurrency }) => isMainCurrency && "margin:auto; margin-left:0px; width: 340px; height:74px; justify-content: center; margin-top: 10px;"}
@@ -188,10 +184,6 @@ const Currency: FC<ICurrencyProps> = ({
   const currentDateTime = new Date().getTime()
   const { t } = useTranslation()
   const { replaceHealDescriptionWithValue } = useItems()
-  // useEffect(() => {
-
-  //   // setShowGain(<GainTextStyled showGain={true}>+ 400</GainTextStyled>)
-  // }, [valueMonitored, stateItem])
 
   useInterval(() => {
     if (valueMonitored !== previousValue) {

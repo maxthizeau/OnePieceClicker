@@ -1,7 +1,7 @@
-import { FC, CSSProperties } from "react"
+import { CSSProperties, FC } from "react"
 import styled from "styled-components"
-import { getFullImageSrc, getUnitAttackPower, getMaximumHP, getMaximumXP, getCaptainEffect } from "../../../lib/clickerFunctions"
-import { IFleetUnit, ICrewUnit } from "../../../lib/hooks/GameContext"
+import { getCaptainEffect, getFullImageSrc, getMaximumHP, getMaximumXP, getUnitAttackPower } from "../../../lib/clickerFunctions"
+import { ICrewUnit, IFleetUnit } from "../../../lib/hooks/GameContext"
 import { nFormatter } from "../../../lib/utils"
 
 const BoxStyled = styled.div<{ small?: boolean }>`

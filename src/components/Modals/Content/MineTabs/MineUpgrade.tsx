@@ -1,13 +1,11 @@
+import useTranslation from "next-translate/useTranslation"
 import { FC } from "react"
-import { Store } from "react-notifications-component"
 import styled from "styled-components"
-import { intWithSpaces } from "../../../../lib/clickerFunctions"
 import { ETreasureGameUpgrades, IMineUpgrade, mineUpgradesList } from "../../../../lib/data/treasureGame"
 import { ActionEnum, useGameState } from "../../../../lib/hooks/GameContext"
-import { useLogs, ELogType } from "../../../../lib/hooks/useLogs"
+import { ELogType, useLogs } from "../../../../lib/hooks/useLogs"
 import { nFormatter } from "../../../../lib/utils"
 import { BerryIcon } from "../../../styled/Globals"
-import useTranslation from "next-translate/useTranslation"
 const UpgradeBoxStyled = styled.div`
   padding: 5px 10px;
   border-radius: 3px;

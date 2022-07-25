@@ -1,13 +1,12 @@
-import { truncate } from "fs"
-import { FC, useEffect, useMemo, useState } from "react"
+import useTranslation from "next-translate/useTranslation"
+import { FC, useEffect, useMemo } from "react"
 import styled from "styled-components"
 import { getThumbImageSrc, getUnitAttackPower } from "../../../../lib/clickerFunctions"
 import { ActionEnum, IFleetUnit, useGameState } from "../../../../lib/hooks/GameContext"
+import useStatePersistInCookie from "../../../../lib/hooks/useStatePersistsInCookie"
 import { TTypeTraining } from "../../../../lib/types"
 import Hover from "../../../Global/Hover"
 import CrewHover from "../../../Global/Hover/CrewHover"
-import useTranslation from "next-translate/useTranslation"
-import useStatePersistInCookie from "../../../../lib/hooks/useStatePersistsInCookie"
 
 const ImageWrapper = styled.div`
   /* width: 100%;

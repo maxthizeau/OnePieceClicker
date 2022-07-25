@@ -1,23 +1,22 @@
-import { FC, ReactElement, useCallback, useEffect, useState } from "react"
-import { IModalProps, TModalType } from "./IModalProps"
-import { CloseModalIcon, ModalContainer, ModalStyled } from "./ModalStyles"
-import VivreModalContent from "./Content/VivreCard"
-import MapModalContent from "./Content/Map"
-import FleetModalContent from "./Content/Fleet"
-import UpgradesModalContent from "./Content/Upgrades"
-import ShopModalContent from "./Content/Shop"
-import BoatModalContent from "./Content/Boat"
-import ZoneModalContent from "./Content/Zone"
-import MineModalContent from "./Content/Mine"
-import TrainingModalContent from "./Content/Training"
-import GoalsModalContent from "./Content/Goals"
 import useTranslation from "next-translate/useTranslation"
-import ImportExportModalContent from "./Content/ImportExport"
-import TutorialModalContent from "./Content/_Tutorial"
+import { FC, useCallback, useEffect, useState } from "react"
 import { EStepKeys } from "../../lib/data/tutorial"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
 import TutorialElement from "../Global/TutorialElement"
 import { CloseTutorialButton, TutorialContainer } from "../styled/Globals"
+import BoatModalContent from "./Content/Boat"
+import FleetModalContent from "./Content/Fleet"
+import GoalsModalContent from "./Content/Goals"
+import ImportExportModalContent from "./Content/ImportExport"
+import MapModalContent from "./Content/Map"
+import MineModalContent from "./Content/Mine"
+import ShopModalContent from "./Content/Shop"
+import TrainingModalContent from "./Content/Training"
+import UpgradesModalContent from "./Content/Upgrades"
+import VivreModalContent from "./Content/VivreCard"
+import ZoneModalContent from "./Content/Zone"
+import { IModalProps } from "./IModalProps"
+import { CloseModalIcon, ModalContainer, ModalStyled } from "./ModalStyles"
 
 const Modal: FC<IModalProps> = (props) => {
   const { visible, setVisible, type } = props
@@ -79,7 +78,7 @@ const Modal: FC<IModalProps> = (props) => {
       )}
 
       <CloseModalIcon onClick={() => setVisible(false)}>{t("game:Modals.close-button")}</CloseModalIcon>
-      <ModalStyled className={isTutorialExplainShop && "isTutorial"} onMouseEnter={() => setHoverModal(true)} onMouseLeave={() => setHoverModal(false)}>
+      <ModalStyled className={isTutorialExplainShop ? "isTutorial" : ""} onMouseEnter={() => setHoverModal(true)} onMouseLeave={() => setHoverModal(false)}>
         {type == "map" && <MapModalContent />}
         {type == "cards" && <VivreModalContent />}
         {type == "fleet" && <FleetModalContent />}
@@ -91,7 +90,6 @@ const Modal: FC<IModalProps> = (props) => {
         {type == "training" && <TrainingModalContent />}
         {type == "goals" && <GoalsModalContent />}
         {type == "saves" && <ImportExportModalContent />}
-        {type == "tutorial" && <TutorialModalContent />}
       </ModalStyled>
     </ModalContainer>
   )
