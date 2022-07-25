@@ -48,7 +48,7 @@ function searchEmptySpaceForPattern(level: number[][], pattern: IPattern, random
 }
 
 export function generateLevel(): number[][] {
-  console.log("Generate new level")
+  // console.log("Generate new level")
 
   const patterns = patternList
   const level: number[][] = hardCopy(InitLevel)
@@ -60,7 +60,7 @@ export function generateLevel(): number[][] {
     const pattern = patterns[i]
     const startIndex = searchEmptySpaceForPattern(level, pattern, true, 10)
     if (!startIndex) {
-      console.log("No room for this pattern")
+      // console.log("No room for this pattern")
       continue
     }
 

@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js"
+
 export function hardCopy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value))
 }

@@ -23,13 +23,17 @@ const useSave = () => {
   }
   const save = () => {
     console.log("AUTO-SAVE")
+    try {
+      const saveObject = getObjectSave()
+      const saveJson = JSON.stringify(saveObject)
+      const encrypted = CryptoJS.AES.encrypt(saveJson, process.env.SAVE_KEY)
 
-    const saveObject = getObjectSave()
-    const saveJson = JSON.stringify(saveObject)
-    const encrypted = CryptoJS.AES.encrypt(saveJson, process.env.SAVE_KEY)
-
-    localStorage.setItem("opsave", encrypted.toString())
-    return encrypted.toString()
+      localStorage.setItem("opsave", encrypted.toString())
+      return encrypted.toString()
+    } catch (e) {
+      console.error("SAVE ERROR", e)
+      return null
+    }
   }
 
   const reset = () => {

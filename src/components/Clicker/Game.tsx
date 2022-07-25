@@ -6,6 +6,7 @@ import {
   getFullImageSrc,
   getHPLossFromUnit,
   getNextUnitByRarity,
+  getThumbImageSrc,
   getXPGainFromUnit,
 } from "../../lib/clickerFunctions"
 import { ECaptainEffect, EShipEffect, IDungeonState, TCurrentUnit, TUnit } from "../../lib/types"
@@ -36,6 +37,8 @@ import TutorialElement from "../Global/TutorialElement"
 import styled from "styled-components"
 import useShip from "../../lib/hooks/useShip"
 import { defaultUpgrades } from "../../lib/data/upgrades"
+import LoadingGame from "../Global/LoadingGame"
+
 const data: TUnit[] = require("../../lib/data/units.json")
 
 const TimeInfo = styled.div`
@@ -99,8 +102,32 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const { t } = useTranslation()
   const tutorial = useTutorial()
   const { getShipBoost } = useShip()
+  const [loaded, setLoaded] = useState(false)
   // const [speed, setSpeed] = useState(1)
   const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
+
+  const checkImage = (path) =>
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => resolve(path)
+      img.onerror = () => reject()
+
+      img.src = path
+    })
+
+  useEffect(() => {
+    Promise.all(
+      units
+        .filter((x) => x.zone == props.zoneId)
+        .map((unit) => {
+          checkImage(getFullImageSrc(unit.id))
+          checkImage(getThumbImageSrc(unit.id))
+        })
+    ).then(
+      () => setLoaded(true),
+      () => console.error("Error : Could not load images")
+    )
+  }, [])
 
   function setHP(newHP: number) {
     if (!currentUnit) return
@@ -320,6 +347,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   }, Math.floor(1000))
 
   if (!currentUnit) return null
+  if (!loaded) return <LoadingGame />
   const { hp, unit } = currentUnit
   const { debug = false } = props
 
