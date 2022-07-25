@@ -37,19 +37,6 @@ box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
 
-  .isTutorial {
-    outline: 3px solid #d24747;
-    z-index: 500;
-    /* position:relative; */
-  }
-  .inModal {
-    /* z-index: 3!important; */
-    position:sticky;
-  }
-  .noOutline {
-    outline:none!important;
-  }
-
   
 `
 
@@ -61,6 +48,20 @@ export const TutorialContainer = styled.div<{ active?: boolean; isInModal?: bool
   background-color: #0000008b;
   z-index: 490;
 `
+
+export const TutorialClassNames = styled.div<{ active?: boolean }>`
+  & .isTutorial {
+    ${({ active }) => (active ? "outline: 3px solid #d24747 !important;" : "")}
+    ${({ active }) => (active ? "z-index: 500 !important;" : "")}
+  }
+  & .inModal {
+    ${({ active }) => (active ? "position: sticky !important;" : "")}
+  }
+  & .noOutline {
+    ${({ active }) => (active ? "outline: none !important;" : "")}
+  }
+`
+
 /* z-index: ${({ isInModal }) => (isInModal ? 2 : 490)}; */
 
 export const CloseTutorialButton = styled.a`

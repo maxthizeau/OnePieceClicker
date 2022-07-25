@@ -67,8 +67,8 @@ const useCards = () => {
     // console.log("lootPercent : ", lootPercent)
     // console.log("If Lootpercent >= 100 --> Loot forced")
 
-    // const lootIt = rand <= lootPercent
-    const lootIt = true
+    const lootIt = rand <= lootPercent
+
     if (lootIt) {
       gameState.dispatch({
         type: ActionEnum.LootCard,

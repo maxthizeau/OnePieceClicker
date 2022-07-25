@@ -32,7 +32,7 @@ const Crew: FC = () => {
         {tutorial.step.content}
       </TutorialElement>
 
-      <CrewName>Straw Hat Pirates</CrewName>
+      <CrewName>Crew</CrewName>
 
       {[...Array(2 + gameState.state.upgrades.CrewMembers.level)].map((_, index) => {
         const crewMember = gameState.state.crew[index]

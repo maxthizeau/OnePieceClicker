@@ -10,10 +10,36 @@ import { nFormatter } from "../../../lib/utils"
 import UnitNotification from "../../Global/notifications/UnitNotification"
 import Table, { TColumn } from "../../Global/Table"
 import { BerryIcon } from "../../styled/Globals"
-import { ActionButton, FilterButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
+import { ActionButton, ModalSubtitle } from "../ModalStyles"
 
 const ExtraModalStyles = styled.div`
   width: 1100px;
+`
+
+const Filters = styled.div`
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  font-family: Open Sans, Verdana, Geneva, Tahoma, sans-serif;
+  & img {
+    width: 25px;
+    height: 25px;
+  }
+`
+
+const FilterInput = styled.input`
+  padding: 5px;
+  /* display: flex; */
+`
+
+const FilterButton = styled.button`
+  padding: 10px;
+  cursor: pointer;
+
+  &.filtered {
+    background-color: #787777;
+  }
 `
 
 const VivreModalContent: FC = () => {
@@ -158,12 +184,21 @@ const VivreModalContent: FC = () => {
     <ExtraModalStyles>
       <h3>{t("game:Modals.VivreCard.vivre-card-label")}</h3>
       <ModalSubtitle>{t("game:Modals.VivreCard.vivre-card-description")}</ModalSubtitle>
-      <TableFilters>
+      <Filters>
         <FilterButton onClick={() => setFilterFleet(!filterFleet)}>
           {!filterFleet ? t("common:hide") : t("common:show")} {t("game:Modals.VivreCard.fleet-members")}
         </FilterButton>
-        <SearchInput placeholder={t("game:Modals.VivreCard.search-unit")} value={search} onChange={(e) => setSearch(e.target.value)} />
-      </TableFilters>
+        <FilterInput placeholder={t("game:Modals.VivreCard.search-unit")} value={search} onChange={(e) => setSearch(e.target.value)} />
+        <FilterButton
+          onClick={() => {
+            setFilterFleet(false)
+            setSearch("")
+          }}
+        >
+          {t("common:reset")}
+        </FilterButton>
+      </Filters>
+
       <Table
         tableKey="vivreCardTable"
         style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}

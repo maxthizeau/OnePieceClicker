@@ -14,5 +14,29 @@
   "ENTER_DUNGEON": "<0>Cliquez sur [Sauver vos Nakamas] pour entrer dans le donjon.</0><0>Vous aurez 30 secondes pour vaincre 10 ennemis et un boss de la zone.</0><0>Cela vous coûtera quelques Log Poses</0><1>Entrez dans le donjon et terminez-le</1>",
   "CHANGE_ZONE": "<0>Vous avez débloqué une nouvelle zone !</0><1>Cliquez sur [Carte] pour naviguer vers l'île suivante.</1>",
   "END_TUTORIAL": "<0>C'est la fin du tutoriel. Si vous avez besoin d'aide, cliquez sur [Guide] dans le menu (coin haut/gauche).</0><0>Conseil 1 : si vous vous sentez bloqué à un moment donné, essayez de débloquer les [Améliorations].</0> <0>Conseil 2 : Dans le menu, vous pouvez exporter/importer votre sauvegarde pour continuer de jouer sur un autre navigateur/ordinateur</0>",
-  "closeTutorial": "Fermer le tutoriel"
+  "closeTutorial": "Fermer le tutoriel",
+  "Guide": {
+    "zone-title": "Zone",
+    "zone-content": "<0><1>Quand vous entrez dans une zone, vous avez deux possibilités : </1><1><2>Visiter l'île :</2> Combattre des ennemis de la zone, pour avoir une chance de récupérer leur Vivre Card, ou gagner des Berry, la monnaieprincipale du jeu.</1><1><2>Sauver vos nakamas :</2> Entrer dans un donjon où vous devrez affronter 10 ennemis suivi d'un puissant boss en moins de 30 secondes. Réussir ledonjon d'une zone permet de débloquer la prochaine zone et de gagner différentes récompenses. Les boss peuvent aussi donner leur Vivre Card mais cesdernières sont rares.</1><5/></0>",
+    "click-power-title": "Click Power",
+    "click-power-content": "<0><1>[Click Power] est le montant de dégats que vous faîtes à un ennemi lorsque vous cliquez dessus.</1><1>Il peut être augmenté en renforcant votre équipage, avec des améliorations, votre bateau, un effet de capitaine ou des objets.</1><5/></0>",
+    "crew-power-title": "Crew Power",
+    "crew-power-content": "<0><1>[Crew Power] est le montant de dégats que votre équipage fait chaque seconde.</1><1>Il peut être augmenté en renforcant votre équipage, avec des améliorations, votre bateau, un effet de capitaine ou des objets.</1><1>Attention, un membre dont les points de vie sont à zéro ne contribue pas au [Crew Power]</1><5/></0>",
+    "fight-title": "Combattre",
+    "fight-content": "<0><1>Pour combattre, rien de plus simple : Cliquez sur l'ennemi pour infliger des dégats [Click Power] </1><1>Une fois que vous aurez recruté des membres d'équipages, ces derniers vont infliger des dégats [Crew Power] chaque seconde.</1><1><2>Une fois l'ennemi vaincu, ce dernier va lancer une dernière attaque sur votre équipage.</2> La puissance de cette attaque dépend de l'ennemi.</1><1>Cette attaque va faire perdre des points de vies à l'ensemble de vos membres d'équipages.</1><1>Vous gagnerez également un certain montant de Berry, et vous aurez une chance de récupérer la Vivre Card de l'ennemi vaincu.</1><5/></0>",
+    "vivre-cards-title": "Vivre Cards",
+    "vivre-cards-content": "<0><1>Lorsque vous venez à bout d'un ennemi, ce dernier peut vous donner sa Vivre Card. Vous pouvez la trouver dans le menu [Vivre Cards] et elle vouspermettra de le recruter dans votre flotte.</1><1>Pour le recruter, vous devez payer le prix indiqué en Berry.</1><1>Une fois recruté, c'est maintenant un membre de votre flotte que vous pouvez intégrer à votre équipage à tout moment. </1><1><4>Vous découvrirez de nombreuses manières d'augmenter vos chances de récupérer la Vivre Card d'un ennemi au cours de votre progression dans le jeu.</4></1><5/></0>",
+    "hp-title": "Points de vie",
+    "hp-content": "<0><1>Vos membres d'équipages ont un certain montant de points de vie qui varie en fonction des personnages et qui peut augmenter avec leur niveau.</1><1><3>Lorsqu'un de vos membres d'équipage n'a plus de point de vie, il ne contribue plus au [Crew Power] et ne peut plus gagner de point d'expérience.</3></1><5/><1><2>Comment récupérer des points de vie ?</2></1><1>1) Avec l'objet \"Nourriture de soin\" qui va soigner l'ensemble de vos membres d'équipages après chaque ennemi pendant 30 secondes. La valeur de cesoin peut se révéler insuffisante au fur et à mesure que vous progressez dans le jeu, il sera alors essentiel de l'augmenter dans [Améliorations].</1><1>2) En montant de niveau, un membre d'équipage se soigne complètement.</1><6/></0>",
+    "dungeon-title": "Donjon",
+    "dungeon-content": "<0><1>[Sauver vos nakamas] va vous faire entrer dans un donjon en échange de quelques Log Poses.</1><1>Vous allez devoir battre 10 ennemis + 1 boss en moins de 30 secondes.</1><1>Le boss n'est trouvable que dans ce donjon et sa Vivre Card est particulièrement précieuse.</1><1>Il se peut que certaines zones aient plusieurs bosses différents.</1><1>En réusissant le donjon, vous débloquerez la zone suivante.</1><5/></0>",
+    "map-title": "Carte",
+    "map-content": "<0><5/><1>La [Carte] vous permet de naviguer entre différentes zones.</1><1>Elle permet d'aller dans une nouvelle zone si elle vient d'être débloquée ou de retourner dans une zone précédente.</1><1>Deux manière de naviguer sont disponibles : Carte et Liste. N'hésitez pas à essayer les deux et choisir celle que vous préférez. </1></0>",
+    "ship-title": "Navire",
+    "ship-content": "<0><5/><1>L'onglet [Navire] vous permet choisir votre navire et de profiter de différents bonus.</1><1>Vous débloquerez de nouveaux navires tout au long de votre voyage.</1></0>",
+    "fleet-title": "Flotte",
+    "fleet-content": "<0><5/><1>L'onglet [Flotte] vous permet de modifier votre équipage.</1><1>Vous avez accès à l'ensemble des membres que vous avez recruté dans votre flotte.</1><1>Parfois, en finissant un donjon, il se peut qu'un membre rejoigne directement votre flotte. Vous pouvez alors l'ajouter à votre équipage depuis lemenu [Flotte].</1></0>",
+    "shop-title": "Boutique",
+    "shop-content": "<0><5/><1>L'onglet [Boutique] vous permet d'acheter différents objets.</1><1>Survolez les objets pour avoir plus d'informations.</1></0>"
+  }
 }

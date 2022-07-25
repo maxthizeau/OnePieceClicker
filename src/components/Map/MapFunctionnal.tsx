@@ -88,7 +88,7 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
   const [dragState, setDragState] = useState({ dragging: false, x: 0, y: 0 })
   const [mapWidth, setMapWidth] = useState<number | undefined>(undefined)
   const [mapHeight, setMapHeight] = useState<number | undefined>(undefined)
-
+  const [hoverMap, setHoverMap] = useState<boolean>(false)
   useEffect(() => {
     // Save new map width/height when resize window
     function handleResize() {
@@ -102,9 +102,16 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  const onClick = (e: MouseEvent<HTMLImageElement, MouseEvent>) => {
-    console.log(e)
-  }
+  useEffect(() => {
+    if (hoverMap) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [hoverMap])
 
   const newX = (value: number, newScale?: number): number => {
     const scale = newScale ? newScale : pos.scale
@@ -172,18 +179,9 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
     e.preventDefault()
   }
   const onDragStart = (e: DragEvent) => {
-    const { offsetX, offsetY } = e.nativeEvent
-    console.log("X :", ((offsetX + pos.x) / pos.scale) * (3282 / 988) - 35)
-    console.log("Y :", ((offsetY + pos.y) / pos.scale) * (2160 / 650) - 105)
-    // console.log("Offset X : ", offsetX)
-    // console.log("Offset X : ", offsetX)
-    // console.log("posX", pos.x)
-    // console.log("scale : ", pos.scale)
-    // console.log("ratio", 3282 / 988)
     e.dataTransfer.setDragImage(new Image(), 0, 0)
 
     setDragState({ dragging: true, x: e.clientX, y: e.clientY })
-    // console.log("START Y : ", e.clientY)
   }
 
   const onDragEnd = (e: DragEvent) => {
@@ -197,7 +195,7 @@ const Map: FC<IMapProps> = ({ debug = false }) => {
 
   function changeScroll() {
     let style = document.body.style.overflow
-    document.body.style.overflow = style === "hidden" ? "auto" : "hidden"
+    // document.body.style.overflow = style === "hidden" ? "auto" : "hidden"
   }
 
   return (

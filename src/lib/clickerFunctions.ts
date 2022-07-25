@@ -95,14 +95,16 @@ export function getDungeonUnits(allUnits: TUnit[], zoneId: number): TUnit[] {
 }
 
 export function getPriceUnit(unit: TUnit) {
-  const { HPLvlMax, ATKLvl1, ATKLvlMax, cost, stars, maxLvl, zone } = unit
+  const { HPLvlMax, ATKLvl1, ATKLvlMax, cost, stars, maxLvl, zone, isBoss } = unit
   // return Math.round((ATKLvl1 * 10 + HPLvlMax) * 5 * maxLvl * (cost / 10) * stars * 20)
 
   const starsMultiplier = stars / 6 + 1
-  const price = Math.round((ATKLvlMax + HPLvlMax + cost * 100) * (maxLvl / 100) * (zone + 1) * 100 * starsMultiplier) * 30
+  let price = Math.round((ATKLvlMax + HPLvlMax + cost * 100) * (maxLvl / 100) * (zone * 2 + 1) * 100 * starsMultiplier) * 30
+  price = isBoss ? price * 30 : price
   if (zone == 0) {
     return Math.round(price / 10)
   }
+
   return price
 }
 export function getBerryRewardFromUnit(unit: TUnit) {

@@ -7,6 +7,7 @@ import { CloseTutorialButton, TutorialContainer } from "../styled/Globals"
 import BoatModalContent from "./Content/Boat"
 import FleetModalContent from "./Content/Fleet"
 import GoalsModalContent from "./Content/Goals"
+import GuideModalContent from "./Content/Guide"
 import ImportExportModalContent from "./Content/ImportExport"
 import MapModalContent from "./Content/Map"
 import MineModalContent from "./Content/Mine"
@@ -90,6 +91,7 @@ const Modal: FC<IModalProps> = (props) => {
         {type == "training" && <TrainingModalContent />}
         {type == "goals" && <GoalsModalContent />}
         {type == "saves" && <ImportExportModalContent />}
+        {type == "guide" && <GuideModalContent />}
       </ModalStyled>
     </ModalContainer>
   )

@@ -50,6 +50,31 @@ const TimeInfo = styled.div`
   }
 `
 
+const UnitAttackValue = styled.div`
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  margin: 5px auto;
+  padding: 5px;
+  margin-top: 10px;
+  padding-left: 25px;
+  border: 1px solid #ccc;
+  position: absolute;
+  left: 20px;
+  top: 15%;
+  /* transform: translateY(-50%); */
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    background-image: url("images/icons/crewPowerIcon.png");
+    background-size: contain;
+  }
+`
+
 interface IGameProps {
   zoneId: number
   paused: boolean
@@ -74,7 +99,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const { t } = useTranslation()
   const tutorial = useTutorial()
   const { getShipBoost } = useShip()
-  const [speed, setSpeed] = useState(1)
+  // const [speed, setSpeed] = useState(1)
   const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
 
   function setHP(newHP: number) {
@@ -292,7 +317,7 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
   useInterval(() => {
     tick()
-  }, Math.floor(1000 / speed))
+  }, Math.floor(1000))
 
   if (!currentUnit) return null
   const { hp, unit } = currentUnit
@@ -339,19 +364,8 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
 
         <CharacterName>{unit.name}</CharacterName>
         <HealthBar maxHP={unit.clickerMaxHP} currentHP={hp} />
-
-        {/* <div>ATK : 255</div> */}
+        {/* {currentUnit && <UnitAttackValue>{getHPLossFromUnit(currentUnit)} </UnitAttackValue>} */}
       </StyledGame>
-      <TimeInfo>
-        <div>Speed : x{speed} </div>
-        <div>
-          <button onClick={() => setSpeed(1)}>x1</button>
-          <button onClick={() => setSpeed(2)}>x2</button>
-          <button onClick={() => setSpeed(3)}>x3</button>
-          <button onClick={() => setSpeed(5)}>x5</button>
-          <button onClick={() => setSpeed(10)}>x10</button>
-        </div>
-      </TimeInfo>
     </>
   )
 }

@@ -167,7 +167,7 @@
     "KILL_ENEMIES-label": "Battre {{value}} ennemies dans {{location}}",
     "CLEAR_DUNGEON-label": "Finir {{value}} fois le donjon de {{location}}",
     "LOOT_VIVRECARD-label": "Obtenir toutes les vivre cards de {{location}}",
-    "MINE_ENERGY-label": "Utiliser {{value} points d'energie dans la mine",
+    "MINE_ENERGY-label": "Utiliser {{value}} points d'energie dans la mine",
     "MINE_LOOT-label": "Obtenir {{value}} gemmes dans la mine",
     "claim-reward": "Obtenir récompense",
     "select-new-goal": "Sélectionner un nouvel objectif..."

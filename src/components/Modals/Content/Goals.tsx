@@ -116,7 +116,7 @@ const GoalBox: FC<IGoalBoxProps> = ({ goal, select, nextTutorialStep, isCurrentG
   const { t } = useTranslation()
   const { logo, goalKey, location, value } = goalToString(goal)
   const { amount, logo: rewardLogo } = getPrintableRewardCurrency(goal)
-  console.log(goal, goalKey, value)
+
   return (
     <GoalBoxStyled isCurrentGoal={isCurrentGoal} className={nextTutorialStep ? "isTutorial" : ""}>
       <img src={`images/icons/${logo}.png`} />

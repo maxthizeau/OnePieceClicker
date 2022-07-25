@@ -1,8 +1,9 @@
 import { FC } from "react"
 import styled from "styled-components"
+import { getHPLossFromUnit } from "../../lib/clickerFunctions"
 import { EStepKeys } from "../../lib/data/tutorial"
 import { useTutorial } from "../../lib/hooks/TutorialContext"
-import { IDungeonState } from "../../lib/types"
+import { IDungeonState, TCurrentUnit } from "../../lib/types"
 import TutorialElement from "../Global/TutorialElement"
 
 import DungeonIndicator from "./DungeonIndicator"
@@ -52,9 +53,11 @@ const ClickerMenu: FC<IClickerMenu> = ({ buttonLabel1, buttonFunction1, buttonLa
         <TutorialElement stepKey={EStepKeys.GO_BACK_ZONE} vertical="bottom" horizontal="center" offset={{ x: 0, y: -150 }}>
           {tutorial.step.content}
         </TutorialElement>
+
         <ClickerButton top={true} left={true} onClick={buttonFunction1} className={isTutorialStepGoBack ? "isTutorial" : ""}>
           {buttonLabel1}
         </ClickerButton>
+
         <DungeonIndicator dungeon={dungeon} />
         {dungeon && dungeon.state === "inprogress" && (
           <ClickerButton top={true} right={true} onClick={buttonFunction2} style={{ visibility: dungeon.alreadyClearedOnce ? "visible" : "hidden" }}>

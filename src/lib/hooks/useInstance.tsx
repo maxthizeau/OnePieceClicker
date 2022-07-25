@@ -11,20 +11,22 @@ const useInstance = () => {
 
   useEffect(() => {
     // Prevent blocking in tutorial
-    if (tutorial.step.stepKey == EStepKeys.VISIT_ISLAND && instance != EInstance.Zone) {
-      changeInstance(EInstance.Zone)
-    }
-    if (tutorial.step.stepKey == EStepKeys.ENTER_DUNGEON && instance != EInstance.Zone && instance != EInstance.Dungeon) {
-      changeInstance(EInstance.Zone)
-    }
-    if (tutorial.step.stepKey == EStepKeys.GO_BACK_ZONE && instance != EInstance.Clicker) {
-      tutorial.dispatch.nextStep()
-    }
-    if (tutorial.step.stepKey == EStepKeys.DAMAGE_ENEMY && instance != EInstance.Clicker) {
-      changeInstance(EInstance.Clicker)
-    }
-    if (tutorial.step.stepKey == EStepKeys.END_TUTORIAL && tutorial.state.showModal && instance != EInstance.Zone) {
-      changeInstance(EInstance.Zone)
+    if (!tutorial.state.hideTutorial) {
+      if (tutorial.step.stepKey == EStepKeys.VISIT_ISLAND && instance != EInstance.Zone) {
+        changeInstance(EInstance.Zone)
+      }
+      if (tutorial.step.stepKey == EStepKeys.ENTER_DUNGEON && instance != EInstance.Zone && instance != EInstance.Dungeon) {
+        changeInstance(EInstance.Zone)
+      }
+      if (tutorial.step.stepKey == EStepKeys.GO_BACK_ZONE && instance != EInstance.Clicker) {
+        tutorial.dispatch.nextStep()
+      }
+      if (tutorial.step.stepKey == EStepKeys.DAMAGE_ENEMY && instance != EInstance.Clicker) {
+        changeInstance(EInstance.Clicker)
+      }
+      if (tutorial.step.stepKey == EStepKeys.END_TUTORIAL && tutorial.state.showModal && instance != EInstance.Zone) {
+        changeInstance(EInstance.Zone)
+      }
     }
   }, [tutorial.step])
 

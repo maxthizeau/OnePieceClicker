@@ -12,7 +12,7 @@ import CurrenciesList from "../components/Currencies/CurrenciesList"
 import Navigation from "../components/Global/Navigation"
 import Goals from "../components/Goals/Goals"
 import StatsList from "../components/Stats/StatsList"
-import { CloseTutorialButton, Column, Container, Header, Logo, Row, TutorialContainer } from "../components/styled/Globals"
+import { CloseTutorialButton, Column, Container, Header, Logo, Row, TutorialClassNames, TutorialContainer } from "../components/styled/Globals"
 import { possibleGems } from "../lib/data/treasureGame"
 import { zones } from "../lib/data/zones"
 import { EInstance } from "../lib/enums"
@@ -21,6 +21,7 @@ import { useTutorial } from "../lib/hooks/TutorialContext"
 import useCards from "../lib/hooks/useCards"
 import useInstance from "../lib/hooks/useInstance"
 import useSave from "../lib/hooks/useSave"
+import tutorialSteps from "../lib/data/tutorial"
 
 const AdminButton = styled.a`
   display: block;
@@ -63,46 +64,48 @@ const Home: NextPage = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <ClientOnly>
-          <Header>
-            <Row>
-              <Column span={5.75} xs={24} sm={24} md={24}>
-                <Logo src="images/logo.png" />
+          <TutorialClassNames active={tutorial.step !== undefined && tutorial.state.showModal && !tutorial.state.hideTutorial}>
+            <Header>
+              <Row>
+                <Column span={5.75} xs={24} sm={24} md={24}>
+                  <Logo src="images/logo.png" />
+                </Column>
+                <Column span={18.25} xs={24} sm={24} md={24}>
+                  <CurrenciesList />
+                </Column>
+              </Row>
+            </Header>
+            <Row gutter={[16, 16]}>
+              <Column span={17} sm={24} md={15} lg={16}>
+                <Row gutter={[16, 16]}>
+                  <Column position={0} span={8} sm={24} mdPosition={2} smPosition={2} md={24} lg={24}>
+                    <Row>
+                      <Column span={24} lg={12} md={12} sm={12}>
+                        <StatsList />
+                      </Column>
+                      <Column span={24} lg={12} md={12} sm={12}>
+                        <Goals />
+                      </Column>
+                    </Row>
+                  </Column>
+                  <Column span={16} sm={24} md={24} lg={24}>
+                    {instance == EInstance.Zone && <Zone zone={zones[zoneId]} />}
+                    {(instance == EInstance.Clicker || instance == EInstance.Dungeon) && <Clicker zoneId={zoneId} paused={false} debug={false} />}
+                  </Column>
+                </Row>
+                <Row gutter={[16, 16]}>
+                  <Column span={24}>
+                    <Boat />
+                  </Column>
+                </Row>
               </Column>
-              <Column span={18.25} xs={24} sm={24} md={24}>
-                <CurrenciesList />
+              <Column span={7} sm={24} md={9} lg={8}>
+                {/* <ItemList /> */}
+
+                <Crew />
               </Column>
             </Row>
-          </Header>
-          <Row gutter={[16, 16]}>
-            <Column span={17} sm={24} md={15} lg={16}>
-              <Row gutter={[16, 16]}>
-                <Column position={0} span={8} sm={24} mdPosition={2} smPosition={2} md={24} lg={24}>
-                  <Row>
-                    <Column span={24} lg={12} md={12} sm={12}>
-                      <StatsList />
-                    </Column>
-                    <Column span={24} lg={12} md={12} sm={12}>
-                      <Goals />
-                    </Column>
-                  </Row>
-                </Column>
-                <Column span={16} sm={24} md={24} lg={24}>
-                  {instance == EInstance.Zone && <Zone zone={zones[zoneId]} />}
-                  {(instance == EInstance.Clicker || instance == EInstance.Dungeon) && <Clicker zoneId={zoneId} paused={false} debug={false} />}
-                </Column>
-              </Row>
-              <Row gutter={[16, 16]}>
-                <Column span={24}>
-                  <Boat />
-                </Column>
-              </Row>
-            </Column>
-            <Column span={7} sm={24} md={9} lg={8}>
-              {/* <ItemList /> */}
-
-              <Crew />
-            </Column>
-          </Row>
+          </TutorialClassNames>
         </ClientOnly>
       </Container>
     </>

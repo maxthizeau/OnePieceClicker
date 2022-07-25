@@ -6,11 +6,37 @@ import { IFleetUnit, useGameState } from "../../../lib/hooks/GameContext"
 import useFleet from "../../../lib/hooks/useFleet"
 import useStatePersistInCookie from "../../../lib/hooks/useStatePersistsInCookie"
 import Table, { TColumn } from "../../Global/Table"
-import { ActionButton, ModalSubtitle, SearchInput, TableFilters } from "../ModalStyles"
+import { ActionButton, ModalSubtitle } from "../ModalStyles"
 
 const ExtraModalStyles = styled.div`
   /* overflow: scroll;
   position: static; */
+`
+
+const Filters = styled.div`
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  font-family: Open Sans, Verdana, Geneva, Tahoma, sans-serif;
+  & img {
+    width: 25px;
+    height: 25px;
+  }
+`
+
+const FilterInput = styled.input`
+  padding: 5px;
+  /* display: flex; */
+`
+
+const FilterButton = styled.button`
+  padding: 10px;
+  cursor: pointer;
+
+  &.filtered {
+    background-color: #787777;
+  }
 `
 
 const FleetModalContent: FC = () => {
@@ -113,13 +139,21 @@ const FleetModalContent: FC = () => {
     <ExtraModalStyles>
       <h3>{t("game:Modals.Fleet.fleet-label")}</h3>
       <ModalSubtitle>{t("game:Modals.Fleet.fleet-modal-subtitle")}</ModalSubtitle>
-      <TableFilters>
+      <Filters>
         {/* <FilterButton onClick={() => filterFleetMember(!filterFleet)}>{!filterFleet ? "Hide" : "Show"} fleet members</FilterButton> */}
-        <SearchInput placeholder="Search unit" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button onClick={() => setShowLvl1(!showLvl1)}>
+        <FilterInput placeholder="Search unit" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <FilterButton onClick={() => setShowLvl1(!showLvl1)}>
           {showLvl1 ? `✅` : `🚫`} {t("game:Modals.Fleet.show-lvl1-stats")}
-        </button>
-      </TableFilters>
+        </FilterButton>
+        <FilterButton
+          onClick={() => {
+            setShowLvl1(false)
+            setSearch("")
+          }}
+        >
+          {t("common:reset")}
+        </FilterButton>
+      </Filters>
       <Table
         tableKey="fleetCardTable"
         style={{ width: "100%", fontSize: "1.2rem", fontFamily: "Courier New, Courier, monospace" }}

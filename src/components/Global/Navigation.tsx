@@ -89,6 +89,7 @@ const Navigation: FC = () => {
   const wrapperRef = useRef(null)
   const { t, lang } = useTranslation()
   const [visibleSavesModal, setVisibleSavesModal] = useState(false)
+  const [visibleGuideModal, setVisibleGuideModal] = useState(false)
   usePersistLocaleCookie()
 
   useEffect(() => {
@@ -113,7 +114,7 @@ const Navigation: FC = () => {
           <NavTitle>Menu</NavTitle>
           <ul>
             <li>
-              <a>{t(`common:navigation.guide`)}</a>
+              <a onClick={() => setVisibleGuideModal(true)}>{t(`common:navigation.guide`)}</a>
             </li>
             <li>
               <a onClick={() => setVisibleSavesModal(true)}> {t(`common:navigation.saveImport`)}</a>
@@ -138,6 +139,7 @@ const Navigation: FC = () => {
       </NavContainer>
 
       <Modal type="saves" visible={visibleSavesModal} setVisible={setVisibleSavesModal} />
+      <Modal type="guide" visible={visibleGuideModal} setVisible={setVisibleGuideModal} />
     </>
   )
 }

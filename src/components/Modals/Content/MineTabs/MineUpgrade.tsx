@@ -124,7 +124,6 @@ const MineUpgrade: FC = () => {
       <h5>{t("game:Modals.Mine.upgrade-subtitle")}</h5>
 
       {mineUpgradesList.map((upgrade, index) => {
-        console.log(gameState.state)
         const stateUpgrade = gameState.state.treasureGameUpgrades?.find((x) => x.id == upgrade.id)
         if (!stateUpgrade) return null
         return (
