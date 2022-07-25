@@ -32,6 +32,8 @@ const useFleet = () => {
   }
 
   const removeFromCrew = (crewUnit: ICrewUnit) => {
+    console.log("Remove From Crew : ")
+    console.log(crewUnit)
     gameState.dispatch({
       type: ActionEnum.RemoveFromCrew,
       payload: {

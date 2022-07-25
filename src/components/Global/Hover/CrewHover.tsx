@@ -81,7 +81,12 @@ const CrewHover: FC<ICrewHoverProps> = ({ fleetUnit, crewUnit, small, hideXP, hi
         )}
         <hr />
         <SpaceBetween disable={small}>
-          <span>Rarity : {[...Array(fleetUnit.unit.stars)].map((x) => `⭐`)} </span>
+          <span>
+            Rarity :{" "}
+            {[...Array(fleetUnit.unit.stars)].map((x, index) => (
+              <span key={`rarity-${index}`}>⭐</span>
+            ))}{" "}
+          </span>
         </SpaceBetween>
         {!hideCaptain && (
           <div>

@@ -329,13 +329,13 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
       units
         .filter((x) => x.zone == props.zoneId)
         .map(async (unit) => {
-          console.log("loading unit, ", unit.id, loaded)
+          // console.log("loading unit, ", unit.id, loaded)
           await checkImage(getFullImageSrc(unit.id))
           checkImage(getThumbImageSrc(unit.id))
         })
     ).then(
       () => {
-        console.log("FULLY LOADED !")
+        // console.log("FULLY LOADED !")
         setLoaded(true)
       },
       () => console.error("Error : Could not load images")
