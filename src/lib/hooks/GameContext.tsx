@@ -317,7 +317,8 @@ function gameReducer(state: State, action: Action): State {
       // If he doesn't, return the same state
       if (indexInCrew === -1) return state
       // If he does, splice the array and return the updated state
-      const newCrew: ICrewUnit[] = state.crew.splice(indexInCrew, 1)
+      const newCrew: ICrewUnit[] = hardCopy(state.crew)
+      newCrew.splice(indexInCrew, 1)
       return { ...state, crew: newCrew }
     }
     case ActionEnum.SetCaptain: {
