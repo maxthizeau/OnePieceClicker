@@ -19,11 +19,13 @@ export function numberTo3DigitString(n: number): string {
 
 export function getFullImageSrc(id: string): string {
   const round3FirstDigit = id.charAt(1) + "00"
-  return `images/units/full/transparent/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
+  return `https://one-piece-clicker.vercel.app/images/units/full/transparent/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
+  // return `images/units/full/transparent/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
 }
 export function getThumbImageSrc(id: string): string {
   const round3FirstDigit = id.charAt(1) + "00"
-  return `images/units/thumbnail/jap/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
+  return `https://one-piece-clicker.vercel.app/images/units/thumbnail/jap/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
+  // return `images/units/thumbnail/jap/${id.charAt(0)}/${round3FirstDigit}/${id}.png`
 }
 
 // export function getMaxHPOfUnit(unit: TUnit): number {

@@ -86,6 +86,15 @@ interface IGameProps {
 
 const baseDungeonTime = 30
 
+const checkImage = (path) =>
+  new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(path)
+    img.onerror = () => reject()
+
+    img.src = path
+  })
+
 const Game: FC<IGameProps> = (props: IGameProps) => {
   const [intervalDungeon, setIntervalDungeon] = useState<number>(baseDungeonTime)
   const [units, setUnits] = useState<TUnit[]>(data)
@@ -105,29 +114,6 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const [loaded, setLoaded] = useState(false)
   // const [speed, setSpeed] = useState(1)
   const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
-
-  const checkImage = (path) =>
-    new Promise((resolve, reject) => {
-      const img = new Image()
-      img.onload = () => resolve(path)
-      img.onerror = () => reject()
-
-      img.src = path
-    })
-
-  useEffect(() => {
-    Promise.all(
-      units
-        .filter((x) => x.zone == props.zoneId)
-        .map((unit) => {
-          checkImage(getFullImageSrc(unit.id))
-          checkImage(getThumbImageSrc(unit.id))
-        })
-    ).then(
-      () => setLoaded(true),
-      () => console.error("Error : Could not load images")
-    )
-  }, [])
 
   function setHP(newHP: number) {
     if (!currentUnit) return
@@ -338,12 +324,35 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     }
   }
 
+  const loadImages = useCallback(async () => {
+    await Promise.all(
+      units
+        .filter((x) => x.zone == props.zoneId)
+        .map(async (unit) => {
+          console.log("loading unit, ", unit.id, loaded)
+          await checkImage(getFullImageSrc(unit.id))
+          checkImage(getThumbImageSrc(unit.id))
+        })
+    ).then(
+      () => {
+        console.log("FULLY LOADED !")
+        setLoaded(true)
+      },
+      () => console.error("Error : Could not load images")
+    )
+  }, [props.zoneId])
+
   useEffect(() => {
     initState()
+    console.log("Start Load")
+    loadImages()
   }, [])
 
   useInterval(() => {
-    tick()
+    console.log(loaded)
+    if (loaded) {
+      tick()
+    }
   }, Math.floor(1000))
 
   if (!currentUnit) return null

@@ -110,6 +110,7 @@ const tutorialSteps = [
     content: <Trans i18nKey="tutorial:UNLOCK_SHOP" components={[<p key="TUTORIAL_1" />, <p key="TUTORIAL_2" className="tutorial-goal" />]} />,
     autoShowModal: true,
     doneOnModalClose: false,
+    showCloseModalButton: true,
   },
   {
     stepKey: EStepKeys.EXPLAIN_SHOP,
