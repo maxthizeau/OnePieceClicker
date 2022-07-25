@@ -174,7 +174,7 @@ const defaultState: State = {
 
 export function stringToJsonState(save: string) {
   try {
-    const decrypted = CryptoJS.AES.decrypt(save, "Secret Passphrase")
+    const decrypted = CryptoJS.AES.decrypt(save, process.env.SAVE_KEY)
     const saveJsonDecrypted = decrypted.toString(CryptoJS.enc.Utf8)
     const saveJson = JSON.parse(saveJsonDecrypted)
     return saveJson

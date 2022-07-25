@@ -26,7 +26,7 @@ const useSave = () => {
 
     const saveObject = getObjectSave()
     const saveJson = JSON.stringify(saveObject)
-    const encrypted = CryptoJS.AES.encrypt(saveJson, "Secret Passphrase")
+    const encrypted = CryptoJS.AES.encrypt(saveJson, process.env.SAVE_KEY)
 
     localStorage.setItem("opsave", encrypted.toString())
     return encrypted.toString()
