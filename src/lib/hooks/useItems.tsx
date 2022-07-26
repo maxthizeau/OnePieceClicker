@@ -8,6 +8,7 @@ import { ELogType, useLogs } from "./useLogs"
 const useItems = () => {
   const gameState = useGameState()
   const { items } = gameState.state
+
   const { addLog } = useLogs()
   const { t } = useTranslation("notifications")
 
@@ -27,7 +28,9 @@ const useItems = () => {
     if (!item) {
       return false
     }
-    const priceWithQuantity = item.price * Math.floor(quantity)
+    // If item is heal, upgrade increases its price
+    const upgradeBoostPrice = Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level)
+    const priceWithQuantity = itemKey == "healFood" ? Math.round(item.price * upgradeBoostPrice * Math.floor(quantity)) : item.price * Math.floor(quantity)
     if (gameState.state.berries >= priceWithQuantity) {
       gameState.dispatch({
         type: ActionEnum.AddItem,

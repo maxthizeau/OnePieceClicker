@@ -330,7 +330,7 @@ function gameReducer(state: State, action: Action): State {
 
       // If he doesn't, return the same state
       if (indexInCrew === -1) return state
-      // If he does, splice the array and return the updated state
+
       const newCrew: ICrewUnit[] = hardCopy(state.crew)
       for (let i = 0; i < newCrew.length; i++) {
         const crewUnit = newCrew[i]

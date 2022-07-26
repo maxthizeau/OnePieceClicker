@@ -66,7 +66,7 @@ const useFleet = () => {
     const shipBoost = getShipBoost(EShipEffect.XP_GAIN)
     const captainBoost = getCaptainBoost(ECaptainEffect.XP)
     const itemBoost = isItemActive("cola") ? 1.2 : 1
-    const upgradeBoost = Math.pow(upgrades.XP.valuePerLevel, upgrades.XP.level)
+    const upgradeBoost = Math.pow(defaultUpgrades.XP.valuePerLevel, upgrades.XP.level)
 
     const finalAmount = amount * shipBoost * captainBoost * itemBoost * upgradeBoost
     for (let i = 0; i < training.XPBoost.fleetUnitIds.length; i++) {

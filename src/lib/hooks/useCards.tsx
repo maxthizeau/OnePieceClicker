@@ -2,6 +2,7 @@ import useTranslation from "next-translate/useTranslation"
 import CardLootNotification from "../../components/Global/notifications/UnitNotification"
 import { getPriceUnit } from "../clickerFunctions"
 import { EStepKeys } from "../data/tutorial"
+import { defaultUpgrades } from "../data/upgrades"
 import { ECaptainEffect, EShipEffect, TUnit } from "../types"
 import { ActionEnum, ICardUnit, useGameState } from "./GameContext"
 import { useTutorial } from "./TutorialContext"
@@ -58,7 +59,7 @@ const useCards = () => {
     const rand = Math.round(Math.random() * 100)
 
     const boostTutorialZone = card.zone == 0 ? 3 : 1
-    const upgradeBoost = Math.pow(gameState.state.upgrades.LootChance.valuePerLevel, gameState.state.upgrades.LootChance.level)
+    const upgradeBoost = Math.pow(defaultUpgrades.LootChance.valuePerLevel, gameState.state.upgrades.LootChance.level)
     const itemBoost = isItemActive("dendenmushi") ? 1.2 : 1
     const lootPercent = lootChance(card.stars) * captainEffect * shipBoost * upgradeBoost * itemBoost * boostTutorialZone
 

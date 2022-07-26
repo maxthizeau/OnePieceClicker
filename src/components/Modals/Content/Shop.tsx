@@ -3,6 +3,8 @@ import { FC, useState } from "react"
 import styled from "styled-components"
 import { intWithSpaces } from "../../../lib/clickerFunctions"
 import { defaultItemsList, TItemKey } from "../../../lib/data/items"
+import { defaultUpgrades } from "../../../lib/data/upgrades"
+import { useGameState } from "../../../lib/hooks/GameContext"
 import useItems from "../../../lib/hooks/useItems"
 import Hover from "../../Global/Hover"
 import BasicHover from "../../Global/Hover/BasicHover"
@@ -118,6 +120,7 @@ interface IItemShopBoxProps {
 const ItemShopBox: FC<IItemShopBoxProps> = ({ icon, title, itemKey, price, onClick, selected = false }) => {
   const { replaceHealDescriptionWithValue } = useItems()
   const { t } = useTranslation("game")
+  const gameState = useGameState()
   return (
     <ItemShopBoxStyled onClick={onClick} selected={selected}>
       <Hover
@@ -131,7 +134,9 @@ const ItemShopBox: FC<IItemShopBoxProps> = ({ icon, title, itemKey, price, onCli
       </Hover>
 
       <ItemShopTitle>{t(`game:Currencies.${itemKey}-title`)}</ItemShopTitle>
-      <ItemShopPrice>฿ {intWithSpaces(price)}</ItemShopPrice>
+      <ItemShopPrice>
+        ฿ {intWithSpaces(Math.round(itemKey == "healFood" ? Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level) * price : price))}
+      </ItemShopPrice>
     </ItemShopBoxStyled>
   )
 }
@@ -141,6 +146,7 @@ const ShopModalContent: FC = () => {
   const [selected, setSelected] = useState<number>(0)
   const [amount, setAmount] = useState<number>(1)
   const { t } = useTranslation()
+  const gameState = useGameState()
 
   return (
     <>
@@ -194,7 +200,16 @@ const ShopModalContent: FC = () => {
               // setAmount(1)
             }}
           >
-            {t("game:Modals.Shop.buy-button")} <span className="price-text">(฿ {intWithSpaces(amount * defaultItemsList[selected].price)})</span>
+            {t("game:Modals.Shop.buy-button")}{" "}
+            <span className="price-text">
+              (฿{" "}
+              {intWithSpaces(
+                defaultItemsList[selected].itemKey == "healFood"
+                  ? Math.round(amount * (Math.pow(defaultUpgrades.Heal.valuePerLevel, gameState.state.upgrades.Heal.level) * defaultItemsList[selected].price))
+                  : Math.round(amount * defaultItemsList[selected].price)
+              )}
+              )
+            </span>
           </ShopBuyButton>
         </ShopFormWrapper>
       </ShopWrapper>
