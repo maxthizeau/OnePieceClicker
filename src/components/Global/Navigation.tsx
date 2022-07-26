@@ -70,6 +70,25 @@ const NavTitle = styled.div`
   font-size: 1.2em;
 `
 
+const GitHubIcon = styled.a`
+  position: relative;
+  /* background: white; */
+  height: 30px;
+  width: 30px;
+  margin: 0px auto;
+  cursor: pointer;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url("images/icons/GitHub-Mark-64px.png");
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+  }
+`
+
 function usePersistLocaleCookie() {
   const { locale, defaultLocale } = useRouter()
 
@@ -136,6 +155,7 @@ const Navigation: FC = () => {
           </ul>
         </Nav>
         <MenuButton onClick={() => setShow(!show)} />
+        <GitHubIcon target="_blank" href="https://github.com/maxthizeau/OnePieceClicker" />
       </NavContainer>
 
       <Modal type="saves" visible={visibleSavesModal} setVisible={setVisibleSavesModal} />
