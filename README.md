@@ -24,7 +24,7 @@ Also, I might do some adjustment and balance change later. Feel free to tell me 
 
 # Just want to test the features without playing a full game?
 
-If you just want to test all the features without playing from the start, you can download **[this save](/public/opc_save_6_26_2022_1658826048377.txt)** and import it.
+If you just want to test all the features without playing from the start, you can download **[this save](https://raw.githubusercontent.com/maxthizeau/OnePieceClicker/master/public/opc_save_6_26_2022_1658826048377.txt)** and import it.
 
 **How to import a save :**
 
