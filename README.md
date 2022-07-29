@@ -4,7 +4,7 @@ _Clicker Game in the One Piece world._
 
 _Navigate the world of One Piece while fighting numerous enemies. Collect their Vivre Cards and recruit them into your fleet to build the best possible crew._
 
-[Link to game here](https://one-piece-clicker.vercel.app/)
+[Link to game here](https://www.onepiececlicker.com/)
 
 # Introduction
 
