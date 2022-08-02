@@ -8,6 +8,8 @@ import { ReactNotifications } from "react-notifications-component"
 import { TreasureGameProvider } from "../lib/hooks/TreasureGameContext"
 import { LogsProvider } from "../lib/hooks/useLogs"
 import { TutorialProvider } from "../lib/hooks/TutorialContext"
+import { useEffect } from "react"
+import * as ga from "../lib/ga"
 
 interface ThemeInterface {
   colors: {
