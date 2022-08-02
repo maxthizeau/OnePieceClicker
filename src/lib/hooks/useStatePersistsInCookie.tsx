@@ -24,7 +24,7 @@ export default function useStatePersistInCookie<T>(key: string, value: T): [T, (
   //   }, [])
 
   const changeData = (newValue: T) => {
-    Cookies.set(`OPC_${key}`, JSON.stringify(newValue), { expires: 100 })
+    Cookies.set(`OPC_${key}`, JSON.stringify(newValue), { expires: 100, sameSite: "strict" })
     setData(newValue)
   }
   return [data, changeData]

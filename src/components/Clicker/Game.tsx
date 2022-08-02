@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react"
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   filterUnitsByZone,
   getBerryRewardFromUnit,
@@ -38,6 +38,7 @@ import styled from "styled-components"
 import useShip from "../../lib/hooks/useShip"
 import { defaultUpgrades } from "../../lib/data/upgrades"
 import LoadingGame from "../Global/LoadingGame"
+import { sliceIntoChunks } from "../../lib/utils"
 
 const data: TUnit[] = require("../../lib/data/units.json")
 
@@ -112,8 +113,16 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
   const tutorial = useTutorial()
   const { getShipBoost } = useShip()
   const [loaded, setLoaded] = useState(false)
+  // const [unitLoaded, setUnitLoaded] = useState<string[]>([])
+  const refCount = useRef<HTMLSpanElement>(null)
+  let count = 0
+  // let unitLoaded = 0
   // const [speed, setSpeed] = useState(1)
   const isTutorialStepDamageEnemy = tutorial.step && tutorial.step?.stepKey == EStepKeys.DAMAGE_ENEMY
+
+  const zoneUnits = useMemo(() => {
+    return filterUnitsByZone(units, props.zoneId)
+  }, [units, props.zoneId])
 
   function setHP(newHP: number) {
     if (!currentUnit) return
@@ -324,15 +333,50 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
     }
   }
 
+  async function load(id: string) {
+    await checkImage(getFullImageSrc(id))
+    await checkImage(getThumbImageSrc(id))
+  }
+
+  // const loadImages = useCallback(async () => {
+  //   console.log("Load Image START")
+
+  //   let count = 0
+  //   await Promise.all(
+  //     zoneUnits.map(async (unit) => {
+  //       // console.log("loading unit, ", unit.id, loaded)
+  //       console.log("Loaded unit --> count : ", count)
+  //       await load(unit.id)
+  //       refCount.current.innerText = count.toString()
+  //       count = count + 1
+  //     })
+  //   ).then(
+  //     () => {
+  //       // console.log("FULLY LOADED !")
+  //       setLoaded(true)
+  //     },
+  //     () => console.error("Error : Could not load images")
+  //   )
+  // }, [zoneUnits])
+
   const loadImages = useCallback(async () => {
+    console.log("Load Image START")
+
+    const splitedZoneUnits = sliceIntoChunks(zoneUnits, Math.floor(zoneUnits.length / 10))
+
     await Promise.all(
-      units
-        .filter((x) => x.zone == props.zoneId)
-        .map(async (unit) => {
-          // console.log("loading unit, ", unit.id, loaded)
-          await checkImage(getFullImageSrc(unit.id))
-          checkImage(getThumbImageSrc(unit.id))
-        })
+      splitedZoneUnits.map(async (zoneUnitsSplited) => {
+        // console.log(zoneUnitsSplited)
+        await Promise.all(
+          zoneUnitsSplited.map(async (unit) => {
+            await load(unit.id)
+            if (refCount.current) {
+              refCount.current.innerText = count.toString()
+            }
+            count = count + 1
+          })
+        )
+      })
     ).then(
       () => {
         // console.log("FULLY LOADED !")
@@ -340,23 +384,30 @@ const Game: FC<IGameProps> = (props: IGameProps) => {
       },
       () => console.error("Error : Could not load images")
     )
-  }, [props.zoneId])
+  }, [zoneUnits])
 
   useEffect(() => {
     initState()
-    console.log("Start Load")
+    // startLoading()
     loadImages()
   }, [])
 
   useInterval(() => {
-    console.log(loaded)
+    // console.log(loaded)
     if (loaded) {
       tick()
+    } else {
+      // console.log(unitLoaded)
     }
   }, Math.floor(1000))
 
   if (!currentUnit) return null
-  if (!loaded) return <LoadingGame />
+  if (!loaded)
+    return (
+      <>
+        <LoadingGame value={<span ref={refCount}>{refCount?.current == null && "0"}</span>} maxValue={zoneUnits.length} />
+      </>
+    )
   const { hp, unit } = currentUnit
   const { debug = false } = props
 

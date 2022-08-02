@@ -1,3 +1,4 @@
+import { FC } from "react"
 import styled from "styled-components"
 
 const Spinner = styled.div`
@@ -72,17 +73,30 @@ const Spinner = styled.div`
   }
 `
 
-const LoadingGame = () => {
+interface ILoadingGameProps {
+  value: React.ReactNode
+  maxValue: number
+}
+
+const LoadingGame: FC<ILoadingGameProps> = ({ value, maxValue }) => {
   return (
-    <Spinner>
-      <div className="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div>Loading Units</div>
-    </Spinner>
+    <>
+      <Spinner>
+        <div className="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div>Loading Units</div>
+        <div>
+          {value} / {maxValue}
+        </div>
+      </Spinner>
+      {/* <div class="progress-bar">
+				<span class="progress-bar-fill" style="width: 70%;"></span>
+			</div> */}
+    </>
   )
 }
 

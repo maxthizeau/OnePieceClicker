@@ -773,13 +773,11 @@ function gameReducer(state: State, action: Action): State {
         if (state.training.XPBoost.maxSlots < XPBoostUnlockPrices.length) {
           // If player has enought berries to pay the upgrade
 
-          if (
-            XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1] !== undefined &&
-            state.berries >= XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1]
-          ) {
+          if (XPBoostUnlockPrices[state.training.XPBoost.maxSlots] !== undefined && state.berries >= XPBoostUnlockPrices[state.training.XPBoost.maxSlots]) {
+            // console.log("PRICE OF UNLOCK : ", XPBoostUnlockPrices[state.training.XPBoost.maxSlots])
             return {
               ...state,
-              berries: state.berries - XPBoostUnlockPrices[state.training.XPBoost.maxSlots - 1],
+              berries: state.berries - XPBoostUnlockPrices[state.training.XPBoost.maxSlots],
               training: { ...state.training, XPBoost: { ...state.training.XPBoost, maxSlots: state.training.XPBoost.maxSlots + 1 } },
             }
           }
@@ -791,13 +789,10 @@ function gameReducer(state: State, action: Action): State {
         // If not already at maximum slots number
         if (state.training.Rayleigh.maxSlots < RayleighUnlockPrices.length) {
           // If player has enought berries to pay the upgrade
-          if (
-            RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1] !== undefined &&
-            state.berries >= RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1]
-          ) {
+          if (RayleighUnlockPrices[state.training.Rayleigh.maxSlots] !== undefined && state.berries >= RayleighUnlockPrices[state.training.Rayleigh.maxSlots]) {
             return {
               ...state,
-              berries: state.berries - RayleighUnlockPrices[state.training.Rayleigh.maxSlots - 1],
+              berries: state.berries - RayleighUnlockPrices[state.training.Rayleigh.maxSlots],
               training: { ...state.training, Rayleigh: { ...state.training.Rayleigh, maxSlots: state.training.Rayleigh.maxSlots + 1 } },
             }
           }
