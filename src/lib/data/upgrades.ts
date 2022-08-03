@@ -21,13 +21,13 @@ export const defaultUpgrades: TUpgrade = {
     level: 0,
     maxLevel: 7,
     valuePerLevel: 2,
-    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 500000000],
+    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 2000000000],
   },
   CrewPower: {
     level: 0,
     maxLevel: 7,
     valuePerLevel: 2,
-    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 500000000],
+    prices: [500, 5000, 25000, 100000, 1000000, 10000000, 2000000000],
   },
   LootChance: {
     level: 0,

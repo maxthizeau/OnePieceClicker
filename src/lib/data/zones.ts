@@ -10,6 +10,7 @@ export type TZone = {
   mapCoordonates: { x: number; y: number }
 }
 
+// prettier-ignore
 export const zones: TZone[] = [
   {
     id: 0,
@@ -293,7 +294,7 @@ export const zones: TZone[] = [
     freeMembers: ["0649", "0966", "3553"], // Marco / Kidd / Oden
     freeBoat: [48],
     poneglyphDungeon: true,
-    maxHP: 55500000,
+    maxHP: 65500000,
     dungeonCost: 700,
     mapCoordonates: { x: 792, y: 1068 },
   },
@@ -304,7 +305,7 @@ export const zones: TZone[] = [
     freeMembers: [],
     freeBoat: [],
     poneglyphDungeon: false,
-    maxHP: 60500000,
+    maxHP: 80500000,
     dungeonCost: 800,
     mapCoordonates: { x: 875, y: 1347 },
   },
@@ -315,7 +316,7 @@ export const zones: TZone[] = [
     freeMembers: [],
     freeBoat: [],
     poneglyphDungeon: false,
-    maxHP: 70500000,
+    maxHP: 125000000,
     dungeonCost: 950,
     mapCoordonates: { x: 958, y: 1104 },
   },
@@ -326,7 +327,7 @@ export const zones: TZone[] = [
     freeMembers: [],
     freeBoat: [],
     poneglyphDungeon: false,
-    maxHP: 80500000,
+    maxHP: 250000000,
     dungeonCost: 1100,
     mapCoordonates: { x: 1051, y: 1151 },
   },
@@ -337,7 +338,7 @@ export const zones: TZone[] = [
     freeMembers: [],
     freeBoat: [],
     poneglyphDungeon: false,
-    maxHP: 100500000,
+    maxHP: 500000000,
     dungeonCost: 1300,
     mapCoordonates: { x: 1237, y: 1656 },
   },
