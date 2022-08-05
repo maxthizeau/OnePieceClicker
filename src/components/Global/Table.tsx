@@ -132,10 +132,14 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
 
   const stringSort = (a: any, b: any): number => {
     if (!sortBy) return 0
-    const stringA = a[sortBy.key].toString()
-    const stringB = b[sortBy.key].toString()
-    if (sortBy.order == "asc") return stringA.localeCompare(stringB)
-    else return stringB.localeCompare(stringA)
+    try {
+      const stringA = a[sortBy.key].toString()
+      const stringB = b[sortBy.key].toString()
+      if (sortBy.order == "asc") return stringA.localeCompare(stringB)
+      else return stringB.localeCompare(stringA)
+    } catch (e) {
+      return 0
+    }
   }
 
   const sortData = useCallback(

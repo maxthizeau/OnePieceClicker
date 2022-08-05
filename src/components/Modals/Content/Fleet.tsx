@@ -70,7 +70,13 @@ const FleetModalContent: FC = () => {
       dataKey: "name",
       key: "name",
       render: (record, text) => record.unit.name,
-      sortMode: "string",
+      sort: (a, b) => {
+        try {
+          return a.unit.name.localeCompare(b.unit.name)
+        } catch {
+          return 0
+        }
+      },
     },
 
     {
