@@ -183,7 +183,7 @@ const Table = <T extends Object>(props: ITableProps<T>) => {
       return data
     } else {
       const pageSize = props.pagination.itemPerPage
-      const currentPage = page < 1 ? 1 : page > pageSize ? pageSize : page
+      const currentPage = page < 1 ? 1 : page > maxPage ? maxPage : page
       return data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     }
   }, [props.data, sortBy, page])
